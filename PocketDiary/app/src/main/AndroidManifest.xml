@@ -16,6 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ReviewActivity"
+            android:label="Review"/>
     </application>
 
 </manifest>
