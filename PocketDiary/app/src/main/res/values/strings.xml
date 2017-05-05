@@ -3,4 +3,7 @@
     <string name="pocketdiary">Pocket Diary</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
+    <string name="create_entry">Create Entry</string>
+    <string name="review">Review</string>
+    <string name="statistic">Statistic</string>
 </resources>
