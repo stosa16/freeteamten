@@ -24,14 +24,32 @@ public class DBUserSetting extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void insert(){
+    public void insert(UserSetting userSetting){
         ContentValues content_val = new ContentValues();
-        //content_val.put("DATENBANKSPALTE", parameter);
-        //db.insert("TABELLENNAME", null, content_val);
+        content_val.put("ID", userSetting.getId());
+        content_val.put("USERNAME", userSetting.getUserName());
+        content_val.put("PICTURE", userSetting.getPicture());
+        content_val.put("PIN", userSetting.getPin());
+        content_val.put("IS_PIN_ACTIVE", userSetting.isPinActive());
+        db.insert("USER_SETTINGS", null, content_val);
+    }
+
+    public void insertPin(UserSetting userSetting){
+        ContentValues content_val = new ContentValues();
+        content_val.put("ID", userSetting.getId());
+        content_val.put("PIN", userSetting.getPin());
+        content_val.put("IS_PIN_ACTIVE", userSetting.isPinActive());
+        db.insert("USER_SETTINGS", null, content_val);
     }
 
     public UserSetting getUserSetting(int id) {
-        return null;
+        Cursor cursor = db.query("USER_SETTINGS", new String[]{"ID", "USERNAME", "PICTURE", "PIN", "IS_PIN_ACTIVE"}, "ID",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        UserSetting userSetting = new UserSetting(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(3)), Boolean.parseBoolean(cursor.getString(4)));
+        return userSetting;
     }
 
 

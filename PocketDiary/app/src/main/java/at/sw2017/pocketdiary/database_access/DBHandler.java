@@ -4,10 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by marku on 11.04.2017.
- */
-
 public class DBHandler extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "pocketdiary.db";

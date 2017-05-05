@@ -14,6 +14,12 @@ public class UserSetting {
         this.userName = userName;
     }
 
+    public UserSetting(int id, int pin, boolean isPinActive) {
+        this.id = id;
+        this.pin = pin;
+        this.isPinActive = isPinActive;
+    }
+
     public int getId() {
         return id;
     }
