@@ -3,6 +3,11 @@
     <string name="pocketdiary">Pocket Diary</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
+    <string name="entry_title">Title</string>
+    <string name="entry_category">Category</string>
+    <string name="entry_subcategory">Subcategory</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_save">Save</string>
     <string name="create_entry">Create Entry</string>
     <string name="review">Review</string>
     <string name="statistic">Statistic</string>

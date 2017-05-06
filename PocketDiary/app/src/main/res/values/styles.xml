@@ -11,9 +11,13 @@
     <style name="ButtonWhite">
         <item name="android:background">@drawable/button</item>
         <item name="android:textColor">@color/colorRed</item>
-
     </style>
 
     <style name="AppTheme2" parent="Theme.AppCompat.NoActionBar"></style>
+
+    <style name="label">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/colorRed</item>
+    </style>
 
 </resources>
