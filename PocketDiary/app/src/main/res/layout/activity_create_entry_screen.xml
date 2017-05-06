@@ -22,10 +22,12 @@
             style="@style/label"
             android:layout_marginLeft="24dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginBottom="29dp"
+            android:layout_marginBottom="34dp"
             app:layout_constraintBottom_toTopOf="@+id/category"
             app:layout_constraintRight_toLeftOf="@+id/input_title"
-            android:layout_marginRight="8dp" />
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="0.0" />
 
         <TextView
             android:id="@+id/category"
@@ -34,13 +36,14 @@
             android:layout_marginStart="24dp"
             android:text="@string/entry_category"
             style="@style/label"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="24dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="34dp"
             app:layout_constraintBottom_toTopOf="@+id/subcategory"
             app:layout_constraintRight_toLeftOf="@+id/input_category"
             android:layout_marginRight="32dp"
-            app:layout_constraintHorizontal_bias="0.0" />
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginEnd="32dp" />
 
         <TextView
             android:id="@+id/subcategory"
@@ -51,127 +54,183 @@
             android:text="@string/entry_subcategory"
             android:layout_marginLeft="24dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginBottom="35dp"
+            android:layout_marginBottom="15dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_calendar"
             app:layout_constraintRight_toLeftOf="@+id/input_subcategory"
             android:layout_marginRight="8dp"
-            app:layout_constraintHorizontal_bias="0.0" />
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginEnd="8dp" />
 
         <EditText
             android:id="@+id/input_title"
-            android:layout_width="292dp"
-            android:layout_height="50dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="282dp"
+            android:layout_height="53dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="14dp"
             android:ems="10"
             android:inputType="textPersonName"
             android:text="Name"
             android:textSize="30sp"
             app:layout_constraintTop_toTopOf="@+id/guideline"
-            tools:layout_editor_absoluteX="105dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/input_category" />
+            android:layout_marginBottom="14dp"
+            app:layout_constraintBottom_toTopOf="@+id/input_category"
+            tools:layout_constraintTop_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintBottom_creator="1"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="16dp"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="115dp" />
 
         <Spinner
             android:id="@+id/input_category"
-            android:layout_width="184dp"
+            android:layout_width="0dp"
             android:layout_height="51dp"
-            android:layout_marginEnd="24dp"
-            tools:layout_editor_absoluteX="211dp"
-            android:layout_marginBottom="31dp"
-            app:layout_constraintBottom_toTopOf="@+id/input_subcategory" />
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="28dp"
+            app:layout_constraintBottom_toTopOf="@+id/input_subcategory"
+            tools:layout_constraintRight_creator="1"
+            android:layout_marginStart="19dp"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_constraintLeft_creator="1"
+            app:layout_constraintLeft_toRightOf="@+id/subcategory"
+            app:layout_constraintHorizontal_bias="1.0" />
 
         <Spinner
             android:id="@+id/input_subcategory"
-            android:layout_width="181dp"
+            android:layout_width="0dp"
             android:layout_height="48dp"
-            tools:layout_editor_absoluteX="214dp"
-            android:layout_marginBottom="36dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_calendar" />
+            android:layout_marginBottom="17dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_calendar"
+            tools:layout_constraintRight_creator="1"
+            android:layout_marginEnd="2dp"
+            app:layout_constraintRight_toRightOf="@+id/input_title"
+            tools:layout_constraintLeft_creator="1"
+            app:layout_constraintLeft_toLeftOf="@+id/btn_friends"
+            app:layout_constraintHorizontal_bias="1.0" />
 
         <EditText
             android:id="@+id/input_description"
-            android:layout_width="357dp"
-            android:layout_height="194dp"
+            android:layout_width="358dp"
+            android:layout_height="179dp"
             android:ems="10"
             android:inputType="textMultiLine"
-            tools:layout_editor_absoluteY="327dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="27dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginRight="10dp"
-            app:layout_constraintRight_toRightOf="parent" />
+            android:layout_marginRight="27dp"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_constraintTop_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintBottom_creator="1"
+            android:layout_marginStart="27dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="27dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/btn_pictures"
+            tools:layout_constraintLeft_creator="1"
+            android:layout_marginBottom="1dp"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintVertical_bias="0.122" />
 
         <ImageButton
             android:id="@+id/btn_pictures"
             android:layout_width="wrap_content"
-            android:layout_height="52dp"
+            android:layout_height="0dp"
             app:srcCompat="@android:drawable/ic_menu_camera"
-            tools:layout_editor_absoluteY="265dp"
             app:layout_constraintRight_toLeftOf="@+id/btn_location"
-            android:layout_marginRight="24dp" />
+            android:layout_marginRight="27dp"
+            tools:layout_constraintTop_creator="1"
+            tools:layout_constraintBottom_creator="1"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_location"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintTop_toTopOf="@+id/btn_location"
+            app:layout_constraintVertical_bias="1.0" />
 
         <ImageButton
             android:id="@+id/btn_calendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/ic_menu_today"
-            tools:layout_editor_absoluteY="265dp"
-            tools:layout_editor_absoluteX="294dp" />
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintBottom_creator="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="34dp"
+            app:layout_constraintRight_toRightOf="@+id/input_description"
+            android:layout_marginBottom="297dp"
+            android:layout_marginRight="42dp" />
 
         <ImageButton
             android:id="@+id/btn_location"
             android:layout_width="wrap_content"
-            android:layout_height="52dp"
+            android:layout_height="0dp"
             app:srcCompat="@android:drawable/ic_menu_mylocation"
-            tools:layout_editor_absoluteY="265dp"
             app:layout_constraintRight_toLeftOf="@+id/btn_friends"
-            android:layout_marginRight="24dp" />
+            android:layout_marginRight="28dp"
+            tools:layout_constraintTop_creator="1"
+            tools:layout_constraintBottom_creator="1"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_friends"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintTop_toTopOf="@+id/btn_friends"
+            app:layout_constraintVertical_bias="1.0" />
 
         <ImageButton
             android:id="@+id/btn_friends"
             android:layout_width="wrap_content"
             android:layout_height="52dp"
             app:srcCompat="@android:drawable/ic_menu_myplaces"
-            tools:layout_editor_absoluteY="265dp"
             app:layout_constraintRight_toLeftOf="@+id/btn_calendar"
-            android:layout_marginRight="24dp" />
+            android:layout_marginRight="21dp"
+            tools:layout_constraintTop_creator="1"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintTop_toTopOf="@+id/btn_calendar"
+            android:layout_marginTop="1dp" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="@string/btn_save"
-            tools:layout_editor_absoluteX="223dp"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/input_description"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            tools:layout_constraintRight_creator="1"
+            android:layout_marginEnd="68dp"
+            app:layout_constraintRight_toRightOf="parent" />
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/btn_cancel"
-            tools:layout_editor_absoluteX="45dp"
-            style="@style/ButtonRed"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/input_description"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            tools:layout_constraintRight_creator="1"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            app:layout_constraintRight_toRightOf="@+id/btn_location"
+            tools:layout_constraintLeft_creator="1"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline2" />
 
         <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/guideline"
             app:layout_constraintGuide_begin="20dp"
-            android:orientation="horizontal" />
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteY="101dp"
+            tools:layout_editor_absoluteX="0dp" />
 
         <android.support.constraint.Guideline
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/guideline2"
             app:layout_constraintGuide_begin="20dp"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            tools:layout_editor_absoluteY="81dp"
+            tools:layout_editor_absoluteX="20dp" />
 
     </android.support.constraint.ConstraintLayout>
 </LinearLayout>
