@@ -87,9 +87,7 @@
         android:layout_marginEnd="106dp"
         app:layout_constraintRight_toRightOf="@+id/current_pin"
         android:layout_marginBottom="35dp"
-        android:layout_marginRight="106dp"
-        android:textOff="OFF"
-        android:textOn="ON"/>
+        android:layout_marginRight="106dp"/>
 
     <EditText
         android:id="@+id/current_pin"
@@ -216,7 +214,6 @@
 
     <TextView
         android:id="@+id/on_off"
-        android:text="@string/off"
         android:textSize="60px"
         android:layout_width="58dp"
         android:layout_height="62dp"

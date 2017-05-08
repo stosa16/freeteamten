@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Header">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme2"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -20,12 +21,15 @@
             android:name=".PinScreen"
             android:exported="true"
             android:theme="@style/AppTheme2" />
-        <activity android:name=".StartScreen"
+        <activity
+            android:name=".StartScreen"
             android:exported="true"
             android:theme="@style/AppTheme2" />
-        <activity android:name=".SettingScreen"
-            android:label="Settings"
-            android:exported="true" />
+        <activity
+            android:name=".SettingScreen"
+            android:exported="true"
+            android:label="Settings">
+        </activity>
     </application>
 
 </manifest>
