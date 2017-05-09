@@ -3,6 +3,7 @@ package at.sw2017.pocketdiary;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.CalendarView;
@@ -30,6 +31,8 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
@@ -53,18 +56,25 @@ public class ReviewInstrumentedTest {
     private DBEntry dbe;
 
     @Rule
-    public ActivityTestRule<ReviewActivity> mActivityRule = new ActivityTestRule<>(ReviewActivity.class);
+    public ActivityTestRule<ReviewActivity> mActivityRule = new ActivityTestRule<>(ReviewActivity.class, false, false);
 
     @Before
     public void setup(){
-        mActivityRule.launchActivity(new Intent());
+        Context context = InstrumentationRegistry.getTargetContext();
+        context.deleteDatabase(DBHandler.DATABASE_NAME);
+        dbh = new DBHandler(context);
+        dbe = new DBEntry(context);
+        TestHelper.initCategories(context);
         createTestData();
+        Intents.init();
+        mActivityRule.launchActivity(new Intent());
     }
 
     @After
     public void tearDown(){
         dbh.close();
         dbe.close();
+        Intents.release();
     }
 
     @Test
@@ -85,11 +95,14 @@ public class ReviewInstrumentedTest {
         onView(allOf(withText("Test title"), withParent(withId(R.id.review_list_view)))).check(doesNotExist());
     }
 
+    @Test
+    public void pressListItem() {
+        onView(allOf(withText("Test title"), withParent(withId(R.id.review_list_view)))).perform(click());
+        intended(hasComponent(ShowEntryScreen.class.getName()));
+    }
+
     public void createTestData(){
-        Context context = InstrumentationRegistry.getTargetContext();
-        context.deleteDatabase(DBHandler.DATABASE_NAME);
-        dbh = new DBHandler(context);
-        dbe = new DBEntry(context);
+
         Entry entry = new Entry();
         entry.setTitle("Test title");
         entry.setMainCategoryId(1);

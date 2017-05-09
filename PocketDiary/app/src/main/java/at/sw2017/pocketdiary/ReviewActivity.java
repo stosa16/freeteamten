@@ -124,7 +124,7 @@ public class ReviewActivity extends Activity{
     public void setCalendar(CalendarDay[] dates_list, int day, int month, int year){
         MaterialCalendarView calendar = (MaterialCalendarView) findViewById(R.id.review_cal_view);
         Collection<CalendarDay> dates = new ArrayList<>(Arrays.asList(dates_list));
-        int color = Color.parseColor("#bf0023");
+        int color = Color.parseColor("#BF0023");
         EventDecorator dec = new EventDecorator(color, dates);
         calendar.addDecorator(dec);
         CalendarDay crt_day = new CalendarDay(year,month-1,day);
@@ -157,17 +157,14 @@ public class ReviewActivity extends Activity{
             }
         }
 
-        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, events);
+        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, events);
         review_listview.setAdapter(adapter);
         review_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                printToast("Clicked");
-                printToast("" + db_ids.get(position));
-                //TODO Give id to ShowEntry Activity
-                /*Intent i = new Intent(ReviewActivity.this, ShowEntryScreen.class);
+                Intent i = new Intent(ReviewActivity.this, ShowEntryScreen.class);
                 i.putExtra("entry_id", Integer.toString(db_ids.get(position)));
-                startActivity(i);*/
+                startActivity(i);
             }
         });
     }

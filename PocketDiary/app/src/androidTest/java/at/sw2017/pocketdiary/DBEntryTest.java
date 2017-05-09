@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.database_access.DBAddress;
@@ -49,6 +50,20 @@ public class DBEntryTest {
         long id = dbe.insert(entry);
         assertTrue(id > 0);
         Entry entry_loaded = dbe.getEntry((int) id);
+        assertTrue(entry.getDescription().equals(entry_loaded.getDescription()));
+        assertTrue(entry.getTitle().equals(entry_loaded.getTitle()));
+        assertTrue(entry.getMainCategoryId() == (entry_loaded.getMainCategoryId()));
+        assertTrue(entry.getSubCategoryId() == (entry_loaded.getSubCategoryId()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        assertTrue(dateFormat.format(entry.getDate()).equals(dateFormat.format(entry_loaded.getDate())));
+    }
+
+    @Test
+    public void shouldGetAllEntries(){
+        Entry entry = new Entry("Test", 1, 2, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!");
+        dbe.insert(entry);
+        List<Entry> entries_loaded = dbe.getAllEntries();
+        Entry entry_loaded = entries_loaded.get(0);
         assertTrue(entry.getDescription().equals(entry_loaded.getDescription()));
         assertTrue(entry.getTitle().equals(entry_loaded.getTitle()));
         assertTrue(entry.getMainCategoryId() == (entry_loaded.getMainCategoryId()));

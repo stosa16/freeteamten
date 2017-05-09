@@ -10,14 +10,17 @@
         android:layout_height="wrap_content"
         android:textSize="400sp"
         app:mcv_showOtherDates="all"
-        app:mcv_selectionColor="#bf0023"
+        app:mcv_arrowColor="@color/colorRed"
+        app:mcv_headerTextAppearance="@style/cal_simple_text"
+        app:mcv_selectionColor="@color/colorRed"
+        app:mcv_weekDayTextAppearance="@style/cal_simple_text"
         />
 
     <ListView
         android:id="@+id/review_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="#000000" />
+        android:background="@color/colorRed"/>
 
 
 </LinearLayout>

@@ -30,10 +30,12 @@
             android:exported="true"
             android:label="Settings">
         </activity>
-		<activity android:name=".CreateEntryScreen">
+		<activity android:name=".CreateEntryScreen"
+            android:label="Create entry"
+            android:theme="@style/ActivityTheme">
         </activity>
         <activity android:name=".ReviewActivity"
-            android:label="Review"/>
+            android:label="Review" />
         <activity android:name=".ShowEntryScreen"
             android:label="Details"/>
     </application>
