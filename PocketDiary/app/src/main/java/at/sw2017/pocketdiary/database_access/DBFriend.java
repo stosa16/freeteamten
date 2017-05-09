@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.Friend;
 
@@ -24,19 +28,70 @@ public class DBFriend extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void insert(){
+    public long insert(Friend friend){
         ContentValues content_val = new ContentValues();
-        //content_val.put("DATENBANKSPALTE", parameter);
-        //db.insert("TABELLENNAME", null, content_val);
+        content_val.put("NAME", friend.getName());
+        content_val.put("IS_DELETED", friend.isDeleted());
+        long id = db.insert("Friends", null, content_val);
+        return id;
+    }
+
+    public void delete(Friend id){
+
+    }
+
+    public boolean updateFriend(Friend friend) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues content_val = new ContentValues();
+        content_val.put("ID", friend.getId());
+        content_val.put("NAME", friend.getName());
+        content_val.put("IS_DELETED", friend.isDeleted());
+        db.update("Friends", content_val, "ID = ?",new String[] {String.valueOf(friend.getId())});
+        return true;
     }
 
     public Friend getFriend(int id) {
-        return null;
+        String condition = " WHERE ID = " + id;
+        String selectQuery = "SELECT * FROM " + "FRIENDS" + condition;
+        Friend friend = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            friend = new Friend();
+            friend.setId(cursor.getInt(0));
+            if (cursor.getString(1) != null) {
+                friend.setName(cursor.getString(1));
+            }
+            if (cursor.getString(2) != null) {
+                friend.setDeleted(Boolean.parseBoolean(cursor.getString(2)));
+            }
+        }
+        db.close();
+        return friend;
     }
 
 
     public Cursor getData(){
         Cursor results = db.rawQuery("SELECT * FROM FRIENDS", null);
         return results;
+    }
+
+    public List<Friend> getAllFriends(){
+        List<Friend> friend_list = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + "FRIENDS";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if(cursor.moveToFirst()){
+            do {
+                Friend friend = new Friend();
+                friend.setId(Integer.parseInt(cursor.getString(0)));
+                friend.setName(cursor.getString(1));
+                friend_list.add(friend);
+            }
+            while(cursor.moveToNext());
+        }
+        db.close();
+        return friend_list;
+
     }
 }
