@@ -11,4 +11,9 @@
     <string name="create_entry">Create Entry</string>
     <string name="review">Review</string>
     <string name="statistic">Statistic</string>
+    <string name="entry_date">Date</string>
+    <string name="entry_address">Location</string>
+    <string name="entry_friends">Friends</string>
+    <string name="checked">&#x2713;</string>
+    <string name="entry_description_hint">Here you can insert a description of this activity!</string>
 </resources>

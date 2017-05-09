@@ -23,9 +23,8 @@
         <activity android:name=".StartScreen"
             android:exported="true"
             android:theme="@style/AppTheme2" />
-        <activity android:name=".CreateEntryScreen"
-            android:exported="true"
-            android:theme="@style/AppTheme2" />
+        <activity android:name=".CreateEntryScreen">
+        </activity>
     </application>
 
 </manifest>

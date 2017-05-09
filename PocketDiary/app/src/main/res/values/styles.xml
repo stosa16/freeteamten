@@ -16,8 +16,12 @@
     <style name="AppTheme2" parent="Theme.AppCompat.NoActionBar"></style>
 
     <style name="label">
-        <item name="android:textSize">30sp</item>
+        <item name="android:textSize">25sp</item>
         <item name="android:textColor">@color/colorRed</item>
+    </style>
+
+    <style name="simple_text">
+        <item name="android:textSize">16sp</item>
     </style>
 
 </resources>
