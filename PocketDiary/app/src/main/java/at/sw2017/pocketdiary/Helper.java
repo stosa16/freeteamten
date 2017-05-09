@@ -70,4 +70,13 @@ public final class Helper {
         }
     }
 
+    public static Category getCategoryByName(List<Category> categories, String name) {
+        for (Category category : categories) {
+            if (category.getName().equals(name)) {
+                return category;
+            }
+        }
+        return null;
+    }
+
 }

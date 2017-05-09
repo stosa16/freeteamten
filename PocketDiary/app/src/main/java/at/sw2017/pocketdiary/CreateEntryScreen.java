@@ -209,7 +209,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                     public void onItemSelected(AdapterView<?> arg0, View arg1,
                                                int arg2, long arg3) {
 
-                        Category selected_category = getCategoryByName(maincategories, input_main_category.getSelectedItem().toString());
+                        Category selected_category = Helper.getCategoryByName(maincategories, input_main_category.getSelectedItem().toString());
                         if (selected_category != null) {
                             fillSubCategories(selected_category.getId());
                         }
@@ -288,15 +288,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         Helper.updateBadgeVisibility(badge_date, true);
     }
 
-    private Category getCategoryByName(List<Category> categories, String name) {
-        for (Category category : categories) {
-            if (category.getName().equals(name)) {
-                return category;
-            }
-        }
-        return null;
-    }
-
     public void saveEvent(View view) {
         input_event_title = (EditText) findViewById(R.id.out_title);
         String title = input_event_title.getText().toString();
@@ -308,14 +299,14 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         input_description = (EditText) findViewById(R.id.input_description);
         String description = input_description.getText().toString();
         input_main_category = (Spinner) findViewById(R.id.out_category);
-        Category main_category = getCategoryByName(maincategories, input_main_category.getSelectedItem().toString());
+        Category main_category = Helper.getCategoryByName(maincategories, input_main_category.getSelectedItem().toString());
         if (main_category == null) {
             Toast.makeText(CreateEntryScreen.this, "Please select a Main Category!",
                     Toast.LENGTH_LONG).show();
             return;
         }
         input_sub_category = (Spinner) findViewById(R.id.input_subcategory);
-        Category sub_category = getCategoryByName(subcategories, input_sub_category.getSelectedItem().toString());
+        Category sub_category = Helper.getCategoryByName(subcategories, input_sub_category.getSelectedItem().toString());
         if (sub_category == null) {
             Toast.makeText(CreateEntryScreen.this, "Please select a Subcategory!",
                     Toast.LENGTH_LONG).show();
