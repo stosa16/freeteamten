@@ -1,8 +1,12 @@
 package at.sw2017.pocketdiary;
+import android.content.Intent;
+import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +22,8 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -33,6 +39,8 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class SettingScreenInstrumentedTest {
+
+    private String titleToBeTyped;
 
     @Rule
     public ActivityTestRule<SettingScreen> mActivityRule = new ActivityTestRule<SettingScreen>(SettingScreen.class);
@@ -121,5 +129,37 @@ public class SettingScreenInstrumentedTest {
         ret = checkInput.check_new_pin(new_.getText().toString(), repeat_.getText().toString(), userSetting);
         assertEquals(ret, true);
         assertEquals("def", userSetting.getPin());
+    }
+
+    @Before
+    public void setUp() {
+        Intents.init();
+        mActivityRule.launchActivity(new Intent());
+        titleToBeTyped = "Running";
+    }
+
+    @After
+    public void release() {
+        Intents.release();
+    }
+
+    @Test
+    public void pressSaveButton() {
+        DBUserSetting dbUserSetting = new DBUserSetting(mActivityRule.getActivity());
+        List<UserSetting> temp = dbUserSetting.getUserSetting(1);
+        UserSetting userSetting = temp.get(0);
+        userSetting.setPin("a");
+        dbUserSetting.update(userSetting, 1);
+        onView(withId(R.id.current_pin)).perform(typeText("a"), closeSoftKeyboard());
+        onView(withId(R.id.new_pin1)).perform(typeText("b"), closeSoftKeyboard());
+        onView(withId(R.id.new_pin2)).perform(typeText("b"), closeSoftKeyboard());
+        onView(withId(R.id.save)).perform(click());
+        intended(hasComponent(StartScreen.class.getName()));
+    }
+
+    @Test
+    public void pressCancelButton() {
+        onView(withId(R.id.cancel)).perform(click());
+        intended(hasComponent(StartScreen.class.getName()));
     }
 }

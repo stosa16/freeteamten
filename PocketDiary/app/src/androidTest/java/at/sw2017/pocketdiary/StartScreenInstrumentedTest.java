@@ -52,4 +52,10 @@ public class StartScreenInstrumentedTest {
         onView(withId(R.id.review)).perform(click());
         intended(hasComponent(ReviewActivity.class.getName()));
     }
+
+    @Test
+    public void pressSettingButton() {
+        onView(withId(R.id.settings)).perform(click());
+        intended(hasComponent(SettingScreen.class.getName()));
+    }
 }

@@ -4,12 +4,15 @@ import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +29,8 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.core.deps.guava.util.concurrent.Runnables.doNothing;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -43,6 +48,7 @@ import static org.junit.Assert.*;
 public class PinScreenInstrumentedTest {
 
     private PinScreen activity;
+    private String titleToBeTyped;
 
     @Rule
     public ActivityTestRule<PinScreen> mActivityRule = new ActivityTestRule<PinScreen>(PinScreen.class);
@@ -57,5 +63,29 @@ public class PinScreenInstrumentedTest {
         onView(withId(R.id.editText)).perform(typeText("abc"), closeSoftKeyboard());
 
         onView(withText("abc")).check(matches(isDisplayed()));
+    }
+
+    @Before
+    public void setUp() {
+        Intents.init();
+        mActivityRule.launchActivity(new Intent());
+        titleToBeTyped = "Running";
+    }
+
+    @After
+    public void release() {
+        Intents.release();
+    }
+
+    @Test
+    public void pressLoginButton() {
+        DBUserSetting dbUserSetting = new DBUserSetting(mActivityRule.getActivity());
+        List<UserSetting> temp = dbUserSetting.getUserSetting(1);
+        UserSetting userSetting = temp.get(0);
+        userSetting.setPin("a");
+        dbUserSetting.update(userSetting, 1);
+        onView(withId(R.id.editText)).perform(typeText("a"), closeSoftKeyboard());
+        onView(withId(R.id.button)).perform(click());
+        intended(hasComponent(StartScreen.class.getName()));
     }
 }
