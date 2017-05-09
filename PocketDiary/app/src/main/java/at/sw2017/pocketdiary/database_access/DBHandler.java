@@ -4,10 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by marku on 11.04.2017.
- */
-
 public class DBHandler extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "pocketdiary.db";
@@ -20,7 +16,7 @@ public class DBHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table USER_SETTINGS (ID INTEGER PRIMARY KEY AUTOINCREMENT, USERNAME TEXT, " +
-                "PICTURE TEXT, PIN NUMBER, IS_PIN_ACTIVE NUMBER)");
+                "PICTURE TEXT, PIN TEXT, IS_PIN_ACTIVE TEXT)");
 
         db.execSQL("create table ENTRIES (ID INTEGER PRIMARY KEY AUTOINCREMENT, TITLE TEXT, " +
                 "MAINCATEGORY_ID NUMBER, SUBCATEGORY_ID NUMBER, DATE DATE, DESCRIPTION TEXT, ADDRESS_ID NUMBER)");

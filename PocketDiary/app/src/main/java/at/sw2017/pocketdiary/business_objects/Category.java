@@ -4,7 +4,7 @@ public class Category {
     private int id;
     private String name;
     private int parentId;
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
     public Category() {
     }
@@ -16,6 +16,13 @@ public class Category {
     public Category(String name, int parentId) {
         this.name = name;
         this.parentId = parentId;
+    }
+
+    public Category(int id, String name, int parentId, boolean isDeleted) {
+        this.id = id;
+        this.name = name;
+        this.parentId = parentId;
+        this.isDeleted = isDeleted;
     }
 
     public int getId() {

@@ -5,13 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.ParseException;
+import java.text.ParseException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Picture;
 
@@ -19,19 +18,19 @@ public class DBEntry extends SQLiteOpenHelper{
 
     private SimpleDateFormat date_fromat = new SimpleDateFormat("yyyy-MM-dd");
 
-    SQLiteDatabase db = this.getWritableDatabase();
-
     public DBEntry(Context context) {
         super(context, "pocketdiary.db", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
+
 
     public long insert(Entry entry) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -47,22 +46,8 @@ public class DBEntry extends SQLiteOpenHelper{
             values.put("DATE", date_fromat.format(entry.getDate()));
         }
         long id = db.insert("ENTRIES", null, values);
-        db.close(); // Closing database connection
-        if (entry.getPictures() != null && entry.getPictures().size() > 0) {
-            insertEntryPictures((int) id, entry.getPictures());
-        }
+        db.close();
         return id;
-    }
-
-    public void insertEntryPictures(int entry_id, List<Picture> pictures) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        for (Picture picture : pictures) {
-            ContentValues values = new ContentValues();
-            values.put("PICTURE_ID", picture.getId());
-            values.put("ENTRY_ID", entry_id);
-            long id = db.insert("ENTRIES_PICTURES", null, values);
-        }
-        db.close(); // Closing database connection
     }
 
     public Entry getEntry(int id) {
@@ -81,8 +66,6 @@ public class DBEntry extends SQLiteOpenHelper{
                 try {
                     entry.setDate(date_fromat.parse(cursor.getString(4)));
                 } catch (ParseException e) {
-                    e.printStackTrace();
-                } catch (java.text.ParseException e) {
                     e.printStackTrace();
                 }
             }
@@ -113,8 +96,6 @@ public class DBEntry extends SQLiteOpenHelper{
                     try {
                         entry.setDate(date_fromat.parse(cursor.getString(4)));
                     } catch (ParseException e) {
-                        e.printStackTrace();
-                    } catch (java.text.ParseException e) {
                         e.printStackTrace();
                     }
                 }
