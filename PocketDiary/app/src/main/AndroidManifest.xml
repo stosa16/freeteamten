@@ -32,6 +32,8 @@
         </activity>
 		<activity android:name=".CreateEntryScreen">
         </activity>
+        <activity android:name=".ShowEntryScreen"
+            android:label="Details"/>
     </application>
 
 </manifest>
