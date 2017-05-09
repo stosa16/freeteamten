@@ -46,4 +46,10 @@ public class StartScreenInstrumentedTest {
         onView(withId(R.id.create_entry)).perform(click());
         intended(hasComponent(CreateEntryScreen.class.getName()));
     }
+
+    @Test
+    public void pressCreateReviewButton() {
+        onView(withId(R.id.review)).perform(click());
+        intended(hasComponent(ReviewActivity.class.getName()));
+    }
 }

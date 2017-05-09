@@ -44,7 +44,7 @@ public class StartScreen extends AppCompatActivity {
                 review_button.setBackgroundColor(Color.WHITE);
 
                 //todo: link to review screen
-                Intent intent = new Intent(StartScreen.this, SettingScreen.class);
+                Intent intent = new Intent(StartScreen.this, ReviewActivity.class);
                 startActivity(intent);
             }
         });
