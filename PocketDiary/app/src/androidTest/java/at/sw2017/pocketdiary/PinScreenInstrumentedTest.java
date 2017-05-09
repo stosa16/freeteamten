@@ -1,15 +1,9 @@
 package at.sw2017.pocketdiary;
 
-import android.app.Instrumentation;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import org.junit.After;
 import org.junit.Before;
@@ -22,22 +16,17 @@ import java.util.List;
 import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.core.deps.guava.util.concurrent.Runnables.doNothing;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.*;
 
 /**
  * Instrumentation test, which will execute on an Android device.

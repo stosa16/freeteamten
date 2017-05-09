@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import java.text.ParseException;
 
 import java.text.SimpleDateFormat;
@@ -31,7 +33,6 @@ public class DBEntry extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-
     public long insert(Entry entry) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -47,7 +48,22 @@ public class DBEntry extends SQLiteOpenHelper{
         }
         long id = db.insert("ENTRIES", null, values);
         db.close();
+        if (entry.getPictures() != null && entry.getPictures().size() > 0) {
+            insertEntryPictures((int) id, entry.getPictures());
+        }
         return id;
+    }
+
+    public void insertEntryPictures(int entry_id, List<Picture> pictures) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (Picture picture : pictures) {
+            ContentValues values = new ContentValues();
+            values.put("PICTURE_ID", picture.getId());
+            values.put("ENTRY_ID", entry_id);
+            long id = db.insert("ENTRIES_PICTURES", null, values);
+            Log.d("Id", Integer.toString((int) id));
+        }
+        db.close();
     }
 
     public Entry getEntry(int id) {

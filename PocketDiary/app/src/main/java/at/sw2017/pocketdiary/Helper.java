@@ -5,11 +5,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import at.sw2017.pocketdiary.business_objects.Address;
+import java.util.List;
+
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.database_access.DBAddress;
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
+import at.sw2017.pocketdiary.database_access.DBPicture;
 
 public final class Helper {
 
@@ -44,6 +48,10 @@ public final class Helper {
         entry.setMainCategory(main_category);
         Category sub_category = dbc.getCategory(entry.getSubCategoryId());
         entry.setSubCategory(sub_category);
+
+        DBPicture dbp = new DBPicture(context);
+        List<Picture> pictures = dbp.getPicturesOfEntry(entry_id);
+        entry.setPictures(pictures);
 
         if (entry.getAddressId() > 0) {
             DBAddress dba = new DBAddress(context);

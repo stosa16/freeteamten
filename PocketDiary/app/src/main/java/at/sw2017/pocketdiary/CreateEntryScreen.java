@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.os.Build;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,9 +35,11 @@ import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.database_access.DBAddress;
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBHandler;
+import at.sw2017.pocketdiary.database_access.DBPicture;
 
 public class CreateEntryScreen extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
@@ -43,9 +51,14 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     private String empty_spinner_text = "Select Category";
     private Date entry_date = null;
     private Address entry_address = null;
+    private Picture entry_picture = null;
 
+    private static final int CAMERA_REQUEST = 1;
+    private static final int WRITE_STORAGE_REQUEST = 2;
     private static final int FINE_LOCATION_REQUEST = 3;
     private static final int COARSE_LOCATION_REQUEST = 4;
+
+    Bitmap photo = null;
 
     TextView badge_camera;
     TextView badge_address;
@@ -108,7 +121,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         location_button.callOnClick();
     }
 
-
     public void initDateButton() {
         Calendar currentDate = Calendar.getInstance();
         final DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -144,6 +156,23 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                         }
                     });
                     location_button.performClick();
+                }
+                return;
+            }
+            case WRITE_STORAGE_REQUEST:
+            case CAMERA_REQUEST: {
+                if (grant_results.length > 0
+                        && grant_results[0] == PackageManager.PERMISSION_GRANTED && grant_results[1] == PackageManager.PERMISSION_GRANTED) {
+                    initPictureButton();
+                } else {
+                    ImageButton picture_button = (ImageButton) this.findViewById(R.id.btn_pictures);
+                    picture_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //ToDo: show feature disabled dialog
+                        }
+                    });
+                    picture_button.performClick();
                 }
                 return;
             }
@@ -212,6 +241,48 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         input_sub_category.setAdapter(sub_spinner);
     }
 
+    public void checkPicturePermissions(View view){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, WRITE_STORAGE_REQUEST);
+            } else {
+                initPictureButton();
+            }
+        } else {
+            initPictureButton();
+        }
+    }
+
+    private void initPictureButton() {
+        ImageButton picture_button = (ImageButton) this.findViewById(R.id.btn_pictures);
+        picture_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent camera_intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(camera_intent, CAMERA_REQUEST);
+            }
+        });
+        picture_button.performClick();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_CANCELED || resultCode != RESULT_OK) {
+            Toast.makeText(CreateEntryScreen.this, "Picture capturing aborted!",
+                    Toast.LENGTH_LONG).show();
+        }
+        else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK && data != null) {
+            photo = (Bitmap) data.getExtras().get("data");
+            ByteArrayOutputStream out_stream = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.JPEG, 100, out_stream);
+            Helper.updateBadgeVisibility(badge_camera, true);
+        }
+    }
+
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
@@ -264,6 +335,18 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             Toast.makeText(CreateEntryScreen.this, "Please select a Date!",
                     Toast.LENGTH_LONG).show();
             return;
+        }
+        if (photo != null) {
+            Calendar calendar = Calendar.getInstance();
+            String pictureName = new SimpleDateFormat("yyyy-MM-dd/HHmmssSSS").format(calendar.getTime()) + ".jpeg";
+            String path = MediaStore.Images.Media.insertImage(getContentResolver(), photo, pictureName, null);
+            entry_picture = new Picture();
+            entry_picture.setName(pictureName);
+            entry_picture.setFilePath(path);
+            DBPicture dbp = new DBPicture(this);
+            long id = dbp.insert(entry_picture);
+            entry_picture.setId((int) id);
+            entry.addPicture(entry_picture);
         }
         if (entry_address != null) {
             DBAddress dba = new DBAddress(this);

@@ -2,13 +2,15 @@ package at.sw2017.pocketdiary.business_objects;
 
 public class Picture {
     private int id;
-    private byte[] picture;
+    private String filePath;
+    private String name;
 
     public Picture() {
     }
 
-    public Picture(byte[] picture) {
-        this.picture = picture;
+    public Picture(String filePath, String name) {
+        this.filePath = filePath;
+        this.name = name;
     }
 
     public int getId() {
@@ -19,11 +21,19 @@ public class Picture {
         this.id = id;
     }
 
-    public byte[] getPicture() {
-        return picture;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

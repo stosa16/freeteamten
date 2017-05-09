@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="at.sw2017.pocketdiary">
+    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -36,14 +41,11 @@
             android:exported="true"
             android:label="Settings">
         </activity>
-		<activity android:name=".CreateEntryScreen"
-            android:label="Create entry"
-            android:theme="@style/ActivityTheme">
+		<activity android:name=".CreateEntryScreen" >
         </activity>
         <activity android:name=".ReviewActivity"
             android:label="Review" />
-        <activity android:name=".ShowEntryScreen"
-            android:label="Details"/>
+        <activity android:name=".ShowEntryScreen" />
     </application>
 
 </manifest>

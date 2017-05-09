@@ -25,7 +25,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         db.execSQL("create table ENTRIES_PICTURES (PICTURE_ID NUMBER, ENTRY_ID NUMBER)");
 
-        db.execSQL("create table PICTURES (ID INTEGER PRIMARY KEY AUTOINCREMENT, PICTURE TEXT)");
+        db.execSQL("create table PICTURES (ID INTEGER PRIMARY KEY AUTOINCREMENT, FILE_PATH TEXT, NAME TEXT)");
 
         db.execSQL("create table CATEGORIES (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, PARENT_ID NUMBER, " +
                 "IS_DELETED NUMBER)");

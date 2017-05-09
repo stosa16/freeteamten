@@ -1,7 +1,11 @@
 package at.sw2017.pocketdiary;
 
+import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.PickerActions;
@@ -33,7 +37,9 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -137,6 +143,23 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
         onView(withId(R.id.btn_save)).perform(click());
         intended(hasComponent(StartScreen.class.getName()));
+    }
+
+    @Test
+    public void displayCamera() {
+        onView(withId(R.id.btn_pictures)).perform(click());
+        intended(toPackage("com.android.camera2"));
+    }
+
+    @Test
+    public void handleCamerButtonClick() {
+        Bitmap icon = BitmapFactory.decodeResource(InstrumentationRegistry.getTargetContext().getResources(),
+            R.mipmap.ic_launcher);
+        Intent resultData = new Intent();
+        resultData.putExtra("data", icon);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(toPackage("com.android.camera2")).respondWith(result);
+        onView(withId(R.id.btn_pictures)).perform(click());
     }
 
     @Test
