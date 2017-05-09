@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBEntry;
@@ -54,6 +55,29 @@ public class DBEntryTest {
         assertTrue(entry.getTitle().equals(entry_loaded.getTitle()));
         assertTrue(entry.getMainCategoryId() == (entry_loaded.getMainCategoryId()));
         assertTrue(entry.getSubCategoryId() == (entry_loaded.getSubCategoryId()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        assertTrue(dateFormat.format(entry.getDate()).equals(dateFormat.format(entry_loaded.getDate())));
+    }
+
+    @Test
+    public void shouldAddEntryLocation() throws Exception {
+        Address address = new Address(123.45, 67.89);
+        long id_add = dba.insert(address);
+        assertTrue(id_add > 0);
+        Entry entry = new Entry("Test", 1, 2, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!", address);
+        long id = dbe.insert(entry);
+        assertTrue(id > 0);
+        Entry entry_loaded = dbe.getEntry((int) id);
+        assertTrue(entry.getDescription().equals(entry_loaded.getDescription()));
+        assertTrue(entry.getTitle().equals(entry_loaded.getTitle()));
+        assertTrue(entry.getMainCategoryId() == (entry_loaded.getMainCategoryId()));
+        assertTrue(entry.getSubCategoryId() == (entry_loaded.getSubCategoryId()));
+        long address_latitude = Double.doubleToLongBits(address.getLatitude());
+        long address_longitude = Double.doubleToLongBits(address.getLongitude());
+        long entry_loaded_latitute = Double.doubleToLongBits(entry.getAddress().getLatitude());
+        long entry_loaded_longitude = Double.doubleToLongBits(entry.getAddress().getLongitude());
+        assertTrue(address_latitude == entry_loaded_latitute);
+        assertTrue(address_longitude == entry_loaded_longitude);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         assertTrue(dateFormat.format(entry.getDate()).equals(dateFormat.format(entry_loaded.getDate())));
     }
