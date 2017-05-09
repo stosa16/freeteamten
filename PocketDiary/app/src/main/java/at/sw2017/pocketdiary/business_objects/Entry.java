@@ -21,6 +21,23 @@ public class Entry {
     public Entry() {
     }
 
+    public Entry(String title, int mainCategoryId, int subCategoryId, Date date, String description) {
+        this.title = title;
+        this.mainCategoryId = mainCategoryId;
+        this.subCategoryId = subCategoryId;
+        this.date = date;
+        this.description = description;
+    }
+
+    public Entry(String title, int mainCategoryId, int subCategoryId, Date date, String description, Address address) {
+        this.title = title;
+        this.mainCategoryId = mainCategoryId;
+        this.subCategoryId = subCategoryId;
+        this.date = date;
+        this.description = description;
+        this.address = address;
+    }
+
     public Entry(String title, int mainCategoryId, Category mainCategory, int subCategoryId, Category subCategory, Date date, String description, int addressId, Address address, List<Friend> friends, List<Picture> pictures) {
         this.title = title;
         this.mainCategoryId = mainCategoryId;
@@ -31,8 +48,16 @@ public class Entry {
         this.description = description;
         this.addressId = addressId;
         this.address = address;
-        this.friends = friends;
-        this.pictures = pictures;
+        if (friends == null) {
+            this.friends = new ArrayList<Friend>();
+        } else {
+            this.friends = friends;
+        }
+        if (pictures == null) {
+            this.pictures = new ArrayList<Picture>();
+        } else {
+            this.pictures = pictures;
+        }
     }
 
     public int getId() {
@@ -129,5 +154,10 @@ public class Entry {
 
     public void setPictures(List<Picture> pictures) {
         this.pictures = pictures;
+    }
+
+    public List<Picture> addPicture(Picture picture) {
+        this.pictures.add(picture);
+        return this.pictures;
     }
 }
