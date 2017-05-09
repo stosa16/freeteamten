@@ -1,7 +1,11 @@
 package at.sw2017.pocketdiary;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,17 +13,22 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBHandler;
@@ -33,6 +42,10 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
     private String empty_spinner_text = "Select Category";
     private Date entry_date = null;
+    private Address entry_address = null;
+
+    private static final int FINE_LOCATION_REQUEST = 3;
+    private static final int COARSE_LOCATION_REQUEST = 4;
 
     TextView badge_camera;
     TextView badge_address;
@@ -54,6 +67,48 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         initBadges();
     }
 
+    public void checkLocationPermissions(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, COARSE_LOCATION_REQUEST);
+            } else {
+                initLocationButton();
+            }
+        } else {
+            initLocationButton();
+        }
+    }
+
+    private void initLocationButton() {
+        ImageButton location_button = (ImageButton) this.findViewById(R.id.btn_location);
+        location_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GpsLocation gps = new GpsLocation(CreateEntryScreen.this);
+                if (gps.canGetLocation()) {
+                    double longitude = gps.getLongitude();
+                    double latitude = gps.getLatitude();
+                    Geocoder geocoder = new Geocoder(CreateEntryScreen.this, Locale.ENGLISH);
+                    ReverseGeocoder reverseGeocoder = new ReverseGeocoder();
+                    try {
+                        entry_address = reverseGeocoder.getAddress(longitude, latitude, geocoder);
+                    } catch (IOException e) {
+                        entry_address = new Address(longitude, latitude);
+                        e.printStackTrace();
+                    }
+                    Helper.updateBadgeVisibility(badge_address, true);
+                    Toast.makeText(getApplicationContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Addresse: " + entry_address.getStreet() + "Land: " + entry_address.getCountry(), Toast.LENGTH_SHORT).show();
+                } else {
+                    gps.showSettingsAlert();
+                }
+            }
+        });
+        location_button.callOnClick();
+    }
+
+
     public void initDateButton() {
         Calendar currentDate = Calendar.getInstance();
         final DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -66,6 +121,33 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                         datePickerDialog.show();
                     }
                 });
+    }
+
+    private void showFeatureDisabledDialog() {
+        Toast.makeText(getApplicationContext(), "This feature was disabled due to missing permissions!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grant_results) {
+        switch (requestCode) {
+            case COARSE_LOCATION_REQUEST:
+            case FINE_LOCATION_REQUEST: {
+                ImageButton location_button = (ImageButton) this.findViewById(R.id.btn_location);
+                if (grant_results.length > 0
+                        && grant_results[0] == PackageManager.PERMISSION_GRANTED && grant_results[1] == PackageManager.PERMISSION_GRANTED) {
+                    initLocationButton();
+                } else {
+                    location_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showFeatureDisabledDialog();
+                        }
+                    });
+                    location_button.performClick();
+                }
+                return;
+            }
+        }
     }
 
     private void initBadges() {
@@ -183,10 +265,19 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                     Toast.LENGTH_LONG).show();
             return;
         }
-        long id = insertEntryToDatabase(entry);
-        //Intent intent = new Intent(this, StartScreen.class);
+        if (entry_address != null) {
+            DBAddress dba = new DBAddress(this);
+            long id;
+            if (entry_address.getStreet() != null) {
+                id = dba.insert(entry_address);
+            } else {
+                id = dba.insertLatitudeLongitude(entry_address);
+            }
+            entry_address.setId((int) id);
+            entry.setAddress(entry_address);
+        }
+        insertEntryToDatabase(entry);
         Intent intent = new Intent(this, StartScreen.class);
-        intent.putExtra("entry_id", Integer.toString((int) id));
         startActivity(intent);
     }
 

@@ -7,13 +7,24 @@ public class Address {
     private String zip;
     private String city;
     private String country;
-    private Float longitude;
-    private Float latitude;
+    private double longitude;
+    private double latitude;
 
     public Address() {
     }
 
-    public Address(int id, String poi, String street, String zip, String city, String country, Float longitude, Float latitude) {
+    public Address(double longitude, double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    public Address(String street, double longitude, double latitude) {
+        this.street = street;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    public Address(int id, String poi, String street, String zip, String city, String country, double longitude, double latitude) {
         this.id = id;
         this.poi = poi;
         this.street = street;
@@ -24,7 +35,7 @@ public class Address {
         this.latitude = latitude;
     }
 
-    public Address(String poi, String street, String zip, String city, String country, Float longitude, Float latitude) {
+    public Address(String poi, String street, String zip, String city, String country, double longitude, double latitude) {
         this.poi = poi;
         this.street = street;
         this.zip = zip;
@@ -82,19 +93,19 @@ public class Address {
         this.country = country;
     }
 
-    public Float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public Float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 }

@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
+import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 
@@ -42,6 +44,12 @@ public final class Helper {
         entry.setMainCategory(main_category);
         Category sub_category = dbc.getCategory(entry.getSubCategoryId());
         entry.setSubCategory(sub_category);
+
+        if (entry.getAddressId() > 0) {
+            DBAddress dba = new DBAddress(context);
+            Address address = dba.getAddress(entry.getAddressId());
+            entry.setAddress(address);
+        }
 
         return entry;
     }
