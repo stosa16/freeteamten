@@ -114,4 +114,18 @@ public class DBCategory extends SQLiteOpenHelper {
         db.close();
         return categories;
     }
+
+    public void delete(Category category){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String id = String.valueOf(category.getId());
+        db.execSQL("UPDATE CATEGORIES SET IS_DELETED=1 WHERE id="+id);
+        db.close();
+    }
+
+    public void update(Category category){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String id = String.valueOf(category.getId());
+        db.execSQL("UPDATE CATEGORIES SET NAME='"+category.getName()+"' WHERE id="+id);
+        db.close();
+    }
 }

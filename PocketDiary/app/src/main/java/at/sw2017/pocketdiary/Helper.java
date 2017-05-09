@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.List;
+
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.database_access.DBCategory;
@@ -52,6 +54,15 @@ public final class Helper {
         } else {
             text_view.setVisibility(View.GONE);
         }
+    }
+
+    public static Category getCategoryByName(List<Category> categories, String name) {
+        for (Category category : categories) {
+            if (category.getName().equals(name)) {
+                return category;
+            }
+        }
+        return null;
     }
 
 }

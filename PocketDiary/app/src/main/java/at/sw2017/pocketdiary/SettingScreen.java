@@ -165,7 +165,7 @@ public class SettingScreen extends AppCompatActivity {
                 edit_categories.setBackgroundColor(Color.RED);
 
                 //todo link to Edit categories screen
-                Intent intent = new Intent(SettingScreen.this, StartScreen.class);
+                Intent intent = new Intent(SettingScreen.this, CategoriesActivity.class);
                 startActivity(intent);
             }
         });

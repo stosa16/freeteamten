@@ -48,7 +48,7 @@ public class ReviewActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
-        insertTestData();
+        //insertTestData();
         entry_list = getData();
         CalendarDay[] dates_list = getAllDates(entry_list);
         String current_date = getCurrentDate();
