@@ -57,7 +57,7 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withId(R.id.out_title)).check(matches(isDisplayed()));
         onView(withId(R.id.input_description)).check(matches(isDisplayed()));
         onView(withId(R.id.out_category)).check(matches(isDisplayed()));
-        onView(withId(R.id.input_subcategory)).check(matches(isDisplayed()));
+        onView(withId(R.id.out_description)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_calendar)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_friends)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_location)).check(matches(isDisplayed()));
@@ -76,9 +76,9 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withId(R.id.out_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
         onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
-        onView(withId(R.id.input_subcategory)).perform(click());
+        onView(withId(R.id.out_description)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
-        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.out_description)).check(matches(not(withText("Running"))));
         onView(withId(R.id.btn_save)).perform(click());
         intended(hasComponent(CreateEntryScreen.class.getName()));
     }
@@ -89,9 +89,9 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withId(R.id.out_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
         onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
-        onView(withId(R.id.input_subcategory)).perform(click());
+        onView(withId(R.id.out_description)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
-        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.out_description)).check(matches(not(withText("Running"))));
         onView(withId(R.id.btn_save)).perform(click());
         intended(hasComponent(CreateEntryScreen.class.getName()));
     }
@@ -102,9 +102,9 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withId(R.id.out_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
         onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
-        onView(withId(R.id.input_subcategory)).perform(click());
+        onView(withId(R.id.out_description)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
-        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.out_description)).check(matches(not(withText("Running"))));
         onView(withId(R.id.btn_calendar)).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
         onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
