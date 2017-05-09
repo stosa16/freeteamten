@@ -158,6 +158,7 @@
 
     <Button
         android:id="@+id/btn_save"
+        style="@style/ButtonRed"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -174,6 +175,7 @@
 
     <Button
         android:id="@+id/btn_cancel"
+        style="@style/ButtonRed"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
