@@ -41,11 +41,15 @@
             android:exported="true"
             android:label="Settings">
         </activity>
-		<activity android:name=".CreateEntryScreen" >
+		<activity android:name=".CreateEntryScreen"
+            android:theme="@style/ActivityTheme"
+            android:label="Create Entry" >
         </activity>
         <activity android:name=".ReviewActivity"
             android:label="Review" />
-        <activity android:name=".ShowEntryScreen" />
+        <activity android:name=".ShowEntryScreen"
+            android:theme="@style/ActivityTheme"
+            android:label="Details"/>
     </application>
 
 </manifest>

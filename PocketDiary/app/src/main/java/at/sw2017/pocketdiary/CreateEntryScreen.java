@@ -4,10 +4,8 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Geocoder;
-import android.os.Build;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,8 +20,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,8 +32,8 @@ import java.util.Locale;
 import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.Entry;
-import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.business_objects.Picture;
+import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBHandler;
@@ -111,8 +109,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                         e.printStackTrace();
                     }
                     Helper.updateBadgeVisibility(badge_address, true);
-                    Toast.makeText(getApplicationContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(), "Addresse: " + entry_address.getStreet() + "Land: " + entry_address.getCountry(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Address: " + entry_address.getStreet() + "\nCountry: " + entry_address.getCountry(), Toast.LENGTH_SHORT).show();
                 } else {
                     gps.showSettingsAlert();
                 }

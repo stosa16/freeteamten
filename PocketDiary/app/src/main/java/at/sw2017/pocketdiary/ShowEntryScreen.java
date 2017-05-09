@@ -34,6 +34,10 @@ public class ShowEntryScreen extends AppCompatActivity {
         } else {
             date.setText("");
         }
+        TextView address = (TextView)findViewById(R.id.out_address);
+        if (entry.getAddress() != null) {
+            address.setText(entry.getAddress().getStreet() + ", " + entry.getAddress().getCity());
+        }
         TextView description = (TextView)findViewById(R.id.out_description);
         if (entry.getDescription() != null) {
             description.setText(entry.getDescription());
