@@ -70,24 +70,32 @@ public class StartScreen extends AppCompatActivity {
             public void onClick(View v) {
                 picture_button.setBackgroundColor(Color.WHITE);
 
-                //loadingPopup(picture_button);
-                //Intent intent = new Intent(StartScreen.this, SettingScreen.class);
-                //startActivity(intent);
+                loadingPopup();
             }
         });
     }
 
-    /*public void loadingPopup(ImageButton picture_button) {
-
-        PopupMenu popUpMenu = new PopupMenu(getApplicationContext(), picture_button);
-        popUpMenu.inflate(R.menu.popup);
-        popUpMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+    public void loadingPopup() {
+        View menuItemView = findViewById(R.id.picture);
+        PopupMenu popUpMenu = new PopupMenu(StartScreen.this, menuItemView);
+        popUpMenu.getMenuInflater().inflate(R.menu.popup, popUpMenu.getMenu());
+        /*popUpMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_camera:
+                    case R.id.came:
+                        onMessengerClick(user);
                         break;
 
-                    case R.id.action_gallery:
+                    case R.id.:
+                        onSkypeClick(user);
+                        break;
+
+                    case R.id.action_whatsapp:
+                        onWhatsappClick(user);
+                        break;
+
+                    case R.id.action_email:
+                        onEmailClick(user);
                         break;
 
                     default:
@@ -96,8 +104,7 @@ public class StartScreen extends AppCompatActivity {
                 }
                 return true;
             }
-        });
+        });*/
         popUpMenu.show();
-
-    }*/
+    }
 }
