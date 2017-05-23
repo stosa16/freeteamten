@@ -97,7 +97,7 @@ public class StartScreen extends AppCompatActivity {
                         break;
 
                     case R.id.action_gallery:
-                        Picture.pictureFromGallery();
+                        Picture.pictureFromGallery(StartScreen.this);
                         break;
 
                     default:
@@ -116,15 +116,30 @@ class Picture{
 
     static void pictureFromCamera(StartScreen activity) {
         System.out.println("camera");
-        checkPicturePermissions(activity);
+        checkCameraPermissions(activity);
     }
 
-    static void pictureFromGallery() {
+    static void pictureFromGallery(StartScreen activity) {
         System.out.println("gallery");
+        checkGalleryPermissions(activity);
 
     }
 
-    static void checkPicturePermissions(StartScreen activity){
+    static void checkGalleryPermissions(StartScreen activity){
+
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+            if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(activity, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_STORAGE_REQUEST);
+            } else {
+                //initPictureButton(activity);
+            }
+        } else {
+            //initPictureButton(activity);
+        }
+    }
+
+    static void checkCameraPermissions(StartScreen activity){
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
             if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
