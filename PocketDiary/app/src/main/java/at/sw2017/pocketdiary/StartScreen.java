@@ -1,10 +1,10 @@
 package at.sw2017.pocketdiary;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
@@ -13,6 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+
+import static android.app.PendingIntent.getActivity;
+import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 public class StartScreen extends AppCompatActivity {
 
@@ -72,12 +75,12 @@ public class StartScreen extends AppCompatActivity {
             public void onClick(View v) {
                 picture_button.setBackgroundColor(Color.WHITE);
 
-                loadingPopup();
+                loadingPopup(v);
             }
         });
     }
 
-    public void loadingPopup() {
+    public void loadingPopup(final View v) {
         View view = findViewById(R.id.picture);
         PopupMenu menu = new PopupMenu(StartScreen.this, view);
         menu.inflate(R.menu.popup);
@@ -85,6 +88,66 @@ public class StartScreen extends AppCompatActivity {
 
         MenuPopupHelper menuHelper = new MenuPopupHelper(StartScreen.this, (MenuBuilder) menu.getMenu(), view);
         menuHelper.setForceShowIcon(true);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_camera:
+                        Picture.pictureFromCamera(StartScreen.this);
+                        break;
+
+                    case R.id.action_gallery:
+                        Picture.pictureFromGallery();
+                        break;
+
+                    default:
+
+                }
+                return true;
+            }
+        });
         menuHelper.show();
     }
+
+}
+
+class Picture{
+    private static final int WRITE_STORAGE_REQUEST = 2;
+
+    static void pictureFromCamera(StartScreen activity) {
+        System.out.println("camera");
+        checkPicturePermissions(activity);
+    }
+
+    static void pictureFromGallery() {
+        System.out.println("gallery");
+
+    }
+
+    static void checkPicturePermissions(StartScreen activity){
+
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+            if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(activity, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA}, WRITE_STORAGE_REQUEST);
+            } else {
+                //initPictureButton(activity);
+            }
+        } else {
+            //initPictureButton(activity);
+        }
+    }
+
+    static void initPictureButton(StartScreen activity) {
+        ImageButton picture_button = (ImageButton) activity.findViewById(R.id.btn_pictures);
+        picture_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent camera_intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                //startActivityForResult(camera_intent, CAMERA_REQUEST);
+            }
+        });
+        picture_button.performClick();
+    }
+
 }
