@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,35 +78,13 @@ public class StartScreen extends AppCompatActivity {
     }
 
     public void loadingPopup() {
-        View menuItemView = findViewById(R.id.picture);
-        PopupMenu popUpMenu = new PopupMenu(StartScreen.this, menuItemView);
-        popUpMenu.getMenuInflater().inflate(R.menu.popup, popUpMenu.getMenu());
-        /*popUpMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.came:
-                        onMessengerClick(user);
-                        break;
+        View view = findViewById(R.id.picture);
+        PopupMenu menu = new PopupMenu(StartScreen.this, view);
+        menu.inflate(R.menu.popup);
+       // menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() { });
 
-                    case R.id.:
-                        onSkypeClick(user);
-                        break;
-
-                    case R.id.action_whatsapp:
-                        onWhatsappClick(user);
-                        break;
-
-                    case R.id.action_email:
-                        onEmailClick(user);
-                        break;
-
-                    default:
-                        break;
-
-                }
-                return true;
-            }
-        });*/
-        popUpMenu.show();
+        MenuPopupHelper menuHelper = new MenuPopupHelper(StartScreen.this, (MenuBuilder) menu.getMenu(), view);
+        menuHelper.setForceShowIcon(true);
+        menuHelper.show();
     }
 }
