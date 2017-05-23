@@ -113,6 +113,7 @@ public class StartScreen extends AppCompatActivity {
 }
 
 class Picture{
+    private static int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 1;
     private static final int WRITE_STORAGE_REQUEST = 2;
 
@@ -134,10 +135,10 @@ class Picture{
                     activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(activity, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_STORAGE_REQUEST);
             } else {
-                //initPictureButton(activity);
+                openGallery(activity);
             }
         } else {
-            //initPictureButton(activity);
+            openGallery(activity);
         }
     }
 
@@ -162,9 +163,17 @@ class Picture{
             public void onClick(View v) {
                 Intent camera_intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(activity, camera_intent, CAMERA_REQUEST, Bundle.EMPTY);
+                //todo open camera directly after permission is allowed
             }
         });
         picture_button.performClick();
+    }
+
+    static void openGallery(final StartScreen  activity){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(activity, Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST , Bundle.EMPTY);
     }
 
 }
