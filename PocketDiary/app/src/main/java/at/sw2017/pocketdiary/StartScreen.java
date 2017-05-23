@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 
 import static android.app.PendingIntent.getActivity;
 import static android.support.v4.app.ActivityCompat.requestPermissions;
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 public class StartScreen extends AppCompatActivity {
 
@@ -112,6 +113,7 @@ public class StartScreen extends AppCompatActivity {
 }
 
 class Picture{
+    private static final int CAMERA_REQUEST = 1;
     private static final int WRITE_STORAGE_REQUEST = 2;
 
     static void pictureFromCamera(StartScreen activity) {
@@ -146,20 +148,20 @@ class Picture{
                     activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(activity, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA}, WRITE_STORAGE_REQUEST);
             } else {
-                //initPictureButton(activity);
+                initPictureButton(activity);
             }
         } else {
-            //initPictureButton(activity);
+            initPictureButton(activity);
         }
     }
 
-    static void initPictureButton(StartScreen activity) {
-        ImageButton picture_button = (ImageButton) activity.findViewById(R.id.btn_pictures);
+    static void initPictureButton(final StartScreen activity) {
+        ImageButton picture_button = (ImageButton) activity.findViewById(R.id.picture);
         picture_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent camera_intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                //startActivityForResult(camera_intent, CAMERA_REQUEST);
+                startActivityForResult(activity, camera_intent, CAMERA_REQUEST, Bundle.EMPTY);
             }
         });
         picture_button.performClick();
