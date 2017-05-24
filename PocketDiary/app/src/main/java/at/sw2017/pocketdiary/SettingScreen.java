@@ -133,6 +133,15 @@ public class SettingScreen extends AppCompatActivity {
                     return;
                 }
 
+                if (new_pin.length() < 5) {
+                    Toast.makeText(SettingScreen.this, "Pin requires 5 characters",
+                            Toast.LENGTH_LONG).show();
+                    new_pin.setText("");
+                    repeat_pin.setText("");
+                    old_pin_.setText("");
+                    save_button.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_red));
+                    return;
+                }
                 dbUserSetting.update(userSetting, 1);
                 Intent intent = new Intent(SettingScreen.this, StartScreen.class);
                 startActivity(intent);

@@ -3,6 +3,7 @@ package at.sw2017.pocketdiary;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,7 @@ import java.util.Calendar;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.database_access.DBPicture;
 import at.sw2017.pocketdiary.business_objects.Picture;
+import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -94,7 +98,6 @@ public class StartScreen extends AppCompatActivity {
         picture_button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                picture_button.setBackgroundColor(Color.WHITE);
 
                 loadingPopup(v);
             }
@@ -152,9 +155,12 @@ public class StartScreen extends AppCompatActivity {
                 entry_picture = new Picture();
                 entry_picture.setName(pictureName);
                 entry_picture.setFilePath(path);
-                DBPicture dbp = new DBPicture(this);
-                long id = dbp.insert(entry_picture);
+                DBUserSetting dbp = new DBUserSetting(this);
+                long id = dbp.insertPic(entry_picture);
                 entry_picture.setId((int) id);
+
+                ImageView mImageView = (ImageView) findViewById(R.id.pictureField);
+                mImageView.setImageBitmap(photo);
             }
         }
     }

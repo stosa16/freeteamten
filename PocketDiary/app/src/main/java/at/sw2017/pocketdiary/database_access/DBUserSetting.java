@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.business_objects.UserSetting;
 
 public class DBUserSetting extends SQLiteOpenHelper{
@@ -55,6 +56,16 @@ public class DBUserSetting extends SQLiteOpenHelper{
         content_val.put("IS_PIN_ACTIVE", userSetting.isPinActive());
         db.insert("USER_SETTINGS", null, content_val);
        // db.close();
+    }
+
+    public long insertPic (Picture picture) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues content_val = new ContentValues();
+        content_val.put("FILE_PATH", picture.getFilePath());
+        content_val.put("NAME", picture.getName());
+        long id = db.insert("PICTURES", null, content_val);
+        db.close();
+        return id;
     }
 
     public void insertPin(UserSetting userSetting){
