@@ -144,11 +144,8 @@ public class StartScreen extends AppCompatActivity {
             photo = (Bitmap) data.getExtras().get("data");
             ByteArrayOutputStream out_stream = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.JPEG, 100, out_stream);
-            Helper.updateBadgeVisibility(badge_camera, true);
 
             if (photo != null) {
-                System.out.print("photo != null");
-                Entry entry = new Entry();
                 Calendar calendar = Calendar.getInstance();
                 String pictureName = new SimpleDateFormat("yyyy-MM-dd/HHmmssSSS").format(calendar.getTime()) + ".jpeg";
                 String path = MediaStore.Images.Media.insertImage(getContentResolver(), photo, pictureName, null);
@@ -158,12 +155,10 @@ public class StartScreen extends AppCompatActivity {
                 DBPicture dbp = new DBPicture(this);
                 long id = dbp.insert(entry_picture);
                 entry_picture.setId((int) id);
-                entry.addPicture(entry_picture);
             }
         }
     }
 }
-
 
 class handle_picture{
 
