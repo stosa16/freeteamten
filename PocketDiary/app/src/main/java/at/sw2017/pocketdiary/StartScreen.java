@@ -2,9 +2,12 @@ package at.sw2017.pocketdiary;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
@@ -13,12 +16,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.database_access.DBPicture;
+import at.sw2017.pocketdiary.business_objects.Picture;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 import static android.app.PendingIntent.getActivity;
 import static android.support.v4.app.ActivityCompat.requestPermissions;
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 public class StartScreen extends AppCompatActivity {
+
+    TextView badge_camera;
+    Bitmap photo = null;
+    private Picture entry_picture = null;
+    private static final int CAMERA_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,11 +114,11 @@ public class StartScreen extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_camera:
-                        Picture.pictureFromCamera(StartScreen.this);
+                        handle_picture.pictureFromCamera(StartScreen.this);
                         break;
 
                     case R.id.action_gallery:
-                        Picture.pictureFromGallery(StartScreen.this);
+                        handle_picture.pictureFromGallery(StartScreen.this);
                         break;
 
                     default:
@@ -110,9 +130,43 @@ public class StartScreen extends AppCompatActivity {
         menuHelper.show();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_CANCELED || resultCode != RESULT_OK) {
+            Toast.makeText(StartScreen.this, "Picture capturing aborted!",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK && data != null) {
+            photo = (Bitmap) data.getExtras().get("data");
+            ByteArrayOutputStream out_stream = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.JPEG, 100, out_stream);
+            Helper.updateBadgeVisibility(badge_camera, true);
+
+            if (photo != null) {
+                System.out.print("photo != null");
+                Entry entry = new Entry();
+                Calendar calendar = Calendar.getInstance();
+                String pictureName = new SimpleDateFormat("yyyy-MM-dd/HHmmssSSS").format(calendar.getTime()) + ".jpeg";
+                String path = MediaStore.Images.Media.insertImage(getContentResolver(), photo, pictureName, null);
+                entry_picture = new Picture();
+                entry_picture.setName(pictureName);
+                entry_picture.setFilePath(path);
+                DBPicture dbp = new DBPicture(this);
+                long id = dbp.insert(entry_picture);
+                entry_picture.setId((int) id);
+                entry.addPicture(entry_picture);
+            }
+        }
+    }
 }
 
-class Picture{
+
+class handle_picture{
+
     private static int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 1;
     private static final int WRITE_STORAGE_REQUEST = 2;
@@ -134,6 +188,10 @@ class Picture{
             if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                     activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(activity, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA}, WRITE_STORAGE_REQUEST);
+                if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
+                        activity.checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    openGallery(activity);
+                }
             } else {
                 openGallery(activity);
             }
@@ -148,6 +206,10 @@ class Picture{
             if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                     activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(activity, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA}, WRITE_STORAGE_REQUEST);
+                if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
+                        activity.checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+                    initPictureButton(activity);
+                }
             } else {
                 initPictureButton(activity);
             }
@@ -165,7 +227,6 @@ class Picture{
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(activity, intent, PICK_IMAGE_REQUEST , Bundle.EMPTY);
+        startActivityForResult(activity, intent, PICK_IMAGE_REQUEST, Bundle.EMPTY);
     }
-
 }
