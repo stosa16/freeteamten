@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -199,17 +200,18 @@ public class StartScreen extends AppCompatActivity {
 
             String absolute_path = "";
 
-            String[] pro = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(imageURI, null, null, null, null);
+            cursor.moveToFirst();
+            String documentID = cursor.getString(0);
+            documentID = documentID.substring(documentID.lastIndexOf(":") + 1);
+            cursor.close();
 
-            Cursor cursor = getContentResolver().query(imageURI, pro, null, null, null);
+            cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    null, MediaStore.Images.Media._ID + " = ?", new String[]{documentID}, null);
 
-            if (cursor.moveToFirst()) {
-                int idx = cursor.getColumnIndex(pro[0]);
-                absolute_path = cursor.getString(idx);
-            }
-            else {
-                System.out.println("Path not found");
-            }
+            cursor.moveToFirst();
+            absolute_path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            cursor.close();
 
             userSetting.setFilePath(absolute_path);
             userSetting.setPicturename("Picture from Gallery");
