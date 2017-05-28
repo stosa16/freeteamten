@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -46,6 +48,7 @@ public class StartScreen extends AppCompatActivity {
     TextView badge_camera;
     Bitmap photo = null;
     private static final int CAMERA_REQUEST = 1;
+    private static final int PICK_IMAGE_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,12 +185,44 @@ public class StartScreen extends AppCompatActivity {
                 mImageView.setImageBitmap(BitmapFactory.decodeFile(userSetting.getFilePath()));
             }
         }
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && null != data) {
+
+            Uri imageURI = data.getData();
+            ImageView imageView = (ImageView) findViewById(R.id.pictureField);
+
+            String imageForDatabase = imageURI.toString();
+
+            DBUserSetting dbUserSetting = new DBUserSetting(StartScreen.this);
+            List<UserSetting> temp = dbUserSetting.getUserSetting(1);
+            UserSetting userSetting = temp.get(0);
+
+            String absolute_path = "";
+
+            String[] pro = {MediaStore.Images.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(imageURI, pro, null, null, null);
+
+            if (cursor.moveToFirst()) {
+                int idx = cursor.getColumnIndex(pro[0]);
+                absolute_path = cursor.getString(idx);
+            }
+            else {
+                System.out.println("Path not found");
+            }
+
+            userSetting.setFilePath(absolute_path);
+            userSetting.setPicturename("Picture from Gallery");
+            dbUserSetting.update(userSetting, 1);
+
+            imageView.setImageURI(imageURI);
+        }
     }
 }
 
 class handle_picture{
 
-    private static int PICK_IMAGE_REQUEST = 1;
+    private static int PICK_IMAGE_REQUEST = 2;
     private static final int CAMERA_REQUEST = 1;
     private static final int WRITE_STORAGE_REQUEST = 2;
 
