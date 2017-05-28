@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
             userSetting.setPinActive("0");
             userSetting.setPin("");
             userSetting.setId(1);
+            userSetting.setPicturename("");
+            userSetting.setFilePath("");
             dbUserSetting.insert(userSetting);
             //todo: add here categories... first time
 

@@ -2,9 +2,11 @@ package at.sw2017.pocketdiary;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -43,13 +45,20 @@ public class StartScreen extends AppCompatActivity {
 
     TextView badge_camera;
     Bitmap photo = null;
-    private Picture entry_picture = null;
     private static final int CAMERA_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_screen);
+
+        DBUserSetting dbUserSetting = new DBUserSetting(StartScreen.this);
+        List<UserSetting> temp = dbUserSetting.getUserSetting(1);
+        UserSetting userSetting = temp.get(0);
+        if (!userSetting.getFilePath().equals("")) {
+            ImageView mImageView = (ImageView) findViewById(R.id.pictureField);
+            mImageView.setImageBitmap(BitmapFactory.decodeFile(userSetting.getFilePath()));
+        }
 
         final ImageButton setting_button =(ImageButton) findViewById(R.id.settings);
         final Button create_entry_button =(Button) findViewById(R.id.create_entry);
@@ -152,24 +161,25 @@ public class StartScreen extends AppCompatActivity {
 
             if (photo != null) {
                 Calendar calendar = Calendar.getInstance();
-                String pictureName = new SimpleDateFormat("yyyy-MM-dd/HHmmssSSS").format(calendar.getTime()) + ".jpeg";
+                String pictureName = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss").format(calendar.getTime()) + ".jpg";
                 String path = MediaStore.Images.Media.insertImage(getContentResolver(), photo, pictureName, null);
-                entry_picture = new Picture();
-                entry_picture.setName(pictureName);
-                entry_picture.setFilePath(path);
-                DBUserSetting dbp = new DBUserSetting(this);
-                long id = dbp.insertPic(entry_picture);
-                entry_picture.setId((int) id);
+
                 DBUserSetting dbUserSetting = new DBUserSetting(StartScreen.this);
                 List<UserSetting> temp = dbUserSetting.getUserSetting(1);
                 UserSetting userSetting = temp.get(0);
 
-                userSetting.setFilePath(path);
+                Uri test = Uri.parse(path);
+                Cursor cursor = getContentResolver().query(test, null, null, null, null);
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                String absolute_path = cursor.getString(idx);
+
+                userSetting.setFilePath(absolute_path);
                 userSetting.setPicturename(pictureName);
-                //dbUserSetting.update(userSetting, 1); //todo this is not working
+                dbUserSetting.update(userSetting, 1);
 
                 ImageView mImageView = (ImageView) findViewById(R.id.pictureField);
-                mImageView.setImageBitmap(photo);
+                mImageView.setImageBitmap(BitmapFactory.decodeFile(userSetting.getFilePath()));
             }
         }
     }

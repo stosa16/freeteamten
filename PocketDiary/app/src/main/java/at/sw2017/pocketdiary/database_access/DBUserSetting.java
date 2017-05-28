@@ -95,18 +95,21 @@ public class DBUserSetting extends SQLiteOpenHelper{
                 }
                 if(cursor.getString(2) != null){
                     Log.d("path: ", cursor.getString(2));
-                    Log.d("picname: ", cursor.getString(3));
+                    userSetting.setFilePath(cursor.getString(2));
+                }
 
-                    userSetting.setFilePath(cursor.getString(3));
-                    userSetting.setPicturename(cursor.getString(2));
-                }
                 if(cursor.getString(3) != null){
-                    Log.d("pin: ", cursor.getString(3));
-                    userSetting.setPin(cursor.getString(3));
+                    Log.d("picname: ", cursor.getString(3));
+                    userSetting.setPicturename(cursor.getString(3));
                 }
+
                 if(cursor.getString(4) != null){
-                    Log.d("pin active: ", cursor.getString(4));
-                    userSetting.setPinActive(cursor.getString(4));
+                    Log.d("pin: ", cursor.getString(4));
+                    userSetting.setPin(cursor.getString(4));
+                }
+                if(cursor.getString(5) != null){
+                    Log.d("pin active: ", cursor.getString(5));
+                    userSetting.setPinActive(cursor.getString(5));
                 }
 
                 settings_list.add(userSetting);
