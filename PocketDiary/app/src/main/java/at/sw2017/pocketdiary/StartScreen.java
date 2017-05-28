@@ -25,8 +25,10 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBPicture;
 import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBUserSetting;
@@ -158,6 +160,13 @@ public class StartScreen extends AppCompatActivity {
                 DBUserSetting dbp = new DBUserSetting(this);
                 long id = dbp.insertPic(entry_picture);
                 entry_picture.setId((int) id);
+                DBUserSetting dbUserSetting = new DBUserSetting(StartScreen.this);
+                List<UserSetting> temp = dbUserSetting.getUserSetting(1);
+                UserSetting userSetting = temp.get(0);
+
+                userSetting.setFilePath(path);
+                userSetting.setPicturename(pictureName);
+                //dbUserSetting.update(userSetting, 1); //todo this is not working
 
                 ImageView mImageView = (ImageView) findViewById(R.id.pictureField);
                 mImageView.setImageBitmap(photo);
