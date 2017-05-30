@@ -27,24 +27,6 @@
                 android:theme="@style/FriendName"
                 android:layout_weight="0.84" />
 
-            <ImageButton
-                android:id="@+id/imageView2"
-                android:clickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_menu_edit" />
-
-            <ImageButton
-                android:id="@+id/imageView"
-                android:clickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:layout_width="41dp"
-                android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_delete" />
-
         </LinearLayout>
 
     </LinearLayout>

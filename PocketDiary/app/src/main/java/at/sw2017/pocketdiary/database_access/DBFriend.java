@@ -86,7 +86,32 @@ public class DBFriend extends SQLiteOpenHelper{
                 Friend friend = new Friend();
                 friend.setId(Integer.parseInt(cursor.getString(0)));
                 friend.setName(cursor.getString(1));
+                friend.setDeleted(Boolean.parseBoolean(cursor.getString(2)));
                 friend_list.add(friend);
+            }
+            while(cursor.moveToNext());
+        }
+        db.close();
+        return friend_list;
+
+    }
+
+    public List<Friend> getAllNondeletedFriends(){
+        boolean deleted;
+        List<Friend> friend_list = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + "FRIENDS";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if(cursor.moveToFirst()){
+            do {
+                Friend friend = new Friend();
+                friend.setId(Integer.parseInt(cursor.getString(0)));
+                friend.setName(cursor.getString(1));
+                friend.setDeleted(Boolean.parseBoolean(cursor.getString(2)));
+                deleted = cursor.getString(2).equals("1");
+                if(!deleted) {
+                    friend_list.add(friend);
+                }
             }
             while(cursor.moveToNext());
         }
