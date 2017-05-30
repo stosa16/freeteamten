@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/create_stats_lbl_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="@color/colorRed"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="Title" />
+
+            <TextView
+                android:id="@+id/create_stats_lbl_from_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="@color/colorRed"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="From" />
+
+            <TextView
+                android:id="@+id/create_stats_lbl_til_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="@color/colorRed"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="Until" />
+
+            <TextView
+                android:id="@+id/create_stats_lbl_main_cat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="@color/colorRed"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="Maincategory" />
+
+            <TextView
+                android:id="@+id/create_stats_lbl_sub_cat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="@color/colorRed"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="Subcategory" />
+
+            <TextView
+                android:id="@+id/create_stats_lbl_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="@color/colorRed"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="Friends" />
+
+            <TextView
+                android:id="@+id/create_stats_lbl_term"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="@color/colorRed"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="Search term" />
+
+            <Button
+                android:id="@+id/create_stats_btn_cancel"
+                style="@style/ButtonRed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Cancel"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginLeft="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="16dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/create_stats_inp_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="6dp"
+                android:hint="Title of statistic" />
+
+            <EditText
+                android:id="@+id/create_stats_inp_from"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="6dp"
+                android:focusable="false"
+                android:hint="Date where to start" />
+
+            <EditText
+                android:id="@+id/create_stats_inp_til"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="6dp"
+                android:focusable="false"
+                android:hint="Date where to end" />
+
+            <Spinner
+                android:id="@+id/create_stats_spin_main_cat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="6dp"/>
+
+            <Spinner
+                android:id="@+id/create_stats_spin_sub_cat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"/>
+
+            <Spinner
+                android:id="@+id/create_stats_spin_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"/>
+
+            <EditText
+                android:id="@+id/create_stats_inp_term"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="6dp"
+                android:hint="Term to search" />
+
+            <Button
+                android:id="@+id/create_stats_btn_save"
+                style="@style/ButtonRed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Save"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginLeft="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginStart="16dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

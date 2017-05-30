@@ -2,13 +2,20 @@ package at.sw2017.pocketdiary;
 
 import android.content.Context;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import at.sw2017.pocketdiary.business_objects.Category;
+import at.sw2017.pocketdiary.business_objects.CustomDate;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
+import at.sw2017.pocketdiary.business_objects.Statistic;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
+import at.sw2017.pocketdiary.database_access.DBFriend;
+import at.sw2017.pocketdiary.database_access.DBStatistic;
 
 public final class TestHelper {
 
@@ -33,6 +40,33 @@ public final class TestHelper {
         dbc.insert(subcategory31);
         dbc.insert(subcategory32);
         dbc.close();
+    }
+
+    public static void initStatistics(Context context){
+        DBStatistic dbs = new DBStatistic(context);
+        Statistic statistic_1 = new Statistic();
+        statistic_1.setTitle("Statistic");
+        CustomDate cstm_date = new CustomDate();
+        Date date = new Date(cstm_date.getCurrentYear(), cstm_date.getCurrentMonth(), cstm_date.getCurrentDay());
+        statistic_1.setDateFrom(date);
+        statistic_1.setDateUntil(date);
+        statistic_1.setCategoryId(1);
+        statistic_1.setSubCategoryId(1);
+        statistic_1.setSearchTerm("SearchTerm");
+        dbs.insert(statistic_1);
+    }
+
+    public static void initFriends(Context context) {
+        DBFriend dbf = new DBFriend(context);
+
+        Friend friend_1 = new Friend();
+        friend_1.setName("Hermann");
+
+        Friend friend_2 = new Friend();
+        friend_2.setName("Egon");
+
+        dbf.insert(friend_1);
+        dbf.insert(friend_2);
     }
 
     public static Entry createTestEntryBasic(Context context) {
