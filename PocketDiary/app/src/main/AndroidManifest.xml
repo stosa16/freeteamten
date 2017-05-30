@@ -54,6 +54,14 @@
             android:label="Categories"
             android:theme="@style/ActivityTheme">
         </activity>
+        <activity android:name=".StatisticScreenActivity"
+            android:label="Statistics"
+            android:theme="@style/ActivityTheme">
+        </activity>
+        <activity android:name=".CreateStatisticActivity"
+            android:label="Create Statistic"
+            android:theme="@style/ActivityTheme">
+        </activity>
     </application>
 
 </manifest>

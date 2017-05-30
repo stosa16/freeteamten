@@ -105,7 +105,7 @@ public class StartScreen extends AppCompatActivity {
                 statistic_button.setBackgroundColor(Color.WHITE);
 
                 //todo: link to statistic screen
-                Intent intent = new Intent(StartScreen.this, SettingScreen.class);
+                Intent intent = new Intent(StartScreen.this, StatisticScreenActivity.class);
                 startActivity(intent);
             }
         });
