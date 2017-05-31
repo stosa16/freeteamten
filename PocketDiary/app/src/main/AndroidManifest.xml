@@ -62,6 +62,10 @@
             android:label="Create Statistic"
             android:theme="@style/ActivityTheme">
         </activity>
+        <activity android:name=".StatisticAnalysisActivity"
+            android:label="Show Statistic"
+            android:theme="@style/ActivityTheme">
+        </activity>
         <activity android:name=".Friends"
             android:exported="true"
             android:theme="@style/AppTheme2" />

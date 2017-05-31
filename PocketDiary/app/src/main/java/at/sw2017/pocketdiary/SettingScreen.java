@@ -154,7 +154,7 @@ public class SettingScreen extends AppCompatActivity {
                 edit_friends.setBackgroundColor(Color.RED);
 
                 //todo link to Edit friends screen
-                Intent intent = new Intent(SettingScreen.this, StartScreen.class);
+                Intent intent = new Intent(SettingScreen.this, Friends.class);
                 startActivity(intent);
             }
         });
