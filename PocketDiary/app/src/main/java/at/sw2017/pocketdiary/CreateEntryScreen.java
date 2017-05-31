@@ -76,6 +76,17 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         initCategories();
         initDateButton();
         initBadges();
+        initFriends();
+    }
+
+    public void initFriends() {
+        ImageButton friends_button = (ImageButton) this.findViewById(R.id.btn_friends);
+        friends_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     public void checkLocationPermissions(View view) {
