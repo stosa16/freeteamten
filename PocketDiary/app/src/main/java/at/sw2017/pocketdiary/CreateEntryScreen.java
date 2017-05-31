@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -85,6 +86,20 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             @Override
             public void onClick(View v) {
 
+                List<String> items = new ArrayList<String>();
+                items.add("a");
+                items.add("b");
+                String text = "Friends";
+
+                MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
+                multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
+
+                    @Override
+                    public void onItemsSelected(boolean[] selected) {
+
+                        Log.v("onItemSelected", ":: ");
+                    }
+                });
             }
         });
     }
