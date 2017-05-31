@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Camera;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Root;
@@ -97,17 +98,7 @@ public class StartScreenInstrumentedTest {
     public void pressProfilPictureGallery() {
         onView(withId(R.id.pictureField)).perform(click());
         onView(withText("Gallery")).check(matches(isDisplayed()));
-
-        /*Bitmap icon = BitmapFactory.decodeResource(
-                InstrumentationRegistry.getTargetContext().getResources(),
-                R.mipmap.ic_launcher);
-
-        Intent resultData = new Intent();
-        resultData.putExtra("data", icon);
-        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(StartScreen.RESULT_OK, resultData);
-
-        intending(toPackage("com.android.gallery")).respondWith(result);*/
         onView(withText("Gallery")).perform(click());
-        //intended(toPackage("com.android.gallery"));
+        intending(toPackage("com.android.gallery"));
     }
 }
