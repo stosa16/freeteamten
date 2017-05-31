@@ -69,6 +69,9 @@
         <activity android:name=".Friends"
             android:exported="true"
             android:theme="@style/AppTheme2" />
+        <activity android:name=".ShowStatistic"
+            android:exported="true"
+            android:theme="@style/ActivityTheme" />
     </application>
 
 </manifest>
