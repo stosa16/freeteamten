@@ -269,11 +269,11 @@
         app:layout_constraintTop_toTopOf="@+id/btn_location"
         android:layout_marginStart="28dp" />
 
-    <com.thomashaertel.widget.MultiSpinner
-        android:id="@+id/spinnerMulti"
-        android:layout_width="206dp"
-        android:layout_height="160dp"
-        tools:layout_editor_absoluteY="210dp"
-        tools:layout_editor_absoluteX="189dp" />
+    <at.sw2017.pocketdiary.MultiSpinner
+        android:id="@+id/multi_spinner"
+        android:layout_width="257dp"
+        android:layout_height="198dp"
+        tools:layout_editor_absoluteY="261dp"
+        tools:layout_editor_absoluteX="131dp" />
 
 </android.support.constraint.ConstraintLayout>
