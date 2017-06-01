@@ -8,6 +8,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
 
 public class ShowEntryScreen extends AppCompatActivity {
 
@@ -28,6 +29,13 @@ public class ShowEntryScreen extends AppCompatActivity {
         TextView sub_category = (TextView)findViewById(R.id.out_subcategory);
         sub_category.setText(entry.getSubCategory().getName());
         TextView date = (TextView)findViewById(R.id.out_date);
+        TextView friends = (TextView)findViewById(R.id.out_friends);
+        String friend_ = "";
+        //todo maybe this is not working
+        for(Friend friend:entry.getFriends()){
+            friend_ = friend.getName();
+        }
+        friends.setText(friend_);
         if (entry.getDate() != null) {
             String date_string = new SimpleDateFormat("yyyy-MM-dd").format(entry.getDate());
             date.setText(date_string);

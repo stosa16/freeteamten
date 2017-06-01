@@ -46,6 +46,16 @@ public class DBEntry extends SQLiteOpenHelper{
         if (entry.getDate() != null) {
             values.put("DATE", date_fromat.format(entry.getDate()));
         }
+        /*
+        //todo add in DBHandler: FRIEND TEXT
+        //todo maybe LIST instead of TEXT if its possible
+        if(entry.getFriends() != null){
+            String friend = "";
+            for(Friend f:entry.getFriends()){
+                friend += f.getName() + " ";
+            }
+            values.put("FRIEND", friend);
+        }*/
         long id = db.insert("ENTRIES", null, values);
         db.close();
         if (entry.getPictures() != null && entry.getPictures().size() > 0) {
