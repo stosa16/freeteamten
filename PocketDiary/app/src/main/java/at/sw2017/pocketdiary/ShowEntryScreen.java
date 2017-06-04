@@ -30,11 +30,7 @@ public class ShowEntryScreen extends AppCompatActivity {
         sub_category.setText(entry.getSubCategory().getName());
         TextView date = (TextView)findViewById(R.id.out_date);
         TextView friends = (TextView)findViewById(R.id.out_friends);
-        String friend_ = "";
-        //todo maybe this is not working
-        for(Friend friend:entry.getFriends()){
-            friend_ = friend.getName();
-        }
+        String friend_ = entry.getAllFriends();
         friends.setText(friend_);
         if (entry.getDate() != null) {
             String date_string = new SimpleDateFormat("yyyy-MM-dd").format(entry.getDate());

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
 
 public class DBEntry extends SQLiteOpenHelper{
@@ -46,7 +47,7 @@ public class DBEntry extends SQLiteOpenHelper{
         if (entry.getDate() != null) {
             values.put("DATE", date_fromat.format(entry.getDate()));
         }
-        /*
+
         //todo add in DBHandler: FRIEND TEXT
         //todo maybe LIST instead of TEXT if its possible
         if(entry.getFriends() != null){
@@ -54,8 +55,9 @@ public class DBEntry extends SQLiteOpenHelper{
             for(Friend f:entry.getFriends()){
                 friend += f.getName() + " ";
             }
-            values.put("FRIEND", friend);
-        }*/
+            //values.put("FRIEND", friend);
+            values.put("ALLFRIENDS", friend);
+        }
         long id = db.insert("ENTRIES", null, values);
         db.close();
         if (entry.getPictures() != null && entry.getPictures().size() > 0) {
@@ -101,6 +103,9 @@ public class DBEntry extends SQLiteOpenHelper{
             if (cursor.getString(6) != null) {
                 entry.setAddressId(cursor.getInt(6));
             }
+            if (cursor.getString(7) != null) {
+                entry.setAllFriends(cursor.getString(7));
+            }
         }
         db.close();
         return entry;
@@ -130,6 +135,9 @@ public class DBEntry extends SQLiteOpenHelper{
                 }
                 if(cursor.getString(6) != null){
                     entry.setAddressId(Integer.parseInt(cursor.getString(6)));
+                }
+                if (cursor.getString(7) != null) {
+                    entry.setAllFriends(cursor.getString(7));
                 }
                 entry_list.add(entry);
             } while (cursor.moveToNext());
