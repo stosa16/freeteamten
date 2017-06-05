@@ -3,6 +3,7 @@ package at.sw2017.pocketdiary;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +33,7 @@ public class ShowEntryScreen extends AppCompatActivity {
         TextView friends = (TextView)findViewById(R.id.out_friends);
         String friend_ = entry.getAllFriends();
         friends.setText(friend_);
+        friends.setMovementMethod(new ScrollingMovementMethod());
         if (entry.getDate() != null) {
             String date_string = new SimpleDateFormat("yyyy-MM-dd").format(entry.getDate());
             date.setText(date_string);

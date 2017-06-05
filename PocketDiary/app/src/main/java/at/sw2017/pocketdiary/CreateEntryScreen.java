@@ -100,21 +100,21 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             @Override
             public void onClick(View v) {
 
-                String text = "Friends";
+                String text = "Select Friends";
 
                 final MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
+                multiSpinner.setVisibility(v.VISIBLE);
                 multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
 
                     @Override
                     public void onItemsSelected(boolean[] selected) {
-
-                        Friend[] selected_friends = null;
 
                         for(int i = 0; i<items.size(); i++){
                             if(selected[i] == true){
                                 friends.add(all_friends.get(i));
                             }
                         }
+                        Helper.updateBadgeVisibility(badge_friends, true);
                     }
                 });
             }
