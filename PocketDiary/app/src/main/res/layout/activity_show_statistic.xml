@@ -11,7 +11,7 @@
         android:id="@+id/stat_analysis_btn_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/ic_menu_camera"
+        android:src="@android:drawable/ic_menu_camera"
         app:layout_constraintRight_toLeftOf="@+id/stat_analysis_btn_location"
         android:layout_marginRight="45dp"
         android:layout_marginLeft="8dp"
@@ -20,50 +20,74 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="45dp" />
+        android:layout_marginEnd="20dp" />
 
     <ImageButton
         android:id="@+id/stat_analysis_btn_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="checkLocationPermissions"
-        app:srcCompat="@android:drawable/ic_menu_mylocation"
+        android:src="@android:drawable/ic_menu_mylocation"
         app:layout_constraintRight_toLeftOf="@+id/stat_analysis_btn_friends"
-        android:layout_marginRight="37dp"
+        android:layout_marginRight="20dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="37dp" />
+        android:layout_marginEnd="20dp" />
 
     <ImageButton
         android:id="@+id/stat_analysis_btn_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/ic_menu_myplaces"
-        app:layout_constraintRight_toLeftOf="@+id/stat_analysis_btn_calendar"
-        android:layout_marginRight="41dp"
+        android:src="@android:drawable/ic_menu_myplaces"
+        app:layout_constraintRight_toLeftOf="@+id/stat_analysis_btn_dates"
+        android:layout_marginRight="20dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="41dp" />
+        android:layout_marginEnd="20dp" />
+
+    <ImageButton
+        android:id="@+id/stat_analysis_btn_dates"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_my_calendar"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintRight_toLeftOf="@+id/stat_analysis_btn_calendar"
+        android:layout_marginRight="20dp" />
 
     <ImageButton
         android:id="@+id/stat_analysis_btn_calendar"
         android:layout_width="56dp"
         android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/ic_menu_today"
-        android:layout_marginRight="30dp"
+        android:src="@android:drawable/ic_menu_today"
+        android:layout_marginRight="20dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="30dp" />
+        android:layout_marginEnd="20dp" />
 
     <Button
         android:id="@+id/stat_analysis_categories"
         style="@style/ButtonRed"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
-        android:text="@string/categories"
+        android:text="Categories"
         android:layout_marginTop="25dp"
         app:layout_constraintTop_toBottomOf="@+id/stat_analysis_btn_location"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <Button
+        android:id="@+id/stat_analysis_delete_stat"
+        style="@style/ButtonRed"
+        android:layout_width="395dp"
+        android:layout_height="wrap_content"
+        android:text="Delete statistic"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/stat_analysis_categories"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
@@ -75,7 +99,12 @@
         android:id="@+id/stat_analysis_lv"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="157dp" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/stat_analysis_delete_stat"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="8dp" />
+
+
 
 </android.support.constraint.ConstraintLayout>

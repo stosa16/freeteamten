@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +44,8 @@ public class CreateStatisticActivity extends Activity{
     List<String> strings_maincategories = new ArrayList<>();
     List<Category> maincategories = new ArrayList<>();
     boolean first_touch = true;
+    private Date date_until_date = null;
+    private Date date_from_date = null;
 
     List<Category> subcategories = new ArrayList<>();
     List<String> strings_subcategories = new ArrayList<>();
@@ -80,6 +83,9 @@ public class CreateStatisticActivity extends Activity{
                         month++;
                         date_from.setText(dayOfMonth + "." + month + "." + year);
                         date_from_format = year + "-" + month + "-" + dayOfMonth;
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(year, month-1, dayOfMonth, 0, 0, 0);
+                        date_from_date = calendar.getTime();
                     }
                 }, date.getCurrentYear(), date.getCurrentMonth(), date.getCurrentDay());
                 dialog.show();
@@ -96,6 +102,9 @@ public class CreateStatisticActivity extends Activity{
                         month++;
                         date_til.setText(dayOfMonth + "." + month + "." + year);
                         date_til_format = year + "-" + month + "-" + dayOfMonth;
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(year, month-1, dayOfMonth, 0, 0, 0);
+                        date_until_date = calendar.getTime();
                     }
                 }, date.getCurrentYear(), date.getCurrentMonth(), date.getCurrentDay());
                 dialog.show();
@@ -298,25 +307,17 @@ public class CreateStatisticActivity extends Activity{
         statistic.setTitle(title.getText().toString());
 
         if(date_from.getText().toString().trim().length() != 0){
-            try {
-                statistic.setDateFrom(date_format.parse(date_from.getText().toString()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            statistic.setDateFrom(date_from_date);
         }
         if(date_til.getText().toString().trim().length() != 0){
-            try {
-                statistic.setDateUntil(date_format.parse(date_til.getText().toString()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            statistic.setDateUntil(date_until_date);
         }
         if(!main_cat.getSelectedItem().toString().equals(empty_spinner_text)){
             statistic.setCategoryId(Helper.getCategoryByName(maincategories, main_cat.getSelectedItem().toString()).getId());
         }
         if(sub_cat.getSelectedItem() != null &&
                 !sub_cat.getSelectedItem().toString().equals(empty_spinner_text)){
-            statistic.setCategoryId(Helper.getCategoryByName(subcategories, sub_cat.getSelectedItem().toString()).getId());
+            statistic.setSubCategoryId(Helper.getCategoryByName(subcategories, sub_cat.getSelectedItem().toString()).getId());
         }
         if(!friends.getSelectedItem().toString().equals(empty_spinner_txt_friends)){
 

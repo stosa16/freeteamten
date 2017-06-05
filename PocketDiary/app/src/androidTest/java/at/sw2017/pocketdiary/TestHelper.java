@@ -7,11 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.CustomDate;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Statistic;
+import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBFriend;
@@ -45,14 +47,30 @@ public final class TestHelper {
     public static void initStatistics(Context context){
         DBStatistic dbs = new DBStatistic(context);
         Statistic statistic_1 = new Statistic();
+
         statistic_1.setTitle("Statistic");
-        CustomDate cstm_date = new CustomDate();
-        Date date = new Date(cstm_date.getCurrentYear(), cstm_date.getCurrentMonth(), cstm_date.getCurrentDay());
-        statistic_1.setDateFrom(date);
-        statistic_1.setDateUntil(date);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2017, 4, 1, 0, 0, 0);
+        Date date_from = calendar.getTime();
+        statistic_1.setDateFrom(date_from);
+
+        calendar.set(2017, 5, 1, 0, 0, 0);
+        Date date_until = calendar.getTime();
+        statistic_1.setDateUntil(date_until);
         statistic_1.setCategoryId(1);
         statistic_1.setSubCategoryId(1);
         statistic_1.setSearchTerm("SearchTerm");
+        dbs.insert(statistic_1);
+
+        dbs = new DBStatistic(context);
+
+        statistic_1.setTitle("Statistic_2");
+        statistic_1.setDateFrom(date_from);
+        statistic_1.setDateUntil(date_until);
+        statistic_1.setCategoryId(1);
+        statistic_1.setSubCategoryId(1);
+        statistic_1.setSearchTerm("test");
         dbs.insert(statistic_1);
     }
 
@@ -75,14 +93,54 @@ public final class TestHelper {
         entry.setTitle("Test");
         entry.setDescription("This is a test!");
         entry.setMainCategoryId(1);
-        entry.setSubCategoryId(4);
+        entry.setSubCategoryId(1);
+        entry.setAddressId(1);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2017, 4, 1, 0, 0, 0);
+        calendar.set(2017, 4, 10, 0, 0, 0);
         Date entry_date = calendar.getTime();
         entry.setDate(entry_date);
         long id = dbe.insert(entry);
+
+        entry.setTitle("Test_Street");
+        entry.setDescription("This is a test!");
+        entry.setMainCategoryId(1);
+        entry.setSubCategoryId(1);
+        entry.setAddressId(2);
+
+        calendar.set(2017, 4, 11, 0, 0, 0);
+        entry.setDate(calendar.getTime());
+
+        dbe.insert(entry);
+
         dbe.close();
+
         Entry loaded_entry = Helper.getEntryComplete(context, (int) id);
         return loaded_entry;
+    }
+
+    public static void initAddress(Context context) {
+        DBAddress dba = new DBAddress(context);
+        Address address = new Address();
+
+        double coordinates = 0.00;
+        address.setPoi("Poi");
+        address.setStreet("Street");
+        address.setCity("City");
+        address.setCountry("Country");
+        address.setZip("0000");
+        address.setLatitude(coordinates);
+        address.setLongitude(coordinates);
+        dba.insert(address);
+
+
+        dba = new DBAddress(context);
+        Address address2 = new Address();
+        address2.setStreet("Street");
+        address2.setCity("City");
+        address2.setCountry("Country");
+        address2.setZip("0000");
+        address2.setLatitude(coordinates);
+        address2.setLongitude(coordinates);
+        dba.insert(address2);
     }
 }

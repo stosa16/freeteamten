@@ -40,7 +40,10 @@ public class DBEntry extends SQLiteOpenHelper{
         values.put("DESCRIPTION", entry.getDescription());
         values.put("MAINCATEGORY_ID", entry.getMainCategoryId());
         values.put("SUBCATEGORY_ID", entry.getSubCategoryId());
-        if (entry.getAddress() != null) {
+        if(entry.getAddressId() != null){
+            values.put("ADDRESS_ID", entry.getAddressId());
+        }
+        else if (entry.getAddress() != null) {
             values.put("ADDRESS_ID", entry.getAddress().getId());
         }
         if (entry.getDate() != null) {

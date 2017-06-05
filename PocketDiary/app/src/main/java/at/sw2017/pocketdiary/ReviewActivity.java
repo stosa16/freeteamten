@@ -33,7 +33,7 @@ import at.sw2017.pocketdiary.database_access.DBEntry;
 
 public class ReviewActivity extends Activity{
 
-    List<Entry> entry_list;
+    List<Entry> entry_list = new ArrayList<>();
     ArrayList<Integer> db_ids = new ArrayList<>();
 
     @Override
@@ -41,7 +41,16 @@ public class ReviewActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
         //insertTestData();
-        entry_list = getData();
+
+        if(getIntent().getExtras() != null){
+            List<String> entries_ids_stat = getIntent().getStringArrayListExtra("entries_ids");
+            for(String id : entries_ids_stat) {
+                DBEntry dbe = new DBEntry(this);
+                int id_int = Integer.parseInt(id);
+                entry_list.add(dbe.getEntry(id_int));
+            }
+        }
+        else entry_list = getData();
         CalendarDay[] dates_list = getAllDates(entry_list);
         String current_date = getCurrentDate();
         setCalendar(dates_list, getCurrentDay(current_date), getCurrentMonth(current_date), getCurrentYear(current_date));

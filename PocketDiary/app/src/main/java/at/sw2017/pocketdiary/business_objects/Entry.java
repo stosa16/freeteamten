@@ -124,7 +124,7 @@ public class Entry {
         this.description = description;
     }
 
-    public int getAddressId() {
+    public Integer getAddressId() {
         return addressId;
     }
 
