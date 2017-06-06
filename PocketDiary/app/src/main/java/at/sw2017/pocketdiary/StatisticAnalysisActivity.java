@@ -4,14 +4,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
-import android.util.ArraySet;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -29,12 +31,13 @@ import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.CustomDate;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Statistic;
-import at.sw2017.pocketdiary.business_objects.Toast;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
+import at.sw2017.pocketdiary.database_access.DBPicture;
 import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.database_access.DBStatistic;
 import at.sw2017.pocketdiary.database_access.DBStatisticAnalysis;
@@ -99,6 +102,7 @@ public class StatisticAnalysisActivity extends Activity {
         ImageButton img_btn_dates = (ImageButton) findViewById(R.id.stat_analysis_btn_dates);
         ImageButton img_btn_cal = (ImageButton) findViewById(R.id.stat_analysis_btn_calendar);
         ImageButton img_btn_loc = (ImageButton) findViewById(R.id.stat_analysis_btn_location);
+        ImageButton img_btn_camera = (ImageButton) findViewById(R.id.stat_analysis_btn_camera);
         ImageButton img_btn_friends = (ImageButton) findViewById(R.id.stat_analysis_btn_friends);
         Button btn_del = (Button) findViewById(R.id.stat_analysis_delete_stat);
         Button btn_categories = (Button) findViewById(R.id.stat_analysis_categories);
@@ -195,6 +199,59 @@ public class StatisticAnalysisActivity extends Activity {
                 createAlertDialogueWithEntries(entries_list);
             }
         });
+
+        img_btn_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fillGridViewPictures();
+            }
+        });
+    }
+
+    private void fillGridViewPictures() {
+
+        final ArrayList<String> paths = new ArrayList<>();
+        ArrayList<String> fileNames = new ArrayList<>();
+        db_ids = new ArrayList<>();
+        for (Entry entry : set_entry){
+            DBPicture dbp = new DBPicture(this);
+            if(entry.getPictures() != null) {
+                Picture picture = dbp.getPicture(entry.getId());
+                if (picture != null) {
+                    if (picture.getFilePath() != null) {
+                        paths.add(picture.getFilePath());
+                        if (picture.getName() != null) {
+                            fileNames.add(picture.getName());
+                        }
+                        db_ids.add(entry.getId());
+                    }
+                }
+            }
+        }
+
+        ListView review_listview = (ListView) findViewById(R.id.stat_analysis_lv);
+        adapter = new ArrayAdapter<>(this, R.layout.layout_listview_item);
+        review_listview.setAdapter(adapter);
+        GridView gridview = (GridView) findViewById(R.id.stat_analysis_pictures);
+        gridview.setVisibility(View.VISIBLE);
+        final ArrayList<ImageItem> imageItems = new ArrayList<>();
+        for (int i = 0; i < paths.size(); i++) {
+            Bitmap bitmap = BitmapFactory.decodeFile(paths.get(i));
+            imageItems.add(new ImageItem(bitmap, fileNames.get(i)));
+        }
+
+        ImageAdapter imageAdapter = new ImageAdapter(this, R.layout.layout_gridview, imageItems);
+        gridview.setAdapter(imageAdapter);
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+
+                Intent i = new Intent(StatisticAnalysisActivity.this, ShowPictureScreen.class);
+                i.putExtra("entry_id", paths.get(position));
+                startActivity(i);
+            }
+        });
+
     }
 
     private void fillListViewCat(){
@@ -230,6 +287,8 @@ public class StatisticAnalysisActivity extends Activity {
             final_cats.add(String.valueOf(value) + " x " + key);
         }
 
+        GridView gridview = (GridView) findViewById(R.id.stat_analysis_pictures);
+        gridview.setVisibility(View.INVISIBLE);
         adapter = new ArrayAdapter<>(this, R.layout.layout_listview_item, final_cats);
         review_listview.setAdapter(adapter);
         review_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -310,6 +369,8 @@ public class StatisticAnalysisActivity extends Activity {
             }
         }
 
+        GridView gridview = (GridView) findViewById(R.id.stat_analysis_pictures);
+        gridview.setVisibility(View.INVISIBLE);
         adapter = new ArrayAdapter<>(this, R.layout.layout_listview_item, addresses);
         review_listview.setAdapter(adapter);
         review_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -332,6 +393,8 @@ public class StatisticAnalysisActivity extends Activity {
             db_ids.add(entry.getId());
         }
 
+        GridView gridview = (GridView) findViewById(R.id.stat_analysis_pictures);
+        gridview.setVisibility(View.INVISIBLE);
         adapter = new ArrayAdapter<>(this, R.layout.layout_listview_item, entries_dates);
         review_listview.setAdapter(adapter);
         review_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="at.sw2017.pocketdiary">
+
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -11,7 +13,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <permission android:name="com.example.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
+
+    <permission
+        android:name="com.example.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
 
     <application
         android:allowBackup="true"
@@ -20,11 +25,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Header">
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppTheme2"
-            android:exported="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -39,39 +46,45 @@
         <activity
             android:name=".SettingScreen"
             android:exported="true"
-            android:label="Settings">
-        </activity>
-		<activity android:name=".CreateEntryScreen"
-            android:theme="@style/ActivityTheme"
-            android:label="Create Entry" >
-        </activity>
-        <activity android:name=".ReviewActivity"
+            android:label="Settings"></activity>
+        <activity
+            android:name=".CreateEntryScreen"
+            android:label="Create Entry"
+            android:theme="@style/ActivityTheme"></activity>
+        <activity
+            android:name=".ReviewActivity"
             android:label="Review" />
-        <activity android:name=".ShowEntryScreen"
-            android:theme="@style/ActivityTheme"
-            android:label="Details"/>
-        <activity android:name=".CategoriesActivity"
+        <activity
+            android:name=".ShowEntryScreen"
+            android:label="Details"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".CategoriesActivity"
             android:label="Categories"
-            android:theme="@style/ActivityTheme">
-        </activity>
-        <activity android:name=".StatisticScreenActivity"
+            android:theme="@style/ActivityTheme"></activity>
+        <activity
+            android:name=".StatisticScreenActivity"
             android:label="Statistics"
-            android:theme="@style/ActivityTheme">
-        </activity>
-        <activity android:name=".CreateStatisticActivity"
+            android:theme="@style/ActivityTheme"></activity>
+        <activity
+            android:name=".CreateStatisticActivity"
             android:label="Create Statistic"
-            android:theme="@style/ActivityTheme">
-        </activity>
-        <activity android:name=".StatisticAnalysisActivity"
+            android:theme="@style/ActivityTheme"></activity>
+        <activity
+            android:name=".StatisticAnalysisActivity"
             android:label="Show Statistic"
-            android:theme="@style/ActivityTheme">
-        </activity>
-        <activity android:name=".Friends"
+            android:theme="@style/ActivityTheme"></activity>
+        <activity
+            android:name=".Friends"
             android:exported="true"
             android:theme="@style/AppTheme2" />
-        <activity android:name=".ShowStatistic"
+        <activity
+            android:name=".ShowStatistic"
             android:exported="true"
             android:theme="@style/ActivityTheme" />
+        <activity android:name=".ShowPictureScreen"
+            android:theme="@style/AppTheme2"
+        />
     </application>
 
 </manifest>
