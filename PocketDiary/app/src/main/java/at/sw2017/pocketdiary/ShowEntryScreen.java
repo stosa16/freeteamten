@@ -33,16 +33,21 @@ public class ShowEntryScreen extends AppCompatActivity {
         TextView date = (TextView)findViewById(R.id.out_date);
         TextView friends = (TextView)findViewById(R.id.out_friends);
         String friend_ = entry.getAllFriends();
-        String friendsForTextView = "";
-        String[] parts = friend_.split(",");
-        for(int i = 0; i < parts.length; i++){
-            Friend temp_friend;
-            DBFriend dbf = new DBFriend(this);
-            temp_friend = dbf.getFriend(Integer.parseInt(parts[i]));
-            friendsForTextView += temp_friend.getName() + ", ";
+        if(friend_ == null){
+            friends.setText("");
         }
-        friendsForTextView = friendsForTextView.substring(0, friendsForTextView.length() - 2);
-        friends.setText(friendsForTextView);
+        else {
+            String friendsForTextView = "";
+            String[] parts = friend_.split(",");
+            for (int i = 0; i < parts.length; i++) {
+                Friend temp_friend;
+                DBFriend dbf = new DBFriend(this);
+                temp_friend = dbf.getFriend(Integer.parseInt(parts[i]));
+                friendsForTextView += temp_friend.getName() + ", ";
+            }
+            friendsForTextView = friendsForTextView.substring(0, friendsForTextView.length() - 2);
+            friends.setText(friendsForTextView);
+        }
         friends.setMovementMethod(new ScrollingMovementMethod());
         if (entry.getDate() != null) {
             String date_string = new SimpleDateFormat("yyyy-MM-dd").format(entry.getDate());

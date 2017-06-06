@@ -390,7 +390,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             entry_address.setId((int) id);
             entry.setAddress(entry_address);
         }
-        if (friends != null) {
+        if (friends.size() != 0) {
             entry.setFriends(friends);
         }
         insertEntryToDatabase(entry);

@@ -50,7 +50,7 @@ public class DBEntry extends SQLiteOpenHelper{
 
         //todo add in DBHandler: FRIEND TEXT
         //todo maybe LIST instead of TEXT if its possible
-        if(entry.getFriends() != null){
+        if(entry.getFriends().size() != 0){
             String friend = "";
             for(Friend f:entry.getFriends()){
                 friend += f.getId() + ",";
