@@ -211,7 +211,6 @@ public class CreateEntryScreenInstrumentedTest {
         Friend friend = new Friend("Stefan", false);
         Friend friend2 = new Friend("Stefan2", false);
         DBFriend dbf = new DBFriend(mActivityRule.getActivity());
-        long id = dbf.insert(friend);
         dbf.insert(friend);
         dbf.insert(friend2);
 
@@ -229,8 +228,8 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withId(R.id.btn_friends)).perform(click());
         onView(withId(R.id.multi_spinner)).check(matches(isDisplayed()));
         onView(withId(R.id.multi_spinner)).perform(click());
-        //onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
-
-        //onView(withId(R.id.btn_save)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(0).perform(click());
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.btn_save)).perform(click());
     }
 }

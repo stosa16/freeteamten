@@ -86,19 +86,21 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
     public void initFriends() {
         ImageButton friends_button = (ImageButton) this.findViewById(R.id.btn_friends);
-        DBFriend dbc = new DBFriend(this);
+        final DBFriend dbc = new DBFriend(this);
         if (dbc.getAllFriends().size() == 0) {
             Helper.initCategories(this);
         }
-        final List<Friend> all_friends = dbc.getAllFriends();
 
-        for (Friend item : all_friends) {
-            items.add(item.getName());
-        }
 
         friends_button.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                final List<Friend> all_friends = dbc.getAllFriends();
+
+                for (Friend item : all_friends) {
+                    items.add(item.getName());
+                }
 
                 String text = "Select Friends";
 
