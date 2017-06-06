@@ -48,7 +48,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
     private String empty_spinner_text = "Select Category";
     private Date entry_date = null;
-    private Address entry_address = null;
+    public Address entry_address = null;
     private Picture entry_picture = null;
 
     private static final int CAMERA_REQUEST = 1;
@@ -198,7 +198,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             strings_maincategories.add(temp_cat.getName());
         }
 
-        input_main_category = (Spinner) findViewById(R.id.out_category);
+        input_main_category = (Spinner) findViewById(R.id.input_category);
         ArrayAdapter<String> main_spinner = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, strings_maincategories);
 
@@ -289,7 +289,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     }
 
     public void saveEvent(View view) {
-        input_event_title = (EditText) findViewById(R.id.out_title);
+        input_event_title = (EditText) findViewById(R.id.input_title);
         String title = input_event_title.getText().toString();
         if (title.equals("")) {
             Toast.makeText(CreateEntryScreen.this, "Please define a Title!",
@@ -298,7 +298,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         }
         input_description = (EditText) findViewById(R.id.input_description);
         String description = input_description.getText().toString();
-        input_main_category = (Spinner) findViewById(R.id.out_category);
+        input_main_category = (Spinner) findViewById(R.id.input_category);
         Category main_category = Helper.getCategoryByName(maincategories, input_main_category.getSelectedItem().toString());
         if (main_category == null) {
             Toast.makeText(CreateEntryScreen.this, "Please select a Main Category!",

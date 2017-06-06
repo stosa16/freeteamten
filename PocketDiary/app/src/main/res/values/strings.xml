@@ -26,4 +26,6 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="off">OFF</string>
+    <string name="title_activity_location_screen">Location</string>
+    <string name="title_activity_location_detail_screen">Map</string>
 </resources>

@@ -8,11 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.text.ParseException;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Picture;
 
@@ -43,9 +42,7 @@ public class DBEntry extends SQLiteOpenHelper{
         if (entry.getAddress() != null) {
             values.put("ADDRESS_ID", entry.getAddress().getId());
         }
-        if (entry.getDate() != null) {
-            values.put("DATE", date_fromat.format(entry.getDate()));
-        }
+        values.put("DATE", date_fromat.format(entry.getDate()));
         long id = db.insert("ENTRIES", null, values);
         db.close();
         if (entry.getPictures() != null && entry.getPictures().size() > 0) {
