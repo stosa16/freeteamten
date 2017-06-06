@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.ArraySet;
 import android.util.Log;
@@ -28,11 +29,13 @@ import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.CustomDate;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Statistic;
 import at.sw2017.pocketdiary.business_objects.Toast;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
+import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.database_access.DBStatistic;
 import at.sw2017.pocketdiary.database_access.DBStatisticAnalysis;
 
@@ -96,6 +99,7 @@ public class StatisticAnalysisActivity extends Activity {
         ImageButton img_btn_dates = (ImageButton) findViewById(R.id.stat_analysis_btn_dates);
         ImageButton img_btn_cal = (ImageButton) findViewById(R.id.stat_analysis_btn_calendar);
         ImageButton img_btn_loc = (ImageButton) findViewById(R.id.stat_analysis_btn_location);
+        ImageButton img_btn_friends = (ImageButton) findViewById(R.id.stat_analysis_btn_friends);
         Button btn_del = (Button) findViewById(R.id.stat_analysis_delete_stat);
         Button btn_categories = (Button) findViewById(R.id.stat_analysis_categories);
         img_btn_dates.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +135,64 @@ public class StatisticAnalysisActivity extends Activity {
                 Intent i = new Intent(StatisticAnalysisActivity.this, ReviewActivity.class);
                 i.putStringArrayListExtra("entries_ids", all_entries_ids_str);
                 startActivity(i);
+            }
+        });
+        img_btn_friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fillListViewFriends();
+            }
+        });
+    }
+
+    private void fillListViewFriends(){
+        final ListView review_listview = (ListView) findViewById(R.id.stat_analysis_lv);
+        Map<String, Integer> map_friends = new HashMap<String, Integer>();
+        db_ids = new ArrayList<>();
+        for(Entry entry : set_entry){
+            String friends_ids = entry.getAllFriends();
+            String[] friends_ids_list = friends_ids.split(",");
+            for(String id : friends_ids_list){
+                DBFriend dbf = new DBFriend(this);
+                Friend friend = dbf.getFriend(Integer.parseInt(id));
+                if(map_friends.containsKey(friend.getName())){
+                    map_friends.put(friend.getName(), map_friends.get(friend.getName())+1);
+
+                }
+                else {
+                    map_friends.put(friend.getName(), 1);
+                    db_ids.add(friend.getId());
+                }
+
+
+            }
+        }
+
+        ArrayList<String> final_friends = new ArrayList<>();
+        for(String key : map_friends.keySet()){
+            Integer value = map_friends.get(key);
+            final_friends.add(String.valueOf(value) + " x " + key);
+        }
+
+        adapter = new ArrayAdapter<>(this, R.layout.layout_listview_item, final_friends);
+        review_listview.setAdapter(adapter);
+        review_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String friend_name = review_listview.getItemAtPosition(position).toString().split("x")[1].trim();
+                List<Entry> entries_list = new ArrayList<Entry>();
+                for(Entry entry : set_entry){
+                    String friends_ids = entry.getAllFriends();
+                    String[] friends_ids_list = friends_ids.split(",");
+                    for(String id_friend : friends_ids_list){
+                        DBFriend dbf = new DBFriend(StatisticAnalysisActivity.this);
+                        Friend friend = dbf.getFriend(Integer.parseInt(id_friend));
+                        if(friend_name.equals(friend.getName())){
+                            entries_list.add(entry);
+                        }
+                    }
+                }
+                createAlertDialogueWithEntries(entries_list);
             }
         });
     }
@@ -189,6 +251,7 @@ public class StatisticAnalysisActivity extends Activity {
         });
     }
 
+
     private void showSubCategories(final CharSequence[] items){
         AlertDialog.Builder builder = new AlertDialog.Builder(StatisticAnalysisActivity.this);
         builder.setTitle("Subcategories")
@@ -217,7 +280,7 @@ public class StatisticAnalysisActivity extends Activity {
         }
         final CharSequence[] entry_names = entries_name.toArray(new CharSequence[entries_name.size()]);
         AlertDialog.Builder builder = new AlertDialog.Builder(StatisticAnalysisActivity.this);
-        builder.setTitle("Subcategories")
+        builder.setTitle("Entries")
                 .setItems(entry_names, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Entry entry = entries.get(which);
