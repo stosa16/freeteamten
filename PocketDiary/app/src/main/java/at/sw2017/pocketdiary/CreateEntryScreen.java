@@ -4,8 +4,10 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -326,11 +328,18 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         }
         if (photo != null) {
             Calendar calendar = Calendar.getInstance();
-            String pictureName = new SimpleDateFormat("yyyy-MM-dd/HHmmssSSS").format(calendar.getTime()) + ".jpeg";
+            String pictureName = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss").format(calendar.getTime()) + ".jpg";
             String path = MediaStore.Images.Media.insertImage(getContentResolver(), photo, pictureName, null);
+
+            Uri test = Uri.parse(path);
+            Cursor cursor = getContentResolver().query(test, null, null, null, null);
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            String absolute_path = cursor.getString(idx);
+
             entry_picture = new Picture();
             entry_picture.setName(pictureName);
-            entry_picture.setFilePath(path);
+            entry_picture.setFilePath(absolute_path);
             DBPicture dbp = new DBPicture(this);
             long id = dbp.insert(entry_picture);
             entry_picture.setId((int) id);

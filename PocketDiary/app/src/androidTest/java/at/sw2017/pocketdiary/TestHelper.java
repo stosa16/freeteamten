@@ -4,19 +4,23 @@ import android.content.Context;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.CustomDate;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Friend;
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.business_objects.Statistic;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBFriend;
+import at.sw2017.pocketdiary.database_access.DBPicture;
 import at.sw2017.pocketdiary.database_access.DBStatistic;
 
 public final class TestHelper {
@@ -59,8 +63,8 @@ public final class TestHelper {
         Date date_until = calendar.getTime();
         statistic_1.setDateUntil(date_until);
         statistic_1.setCategoryId(1);
-        statistic_1.setSubCategoryId(1);
-        statistic_1.setSearchTerm("SearchTerm");
+        //statistic_1.setSubCategoryId(1);
+        //statistic_1.setSearchTerm("SearchTerm");
         dbs.insert(statistic_1);
 
         dbs = new DBStatistic(context);
@@ -99,6 +103,20 @@ public final class TestHelper {
         calendar.set(2017, 4, 10, 0, 0, 0);
         Date entry_date = calendar.getTime();
         entry.setDate(entry_date);
+
+        Picture picture = new Picture();
+        picture.setFilePath("/storage/emulated/0/Pictures/1496724335881.jpg");
+        picture.setName("picture");
+        DBPicture dbp = new DBPicture(context);
+        long id_pic = dbp.insert(picture);
+        picture.setId((int) id_pic);
+        entry.addPicture(picture);
+
+
+        List<Picture> list = new ArrayList<>();
+        list.add(picture);
+        entry.setPictures(list);
+
         long id = dbe.insert(entry);
 
         entry.setTitle("Test_Street");
