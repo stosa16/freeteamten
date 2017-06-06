@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name"
+            android:hint="Name"
             android:gravity="center_horizontal"
             android:layout_weight="0.84"
             android:theme="@style/BlackText"

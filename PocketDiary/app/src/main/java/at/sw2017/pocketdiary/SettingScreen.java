@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 import at.sw2017.pocketdiary.database_access.DBUserSetting;
