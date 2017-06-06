@@ -53,8 +53,9 @@ public class DBEntry extends SQLiteOpenHelper{
         if(entry.getFriends() != null){
             String friend = "";
             for(Friend f:entry.getFriends()){
-                friend += f.getName() + " ";
+                friend += f.getId() + ",";
             }
+            friend = friend.substring(0, friend.length() - 1);
             //values.put("FRIEND", friend);
             values.put("ALLFRIENDS", friend);
         }
