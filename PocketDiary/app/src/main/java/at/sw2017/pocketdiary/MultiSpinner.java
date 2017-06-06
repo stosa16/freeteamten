@@ -1,5 +1,5 @@
 package at.sw2017.pocketdiary;
-
+//Reference: https://stackoverflow.com/questions/5015686/android-spinner-with-multiple-choice
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
