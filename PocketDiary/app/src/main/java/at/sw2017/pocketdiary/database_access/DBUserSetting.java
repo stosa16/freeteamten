@@ -15,8 +15,6 @@ import at.sw2017.pocketdiary.business_objects.UserSetting;
 
 public class DBUserSetting extends SQLiteOpenHelper{
 
-    SQLiteDatabase db = this.getWritableDatabase();
-
     public DBUserSetting(Context context) {
         super(context, "pocketdiary.db", null, 1);
     }
@@ -30,6 +28,7 @@ public class DBUserSetting extends SQLiteOpenHelper{
     }
 
     public void update(UserSetting userSetting, int id){
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content_val = new ContentValues();
         if(!userSetting.getUserName().equals("")) {
             content_val.put("USERNAME", userSetting.getUserName());
@@ -47,18 +46,20 @@ public class DBUserSetting extends SQLiteOpenHelper{
             content_val.put("IS_PIN_ACTIVE", userSetting.isPinActive());
         }
         db.update("USER_SETTINGS", content_val, "ID" + "=" + id,null);
+        db.close();
     }
 
-    public void insert(UserSetting userSetting){
-        //SQLiteDatabase db = this.getWritableDatabase();
+    public long insert(UserSetting userSetting){
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content_val = new ContentValues();
         content_val.put("USERNAME", userSetting.getUserName());
         content_val.put("FILE_PATH", userSetting.getFilePath());
         content_val.put("NAME", userSetting.getPicturename());
         content_val.put("PIN", userSetting.getPin());
         content_val.put("IS_PIN_ACTIVE", userSetting.isPinActive());
-        db.insert("USER_SETTINGS", null, content_val);
-       // db.close();
+        long id = db.insert("USER_SETTINGS", null, content_val);
+        db.close();
+        return id;
     }
 
     public long insertPic (Picture picture) {
@@ -72,17 +73,19 @@ public class DBUserSetting extends SQLiteOpenHelper{
     }
 
     public void insertPin(UserSetting userSetting){
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content_val = new ContentValues();
         content_val.put("ID", userSetting.getId());
         content_val.put("PIN", userSetting.getPin());
         content_val.put("IS_PIN_ACTIVE", userSetting.isPinActive());
         db.insert("USER_SETTINGS", null, content_val);
+        db.close();
     }
 
     public List<UserSetting> getUserSetting(int id) {
         List<UserSetting> settings_list = new ArrayList<UserSetting>();
         String selectQuery = "SELECT * FROM " + "USER_SETTINGS";
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
             do {
@@ -115,12 +118,14 @@ public class DBUserSetting extends SQLiteOpenHelper{
                 settings_list.add(userSetting);
             } while (cursor.moveToNext());
         }
+        db.close();
         return settings_list;
     }
 
 
 
     public Cursor getData(){
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor results = db.rawQuery("SELECT * FROM USER_SETTINGS", null);
         return results;
     }

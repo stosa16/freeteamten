@@ -1,26 +1,24 @@
 package at.sw2017.pocketdiary;
 
 import android.app.Instrumentation;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Camera;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.Root;
 import android.support.test.espresso.intent.Intents;
-import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.rule.ActivityTestRule;
 
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import at.sw2017.pocketdiary.business_objects.UserSetting;
+import at.sw2017.pocketdiary.database_access.DBHandler;
+import at.sw2017.pocketdiary.database_access.DBUserSetting;
+
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
@@ -31,24 +29,37 @@ import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.equalTo;
 
 public class StartScreenInstrumentedTest {
+
+    private DBHandler dbh;
+    private DBUserSetting dbs;
+
     @Rule
-    public ActivityTestRule<StartScreen> mActivityRule = new ActivityTestRule<StartScreen>(StartScreen.class);
+    public ActivityTestRule<StartScreen> mActivityRule = new ActivityTestRule<StartScreen>(StartScreen.class, false, false);
 
     @Before
     public void setUp() {
         Intents.init();
+        Context context = InstrumentationRegistry.getTargetContext();
+        context.deleteDatabase(DBHandler.DATABASE_NAME);
+        dbh = new DBHandler(context);
+        dbs = new DBUserSetting(context);
+        UserSetting setting = new UserSetting();
+        setting.setUserName("TestUser");
+        setting.setFilePath("");
+        setting.setPin("123");
+        setting.setPinActive("0");
+        long id = dbs.insert(setting);
         mActivityRule.launchActivity(new Intent());
     }
 
     @After
     public void release() {
         Intents.release();
+        dbh.close();
+        dbs.close();
     }
-
 
     @Test
     public void testButtons() throws Exception {
