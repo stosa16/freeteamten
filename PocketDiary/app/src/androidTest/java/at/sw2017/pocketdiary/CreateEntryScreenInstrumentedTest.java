@@ -283,7 +283,6 @@ public class CreateEntryScreenInstrumentedTest {
     }
 
     @Test
-    @Test
     public void createEntryWithPictures() {
         TestHelper.grantPicturePermissions();
         String path_one = "/test/1.jpg";

@@ -35,7 +35,7 @@ public class DBEntryTest {
 
     @Before
     public void setUp() throws Exception {
-        Context context = InstrumentationRegistry.getTargetContext();
+        context = InstrumentationRegistry.getTargetContext();
         context.deleteDatabase(DBHandler.DATABASE_NAME);
         dbh = new DBHandler(context);
         dbe = new DBEntry(context);
