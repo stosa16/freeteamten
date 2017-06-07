@@ -13,13 +13,18 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
     }
 
+    public DBHandler(Context context, int version) {
+        super(context, DATABASE_NAME, null, version);
+        SQLiteDatabase db = this.getWritableDatabase();
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table USER_SETTINGS (ID INTEGER PRIMARY KEY AUTOINCREMENT, USERNAME TEXT, " +
-                "PICTURE TEXT, PIN TEXT, IS_PIN_ACTIVE TEXT)");
+                "FILE_PATH TEXT, NAME TEXT, PIN TEXT, IS_PIN_ACTIVE TEXT)");
 
         db.execSQL("create table ENTRIES (ID INTEGER PRIMARY KEY AUTOINCREMENT, TITLE TEXT, " +
-                "MAINCATEGORY_ID NUMBER, SUBCATEGORY_ID NUMBER, DATE DATE, DESCRIPTION TEXT, ADDRESS_ID NUMBER)");
+                "MAINCATEGORY_ID NUMBER, SUBCATEGORY_ID NUMBER, DATE DATE, DESCRIPTION TEXT, ADDRESS_ID NUMBER, ALLFRIENDS TEXT)");
 
         db.execSQL("create table ENTRIES_FRIENDS (FRIEND_ID NUMBER, ENTRY_ID NUMBER)");
 

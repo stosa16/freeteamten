@@ -2,15 +2,11 @@ package at.sw2017.pocketdiary;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 
-import java.io.File;
 import java.util.List;
-import android.view.View;
 
 import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBHandler;
@@ -31,13 +27,14 @@ public class MainActivity extends AppCompatActivity {
             DBHandler db = new DBHandler(this);
             dbUserSetting = new DBUserSetting(MainActivity.this);
             userSetting = new UserSetting("");
-            userSetting.setUserName("Markus");
+            userSetting.setUserName("");
             userSetting.setPinActive("0");
             userSetting.setPin("");
             userSetting.setId(1);
+            userSetting.setPicturename("");
+            userSetting.setFilePath("");
             dbUserSetting.insert(userSetting);
-            //todo: add here categories... first time
-
+            Helper.initCategories(this);
             prefs.edit().putBoolean("firstrun", false).commit();
         }
 

@@ -41,10 +41,12 @@ import java.util.Locale;
 import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
+import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 import at.sw2017.pocketdiary.database_access.DBPicture;
 
@@ -69,7 +71,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     private static final int FINE_LOCATION_REQUEST = 3;
     private static final int COARSE_LOCATION_REQUEST = 4;
     private static final int PICK_IMAGE_REQUEST = 5;
-
     private static final int DELETE_IMAGE_REQUEST = 6;
 
     TextView badge_camera;
@@ -81,6 +82,8 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     List<Category> maincategories = new ArrayList<>();
     List<Category> subcategories = new ArrayList<>();
     List<String> strings_subcategories = new ArrayList<>();
+    List<String> items = new ArrayList<String>();
+    List<Friend> friends = new ArrayList<Friend>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         initCategories();
         initDateButton();
         initBadges();
+        initFriends();
         if (entry_id != 0) {
             try {
                 setValuesOfFields(entry_id);
@@ -99,6 +103,49 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                 e.printStackTrace();
             }
         }
+    }
+
+    public void initFriends() {
+        ImageButton friends_button = (ImageButton) this.findViewById(R.id.btn_friends);
+        final DBFriend dbc = new DBFriend(this);
+        if (dbc.getAllFriends().size() == 0) {
+            Helper.initCategories(this);
+        }
+        final List<Friend> all_friends = dbc.getAllFriends();
+
+        for (Friend item : all_friends) {
+            items.add(item.getName());
+        }
+
+        friends_button.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                final List<Friend> all_friends = dbc.getAllFriends();
+
+                for (Friend item : all_friends) {
+                    items.add(item.getName());
+                }
+
+                String text = "Select Friends";
+
+                final MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
+                multiSpinner.setVisibility(v.VISIBLE);
+                multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
+
+                    @Override
+                    public void onItemsSelected(boolean[] selected) {
+
+                        for(int i = 0; i<items.size(); i++){
+                            if(selected[i] == true){
+                                friends.add(all_friends.get(i));
+                            }
+                        }
+                        Helper.updateBadgeVisibility(badge_friends, true);
+                    }
+                });
+            }
+        });
     }
 
     public void checkLocationPermissions(View view) {
@@ -226,9 +273,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
     private void initCategories() {
         DBCategory dbc = new DBCategory(this);
-        if (dbc.getAllCategories().size() == 0) {
-            Helper.initCategories(this);
-        }
         maincategories = dbc.getMainCategories();
         strings_maincategories.add(empty_spinner_text);
         for (Category temp_cat : maincategories) {
@@ -485,6 +529,10 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             }
             entry_address.setId((int) id);
             entry.setAddress(entry_address);
+            entry.setAddressId((int) id);
+        }
+        if (friends.size() != 0) {
+            entry.setFriends(friends);
         }
         if (entry_id != 0) {
             DBEntry dbEntry = new DBEntry(this);

@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 import at.sw2017.pocketdiary.database_access.DBUserSetting;
@@ -133,6 +134,15 @@ public class SettingScreen extends AppCompatActivity {
                     return;
                 }
 
+                if (new_pin.length() < 5) {
+                    Toast.makeText(SettingScreen.this, "Pin requires 5 characters",
+                            Toast.LENGTH_LONG).show();
+                    new_pin.setText("");
+                    repeat_pin.setText("");
+                    old_pin_.setText("");
+                    save_button.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_red));
+                    return;
+                }
                 dbUserSetting.update(userSetting, 1);
                 Intent intent = new Intent(SettingScreen.this, StartScreen.class);
                 startActivity(intent);
@@ -154,7 +164,7 @@ public class SettingScreen extends AppCompatActivity {
                 edit_friends.setBackgroundColor(Color.RED);
 
                 //todo link to Edit friends screen
-                Intent intent = new Intent(SettingScreen.this, StartScreen.class);
+                Intent intent = new Intent(SettingScreen.this, Friends.class);
                 startActivity(intent);
             }
         });

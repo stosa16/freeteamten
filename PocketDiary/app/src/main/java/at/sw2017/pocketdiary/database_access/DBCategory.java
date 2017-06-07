@@ -93,6 +93,16 @@ public class DBCategory extends SQLiteOpenHelper {
         return categories;
     }
 
+    public Category getMainCategory(int id) {
+        List<Category> cat = loadCategoriesFromDb("SELECT * FROM CATEGORIES WHERE ID="+id);
+        return cat.get(0);
+    }
+
+    public Category getMainCategoryByName(String name){
+        List<Category> cat = loadCategoriesFromDb("SELECT * FROM CATEGORIES WHERE NAME='"+name+"'");
+        return cat.get(0);
+    }
+
     public List<Category> loadCategoriesFromDb(String query) {
         List<Category> categories = new ArrayList<Category>();
         SQLiteDatabase db = this.getReadableDatabase();

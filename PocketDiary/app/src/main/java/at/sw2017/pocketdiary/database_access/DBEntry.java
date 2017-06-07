@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
 
 public class DBEntry extends SQLiteOpenHelper {
@@ -38,11 +39,26 @@ public class DBEntry extends SQLiteOpenHelper {
         values.put("DESCRIPTION", entry.getDescription());
         values.put("MAINCATEGORY_ID", entry.getMainCategoryId());
         values.put("SUBCATEGORY_ID", entry.getSubCategoryId());
-        if (entry.getAddress() != null) {
+        if(entry.getAddressId() != null){
+            values.put("ADDRESS_ID", entry.getAddressId());
+        }
+        else if (entry.getAddress() != null) {
             values.put("ADDRESS_ID", entry.getAddress().getId());
         }
         if (entry.getDate() != null) {
             values.put("DATE", date_fromat.format(entry.getDate()));
+        }
+
+        //todo add in DBHandler: FRIEND TEXT
+        //todo maybe LIST instead of TEXT if its possible
+        if(entry.getFriends().size() != 0){
+            String friend = "";
+            for(Friend f:entry.getFriends()){
+                friend += f.getId() + ",";
+            }
+            friend = friend.substring(0, friend.length() - 1);
+            //values.put("FRIEND", friend);
+            values.put("ALLFRIENDS", friend);
         }
         long id = db.insert("ENTRIES", null, values);
         db.close();
@@ -88,6 +104,9 @@ public class DBEntry extends SQLiteOpenHelper {
             if (cursor.getString(6) != null) {
                 entry.setAddressId(cursor.getInt(6));
             }
+            if (cursor.getString(7) != null) {
+                entry.setAllFriends(cursor.getString(7));
+            }
         }
         db.close();
         return entry;
@@ -117,6 +136,9 @@ public class DBEntry extends SQLiteOpenHelper {
                 }
                 if (cursor.getString(6) != null) {
                     entry.setAddressId(Integer.parseInt(cursor.getString(6)));
+                }
+                if (cursor.getString(7) != null) {
+                    entry.setAllFriends(cursor.getString(7));
                 }
                 entry_list.add(entry);
             } while (cursor.moveToNext());

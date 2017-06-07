@@ -17,6 +17,7 @@ public class Entry {
     private Address address;
     private List<Friend> friends = new ArrayList<Friend>();
     private List<Picture> pictures = new ArrayList<Picture>();
+    private String allFriends;
 
     public Entry() {
     }
@@ -38,7 +39,7 @@ public class Entry {
         this.address = address;
     }
 
-    public Entry(String title, int mainCategoryId, Category mainCategory, int subCategoryId, Category subCategory, Date date, String description, int addressId, Address address, List<Friend> friends, List<Picture> pictures) {
+    public Entry(String title, int mainCategoryId, Category mainCategory, int subCategoryId, Category subCategory, Date date, String description, int addressId, Address address, List<Friend> friends, List<Picture> pictures, String allFriends) {
         this.title = title;
         this.mainCategoryId = mainCategoryId;
         this.mainCategory = mainCategory;
@@ -48,6 +49,7 @@ public class Entry {
         this.description = description;
         this.addressId = addressId;
         this.address = address;
+        this.allFriends = allFriends;
         if (friends == null) {
             this.friends = new ArrayList<Friend>();
         } else {
@@ -124,7 +126,7 @@ public class Entry {
         this.description = description;
     }
 
-    public int getAddressId() {
+    public Integer getAddressId() {
         return addressId;
     }
 
@@ -159,5 +161,12 @@ public class Entry {
     public List<Picture> addPicture(Picture picture) {
         this.pictures.add(picture);
         return this.pictures;
+    }
+    public String getAllFriends() {
+        return allFriends;
+    }
+
+    public void setAllFriends(String allFriends) {
+        this.allFriends = allFriends;
     }
 }

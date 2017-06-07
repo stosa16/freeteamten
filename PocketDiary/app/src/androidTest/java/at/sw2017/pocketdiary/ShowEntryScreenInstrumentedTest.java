@@ -13,15 +13,22 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public class ShowEntryScreenInstrumentedTest {
@@ -88,7 +95,7 @@ public class ShowEntryScreenInstrumentedTest {
         onView(withId(R.id.out_category)).check(matches(withText(test_entry.getMainCategory().getName())));
         onView(withId(R.id.out_subcategory)).check(matches(withText(test_entry.getSubCategory().getName())));
     }
-/*
+
     @Test
     public void checkImages() {
         Intent init_intent = new Intent();
@@ -103,5 +110,22 @@ public class ShowEntryScreenInstrumentedTest {
         onView(withId(R.id.out_date)).check(matches(withText(date_format.format(test_entry.getDate()))));
         onView(withId(R.id.out_category)).check(matches(withText(test_entry.getMainCategory().getName())));
         onView(withId(R.id.out_subcategory)).check(matches(withText(test_entry.getSubCategory().getName())));
-    }*/
+    }
+
+    @Test
+    public void checkIfPdfWasCreated() {
+        TestHelper.grantPicturePermissions();
+        Intent init_intent = new Intent();
+        mActivityInitRule.launchActivity(init_intent);
+        test_entry = TestHelper.createTestEntryWithPictures(context, mActivityInitRule.getActivity());
+        test_entry.addPicture(new Picture("/test/123.jpg", "123.jpg"));
+        Intent intent = new Intent();
+        intent.putExtra("entry_id", Integer.toString(test_entry.getId()));
+        mActivityRule.launchActivity(intent);
+        onView(withId(R.id.pdf_export)).perform(click());
+        onView(withText("Pdf was created")).
+                inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).
+                check(matches(isDisplayed()));
+
+    }
 }

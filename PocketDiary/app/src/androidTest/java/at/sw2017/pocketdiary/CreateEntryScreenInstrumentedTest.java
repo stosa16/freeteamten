@@ -1,12 +1,19 @@
 package at.sw2017.pocketdiary;
 
+import android.app.Instrumentation;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Geocoder;
+import android.net.Uri;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.UiDevice;
 import android.widget.DatePicker;
 
 import org.hamcrest.Matchers;
@@ -16,12 +23,20 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBEntry;
+import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 import at.sw2017.pocketdiary.database_access.DBPicture;
+import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onData;
@@ -31,11 +46,15 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
@@ -48,10 +67,11 @@ public class CreateEntryScreenInstrumentedTest {
     private DBEntry dbe;
     private DBAddress dba;
     private DBPicture dbp;
+    private DBUserSetting dbs;
     private Geocoder geocoder;
     private Context context;
     private String camera_package = "com.android.camera";
-    private String gallery_package = "content://media/internal/images/media";
+    private UiDevice mDevice;
 
     private static final int CAMERA_REQUEST = 1;
     private static final int WRITE_STORAGE_REQUEST = 2;
@@ -75,10 +95,14 @@ public class CreateEntryScreenInstrumentedTest {
         dbe = new DBEntry(context);
         dba = new DBAddress(context);
         dbp = new DBPicture(context);
+        dbs = new DBUserSetting(context);
+        TestHelper.createUserSetting(context);
         geocoder = new Geocoder(context);
         titleToBeTyped = "Running";
         Intents.init();
-        }
+        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        mActivityRule.launchActivity(new Intent());
+    }
 
     @After
     public void release() {
@@ -189,7 +213,7 @@ public class CreateEntryScreenInstrumentedTest {
         intended(hasComponent(StartScreen.class.getName()));
     }
 
-    /*
+
     @Test
     public void checkCamera() {
         initActivity("0");
@@ -265,9 +289,9 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withId(R.id.btn_pictures)).perform(click());
         onView(withText("Remove")).perform(click());
         onView(withId(R.id.badge_camera)).check(matches(withText("1")));
-    }*/
+    }
 
-    /*@Test
+    @Test
     public void checkRequestAborted() {
         initActivity("0");
         TestHelper.grantPicturePermissions();
@@ -277,7 +301,7 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withId(R.id.btn_pictures)).perform(click());
         onView(withText("Camera")).perform(click());
         onView(withId(R.id.badge_camera)).check(matches(withText("0")));
-    }*/
+    }
 
     @Test
     public void pressCancelButton() {
@@ -285,7 +309,7 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withId(R.id.btn_cancel)).perform(click());
         intended(hasComponent(StartScreen.class.getName()));
     }
-/*
+
     @Test
     public void createEntryWithPictures() {
         initActivity("0");
@@ -319,39 +343,28 @@ public class CreateEntryScreenInstrumentedTest {
     }
 
     @Test
-    public void pressLocationButton() {
-        initActivity("0");
-        Address address_test = new Address(23.4500, 45.4500);
-        onView(withId(R.id.out_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.out_category)).perform(click());
+    public void createEntryWithAddressStreet() {
+        Address address_test = new Address(23, 45);
+        address_test.setStreet("Inffeldgasse 10");
+        onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
-        onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.input_category)).check(matches(not(withText("Sport"))));
         onView(withId(R.id.input_subcategory)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
         onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
         onView(withId(R.id.btn_calendar)).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
         onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
-        onView(withId(R.id.btn_location)).perform(click());
-        onView(withId(R.id.badge_address)).check(matches((isDisplayed())));
+        mActivityRule.getActivity().entry_address = address_test;
         onView(withId(R.id.btn_save)).perform(click());
         Entry entry;
-        Context context = InstrumentationRegistry.getTargetContext();
+        Context context = getTargetContext();
         entry = Helper.getEntryComplete(context, 1);
         DecimalFormat df2 = new DecimalFormat("###.##");
         double latitude = Double.valueOf(df2.format(entry.getAddress().getLatitude()));
         assertTrue(address_test.getLatitude() == latitude);
     }
-
-    @Test
-    public void reverseGeocoding() throws IOException {
-        initActivity("0");
-        Address address = new Address(13.0, 43.0);
-        ReverseGeocoder reverseGeocoder = new ReverseGeocoder();
-        Address address1;
-        address1 = reverseGeocoder.getAddress(address.getLongitude(), address.getLatitude(), geocoder);
-        assertTrue(address1.getCountry().equals("Italy"));
-    }*/
 
     @Test
     public void updateEntryWithoutAddress() {
@@ -397,5 +410,65 @@ public class CreateEntryScreenInstrumentedTest {
         mActivityRule.getActivity().entry_address = edit_address;
         onView(withId(R.id.btn_save)).perform(click());
         intended(hasComponent(StartScreen.class.getName()));
+    }
+
+    @Test
+    public void createEntryWithAddressLatitudeLongitude() {
+        TestHelper.grantLocationPermissions();
+        Address address_test = new Address(23, 45);
+        onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
+        onView(withId(R.id.input_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.input_subcategory)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.btn_calendar)).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
+        onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
+        mActivityRule.getActivity().entry_address = address_test;
+        onView(withId(R.id.btn_save)).perform(click());
+        Entry entry;
+        Context context = getTargetContext();
+        entry = Helper.getEntryComplete(context, 1);
+        DecimalFormat df2 = new DecimalFormat("###.##");
+        double latitude = Double.valueOf(df2.format(entry.getAddress().getLatitude()));
+        assertTrue(address_test.getLatitude() == latitude);
+    }
+
+    @Test
+    public void addFriends() {
+        Friend friend = new Friend("Stefan", false);
+        Friend friend2 = new Friend("Stefan2", false);
+        DBFriend dbf = new DBFriend(mActivityRule.getActivity());
+        dbf.insert(friend);
+        dbf.insert(friend2);
+
+        onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
+        onView(withId(R.id.input_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.input_subcategory)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.btn_calendar)).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
+        onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
+        onView(withId(R.id.multi_spinner)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.btn_friends)).perform(click());
+        onView(withId(R.id.multi_spinner)).check(matches(isDisplayed()));
+        onView(withId(R.id.multi_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(0).perform(click());
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.btn_save)).perform(click());
+
+        Entry entry;
+        Context context = InstrumentationRegistry.getTargetContext();
+        entry = Helper.getEntryComplete(context, 1);
+        String friend_ = entry.getAllFriends();
+        Friend temp_friend;
+        DBFriend dbf2 = new DBFriend(mActivityRule.getActivity());
+        temp_friend = dbf2.getFriend(Integer.parseInt(friend_));
+        assertTrue("Stefan2".equals(temp_friend.getName()));
     }
 }

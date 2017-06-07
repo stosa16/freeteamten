@@ -70,16 +70,6 @@
                 android:text="Subcategory" />
 
             <TextView
-                android:id="@+id/create_stats_lbl_friends"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:textColor="@color/colorRed"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="16dp"
-                android:text="Friends" />
-
-            <TextView
                 android:id="@+id/create_stats_lbl_term"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -147,13 +137,6 @@
 
             <Spinner
                 android:id="@+id/create_stats_spin_sub_cat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"/>
-
-            <Spinner
-                android:id="@+id/create_stats_spin_friends"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"

@@ -77,10 +77,8 @@ public class DBAddress extends SQLiteOpenHelper {
             if (cursor.getString(5) != null) {
                 address.setCountry(cursor.getString(5));
             }
-            if (cursor.getString(6) != null) {
+            if ((cursor.getString(6) != null && cursor.getString(7) != null) && (cursor.getDouble(6) != 0.0 && cursor.getDouble(7) != 0.0)) {
                 address.setLongitude(cursor.getFloat(6));
-            }
-            if (cursor.getString(7) != null) {
                 address.setLatitude(cursor.getFloat(7));
             }
         }
