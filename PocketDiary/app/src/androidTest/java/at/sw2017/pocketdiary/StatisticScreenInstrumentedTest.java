@@ -47,6 +47,7 @@ public class StatisticScreenInstrumentedTest {
         dbh = new DBHandler(context);
         dbs = new DBStatistic(context);
         TestHelper.initCategories(context);
+        TestHelper.createTestEntryBasic(context);
         TestHelper.initStatistics(context);
         Intents.init();
         mActivityRule.launchActivity(new Intent());
@@ -77,4 +78,16 @@ public class StatisticScreenInstrumentedTest {
         intended(hasComponent(CreateStatisticActivity.class.getName()));
     }
 
+    @Test
+    public void testCameraButton(){
+        onView(allOf(withText("Statistic"), withParent(withId(R.id.statistic_listview)))).perform(click());
+        onView(withId(R.id.stat_analysis_btn_camera)).perform(click());
+    }
+
+    @Test
+    public void testGridView() {
+        onView(allOf(withText("Statistic"), withParent(withId(R.id.statistic_listview)))).perform(click());
+        onView(withId(R.id.stat_analysis_btn_camera)).perform(click());
+        onView(withText("picture")).perform(click());
+    }
 }

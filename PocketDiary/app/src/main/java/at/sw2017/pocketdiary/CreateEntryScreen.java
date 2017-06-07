@@ -28,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,7 +100,11 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         if (dbc.getAllFriends().size() == 0) {
             Helper.initCategories(this);
         }
+        final List<Friend> all_friends = dbc.getAllFriends();
 
+        for (Friend item : all_friends) {
+            items.add(item.getName());
+        }
 
         friends_button.setOnClickListener(new View.OnClickListener() {
 

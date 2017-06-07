@@ -82,6 +82,10 @@ public class StatisticScreenActivity extends Activity {
                 //db_ids.get(position);
                 //createAlert(subcategories.get(position));
                 printToast(db_ids.get(position).toString());
+
+                Intent i = new Intent(StatisticScreenActivity.this, StatisticAnalysisActivity.class);
+                i.putExtra("statistic_id", db_ids.get(position).toString());
+                startActivity(i);
             }
         });
     }

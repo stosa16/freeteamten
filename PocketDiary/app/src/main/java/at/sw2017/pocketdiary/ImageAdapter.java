@@ -1,55 +1,70 @@
 package at.sw2017.pocketdiary;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.res.ResourcesCompat;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-public class ImageAdapter extends BaseAdapter {
-    private Context mContext;
+import java.util.ArrayList;
 
-    public ImageAdapter(Context c) {
-        mContext = c;
+/**
+ * Created by schus on 04.06.2017.
+ */
+
+// Reference: http://stacktips.com/tutorials/android/android-gridview-example-building-image-gallery-in-android
+
+public class ImageAdapter extends ArrayAdapter {
+    private Context context;
+    private int layoutResourceId;
+    private ArrayList data = new ArrayList();
+
+    public ImageAdapter(Context context, int layoutResourceId, ArrayList data) {
+        super(context, layoutResourceId, data);
+        this.layoutResourceId = layoutResourceId;
+        this.context = context;
+        this.data = data;
     }
 
-    public int getCount() {
-        return file_paths.length;
+    public ImageAdapter(Context context, int layoutResourceId) {
+        super(context, layoutResourceId);
+        this.layoutResourceId = layoutResourceId;
+        this.context = context;
+        this.data.clear();
     }
 
-    public String getItem(int position) {
-        return file_paths[position];
-    }
-
-    public long getItemId(int position) {
-        return position;
-    }
-
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView image_view;
-        if (convertView == null) {
-            image_view = new ImageView(mContext);
-            image_view.setLayoutParams(new GridView.LayoutParams(220, 220));
-            image_view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            image_view.setId(position);
-            image_view.setPadding(8, 8, 8, 8);
+        View row = convertView;
+        ViewHolder holder = null;
+
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            row = inflater.inflate(layoutResourceId, parent, false);
+            holder = new ViewHolder();
+            holder.imageTitle = (TextView) row.findViewById(R.id.text);
+            holder.image = (ImageView) row.findViewById(R.id.imagegrid);
+            row.setTag(holder);
         } else {
-            image_view = (ImageView) convertView;
+            holder = (ViewHolder) row.getTag();
         }
-        Bitmap bitmap = BitmapFactory.decodeFile(file_paths[position]);
-        if (bitmap != null) {
-            image_view.setImageBitmap(bitmap);
-        } else {
-            Drawable drawable = ResourcesCompat.getDrawable(mContext.getResources(), android.R.drawable.ic_delete, null);
-            image_view.setImageDrawable(drawable);
-        }
-        return image_view;
+
+        ImageItem item = (ImageItem) data.get(position);
+        holder.imageTitle.setText(item.getTitle());
+        holder.image.setImageBitmap(item.getImage());
+        return row;
     }
 
-    public String[] file_paths;
+    static class ViewHolder {
+        TextView imageTitle;
+        ImageView image;
+    }
+
+
+
 }

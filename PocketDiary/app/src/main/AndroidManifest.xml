@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="at.sw2017.pocketdiary">
+
     <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="25" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -13,7 +15,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <permission android:name="com.example.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
+
+    <permission
+        android:name="com.example.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
 
     <application
         android:allowBackup="true"
@@ -43,11 +48,11 @@
         <activity
             android:name=".SettingScreen"
             android:exported="true"
-            android:label="Settings" />
+            android:label="Settings"></activity>
         <activity
             android:name=".CreateEntryScreen"
             android:label="Create Entry"
-            android:theme="@style/ActivityTheme" />
+            android:theme="@style/ActivityTheme"></activity>
         <activity
             android:name=".ReviewActivity"
             android:label="Review" />
@@ -62,11 +67,15 @@
         <activity
             android:name=".StatisticScreenActivity"
             android:label="Statistics"
-            android:theme="@style/ActivityTheme" />
+            android:theme="@style/ActivityTheme"></activity>
         <activity
             android:name=".CreateStatisticActivity"
             android:label="Create Statistic"
-            android:theme="@style/ActivityTheme" />
+            android:theme="@style/ActivityTheme"></activity>
+        <activity
+            android:name=".StatisticAnalysisActivity"
+            android:label="Show Statistic"
+            android:theme="@style/ActivityTheme"></activity>
         <activity
             android:name=".Friends"
             android:exported="true"
@@ -78,6 +87,13 @@
         <activity
             android:name=".PictureFullscreen"
             android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".ShowStatistic"
+            android:exported="true"
+            android:theme="@style/ActivityTheme" />
+        <activity android:name=".ShowPictureScreen"
+            android:theme="@style/AppTheme2"
+        />
     </application>
 
 </manifest>

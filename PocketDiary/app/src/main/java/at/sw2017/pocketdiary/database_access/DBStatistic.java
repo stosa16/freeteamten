@@ -37,10 +37,10 @@ public class DBStatistic extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("TITLE", statistic.getTitle());
         if(statistic.getDateFrom() != null) {
-            values.put("DATE_FROM", statistic.getDateFrom().toString());
+            values.put("DATE_FROM", date_format.format(statistic.getDateFrom()));
         }
         if(statistic.getDateUntil() != null) {
-            values.put("DATE_UNTIL", statistic.getDateUntil().toString());
+            values.put("DATE_UNTIL", date_format.format(statistic.getDateUntil()));
         }
         if(statistic.getCategoryId() != null) {
             values.put("MAINCATEGORY_ID", statistic.getCategoryId());
@@ -76,6 +76,12 @@ public class DBStatistic extends SQLiteOpenHelper {
         return null;
     }
 
+    public void delete(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete("STATISTICS","id=?",new String[]{String.valueOf(id)});
+        db.close();
+    }
+
 
     public List<Statistic> getData() {
         List<Statistic> results = loadStatisticsFromDb("SELECT * FROM STATISTICS");
@@ -93,6 +99,7 @@ public class DBStatistic extends SQLiteOpenHelper {
                 statistic.setTitle(cursor.getString(1));
                 if(cursor.getString(2) != null){
                     try {
+                        String date = cursor.getString(2);
                         statistic.setDateFrom(date_format.parse(cursor.getString(2)));
                     } catch (ParseException e) {
                         e.printStackTrace();
