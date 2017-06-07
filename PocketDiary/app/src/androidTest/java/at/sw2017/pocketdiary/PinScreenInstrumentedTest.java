@@ -1,6 +1,8 @@
 package at.sw2017.pocketdiary;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -14,6 +16,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.UserSetting;
+import at.sw2017.pocketdiary.database_access.DBHandler;
 import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -39,6 +42,7 @@ public class PinScreenInstrumentedTest {
 
     private PinScreen activity;
     private String titleToBeTyped;
+    public DBHandler dbh;
 
     @Rule
     public ActivityTestRule<PinScreen> mActivityRule = new ActivityTestRule<PinScreen>(PinScreen.class);
@@ -59,7 +63,10 @@ public class PinScreenInstrumentedTest {
     public void setUp() {
         Intents.init();
         mActivityRule.launchActivity(new Intent());
-        titleToBeTyped = "Running";
+        Context context = InstrumentationRegistry.getTargetContext();
+        context.deleteDatabase(DBHandler.DATABASE_NAME);
+        dbh = new DBHandler(context);
+        TestHelper.createUserSettingEmpty(context);
     }
 
     @After
