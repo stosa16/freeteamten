@@ -1,24 +1,22 @@
 package at.sw2017.pocketdiary;
 
-import android.*;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.text.method.ScrollingMovementMethod;
+import android.view.View;
 import android.widget.Button;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -26,6 +24,7 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,20 +32,17 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import at.sw2017.pocketdiary.business_objects.Friend;
-import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
-
-import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
-import static android.widget.ImageView.ScaleType.FIT_END;
-import static android.widget.ImageView.ScaleType.FIT_XY;
+import at.sw2017.pocketdiary.database_access.DBFriend;
 
 public class ShowEntryScreen extends AppCompatActivity {
 
     private int entry_id;
     final int THUMBNAIL_SIZE = 140;
     private static final int WRITE_STORAGE_REQUEST = 2;
+    private int address_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +52,14 @@ public class ShowEntryScreen extends AppCompatActivity {
         entry_id = Integer.parseInt(intent.getStringExtra("entry_id"));
 
         Entry entry = Helper.getEntryComplete(this, entry_id);
-        TextView title = (TextView)findViewById(R.id.out_title);
+        address_id = entry.getAddressId();
+        TextView title = (TextView) findViewById(R.id.out_title);
         title.setText(entry.getTitle());
-        TextView main_category = (TextView)findViewById(R.id.out_category);
+        TextView main_category = (TextView) findViewById(R.id.out_category);
         main_category.setText(entry.getMainCategory().getName());
-        TextView sub_category = (TextView)findViewById(R.id.out_subcategory);
+        TextView sub_category = (TextView) findViewById(R.id.out_subcategory);
         sub_category.setText(entry.getSubCategory().getName());
-        TextView date = (TextView)findViewById(R.id.out_date);
+        TextView date = (TextView) findViewById(R.id.out_date);
         TextView friends = (TextView)findViewById(R.id.out_friends);
         String friend_ = entry.getAllFriends();
         if(friend_ == null){
@@ -87,11 +84,11 @@ public class ShowEntryScreen extends AppCompatActivity {
         } else {
             date.setText("");
         }
-        TextView address = (TextView)findViewById(R.id.out_address);
+        TextView address = (TextView) findViewById(R.id.out_address);
         if (entry.getAddress() != null) {
             address.setText(entry.getAddress().getStreet() + ", " + entry.getAddress().getCity());
         }
-        TextView description = (TextView)findViewById(R.id.out_description);
+        TextView description = (TextView) findViewById(R.id.out_description);
         if (entry.getDescription() != null) {
             description.setText(entry.getDescription());
         }
@@ -231,5 +228,11 @@ public class ShowEntryScreen extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void showLocation(View view) {
+        Intent intent = new Intent(this, LocationScreen.class);
+        intent.putExtra("address_id", Integer.toString(address_id));
+        startActivity(intent);
     }
 }

@@ -32,4 +32,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_delete_picture_screen">DeletePictureScreen</string>
     <string name="pdf_export">pdf export</string>
+    <string name="title_activity_location_screen">Location</string>
+    <string name="title_activity_location_detail_screen">Map</string>
 </resources>

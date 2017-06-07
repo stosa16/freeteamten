@@ -1,4 +1,5 @@
 package at.sw2017.pocketdiary;
+
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;

@@ -313,6 +313,23 @@ public final class TestHelper {
         }
     }
 
+    public static void revokeLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getInstrumentation().getUiAutomation().executeShellCommand(
+                    "pm revoke " + getTargetContext().getPackageName()
+                            + " android.permission.ACCESS_FINE_LOCATION");
+            getInstrumentation().getUiAutomation().executeShellCommand(
+                    "pm revoke " + getTargetContext().getPackageName()
+                            + " android.permission.ACCESS_COARSE_LOCATION");
+            getInstrumentation().getUiAutomation().executeShellCommand(
+                    "pm revoke " + getTargetContext().getPackageName()
+                            + " android.permission.ACCESS_NETWORK_STATE");
+            getInstrumentation().getUiAutomation().executeShellCommand(
+                    "pm revoke " + getTargetContext().getPackageName()
+                            + " android.permission.INTERNET");
+        }
+    }
+
     public static UserSetting createUserSetting(Context context) {
         DBUserSetting dbs = new DBUserSetting(context);
         dbs = new DBUserSetting(context);

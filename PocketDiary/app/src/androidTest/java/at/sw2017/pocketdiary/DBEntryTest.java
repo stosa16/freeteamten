@@ -10,12 +10,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBEntry;
@@ -39,8 +41,11 @@ public class DBEntryTest {
         context.deleteDatabase(DBHandler.DATABASE_NAME);
         dbh = new DBHandler(context);
         dbe = new DBEntry(context);
+        dbe.onCreate(null);
+        dbe.onUpgrade(null, 0, 0);
         dba = new DBAddress(context);
         dbp = new DBPicture(context);
+        TestHelper.initCategories(context);
     }
 
     @After
@@ -48,11 +53,57 @@ public class DBEntryTest {
         dbh.close();
         dbe.close();
         dba.close();
+        dbp.close();
     }
 
     @Test
     public void shouldAddEntryBasic() throws Exception {
         Entry entry = new Entry("Test", 1, 2, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!");
+        long id = dbe.insert(entry);
+        assertTrue(id > 0);
+        Entry entry_loaded = Helper.getEntryComplete(context, (int) id);
+        assertTrue(entry.getDescription().equals(entry_loaded.getDescription()));
+        assertTrue(entry.getTitle().equals(entry_loaded.getTitle()));
+        assertTrue(entry.getMainCategoryId() == (entry_loaded.getMainCategory().getId()));
+        assertTrue(entry.getSubCategoryId() == (entry_loaded.getSubCategory().getId()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        assertTrue(dateFormat.format(entry.getDate()).equals(dateFormat.format(entry_loaded.getDate())));
+    }
+
+    @Test
+    public void shouldAddEntryComplete() {
+        Address address = new Address(123.45, 67.89);
+        long address_id = dba.insert(address);
+        assertTrue(address_id > 0);
+        String file_path = "/Test/";
+        String image_name = "test.jpeg";
+        Picture picture = new Picture(file_path, image_name);
+        long picture_id = dbp.insert(picture);
+        picture.setId((int) picture_id);
+        List<Picture> pictures = new ArrayList<>();
+        pictures.add(picture);
+        Friend friend = new Friend("Test Friend");
+        friend.setDeleted(false);
+        List<Friend> friends = new ArrayList<>();
+        friends.add(friend);
+        Entry entry = new Entry("Test", 1, null, 2, null, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!", (int) address_id, address, friends, pictures, "");
+        long id = dbe.insert(entry);
+        assertTrue(id > 0);
+        Entry entry_loaded = dbe.getEntry((int) id);
+        assertTrue(entry.getDescription().equals(entry_loaded.getDescription()));
+        assertTrue(entry.getTitle().equals(entry_loaded.getTitle()));
+        assertTrue(entry.getMainCategoryId() == (entry_loaded.getMainCategoryId()));
+        assertTrue(entry.getSubCategoryId() == (entry_loaded.getSubCategoryId()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        assertTrue(dateFormat.format(entry.getDate()).equals(dateFormat.format(entry_loaded.getDate())));
+    }
+
+    @Test
+    public void shouldAddEntryCompleteFriendsPicturesNull() {
+        Address address = new Address(123.45, 67.89);
+        long address_id = dba.insert(address);
+        assertTrue(address_id > 0);
+        Entry entry = new Entry("Test", 1, null, 2, null, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!", (int) address_id, address, null, null, "");
         long id = dbe.insert(entry);
         assertTrue(id > 0);
         Entry entry_loaded = dbe.getEntry((int) id);
@@ -89,6 +140,11 @@ public class DBEntryTest {
 
     @Test
     public void shouldGetAllEntries(){
+        Address address = new Address(123.45, 67.89);
+        long id_add = dba.insert(address);
+        assertTrue(id_add > 0);
+        Entry entry_location = new Entry("Test", 1, 2, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!", address);
+        dbe.insert(entry_location);
         Entry entry = new Entry("Test", 1, 2, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!");
         dbe.insert(entry);
         List<Entry> entries_loaded = dbe.getAllEntries();
@@ -116,5 +172,13 @@ public class DBEntryTest {
         Picture picture_loaded = entry_loaded.getPictures().get(0);
         assertTrue(picture_loaded.getFilePath().equals(file_path));
         assertTrue(picture_loaded.getName().equals(image_name));
+    }
+
+    @Test
+    public void shouldGetNoEntry() {
+        Entry entry = dbe.getEntry(1);
+        assertTrue(entry == null);
+        List<Entry> entries = dbe.getAllEntries();
+        assertTrue(entries.size() == 0);
     }
 }
