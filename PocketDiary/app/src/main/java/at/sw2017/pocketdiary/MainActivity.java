@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.List;
+import android.view.View;
 
 import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBHandler;

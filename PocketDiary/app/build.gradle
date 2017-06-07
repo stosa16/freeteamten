@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         debug {
-            testCoverageEnabled = true
+            testCoverageEnabled true
         }
         release {
             minifyEnabled false
@@ -28,11 +28,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    androidTestCompile 'com.android.support:support-annotations:25.3.0'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    compile 'com.android.support:support-annotations:25.3.0'
-    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2'
-    androidTestCompile ('com.android.support.test.espresso:espresso-contrib:2.2.2'){
+    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2') {
         exclude module: 'support-annotations'
         exclude module: 'support-v4'
         exclude module: 'support-v13'
@@ -40,9 +36,15 @@ dependencies {
         exclude module: 'design'
     }
 
+    compile 'com.android.support:support-annotations:25.3.0'
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.roomorama:caldroid:3.0.1'
     compile 'com.prolificinteractive:material-calendarview:1.4.3'
+    compile 'com.android.support:support-v4:25.3.0'
+    compile 'com.android.support:design:25.3.0'
     testCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support:support-annotations:25.3.0'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2'
 }

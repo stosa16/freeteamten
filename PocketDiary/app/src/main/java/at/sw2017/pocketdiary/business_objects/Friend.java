@@ -8,6 +8,17 @@ public class Friend {
     public Friend() {
     }
 
+    public Friend(String name, boolean isDeleted) {
+        this.name = name;
+        this.isDeleted = isDeleted;
+    }
+
+    public Friend(int id, String name, Boolean isDeleted) {
+        this.id = id;
+        this.name = name;
+        this.isDeleted = isDeleted;
+    }
+
     public Friend(String name) {
         this.name = name;
     }
@@ -35,4 +46,6 @@ public class Friend {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
+
+
 }
