@@ -19,7 +19,7 @@ public class DeletePictureScreen extends AppCompatActivity {
     public String[] file_paths;
     private List<String> deleted_paths = new ArrayList<>();
     private GridView grid_view;
-    private ImageAdapter adapter;
+    private ImageAdapterDeletePicture adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class DeletePictureScreen extends AppCompatActivity {
         setContentView(R.layout.activity_delete_picture_screen);
 
         grid_view = (GridView) findViewById(R.id.gridview);
-        adapter = new ImageAdapter(this);
+        adapter = new ImageAdapterDeletePicture(this);
         Intent intent = getIntent();
         file_paths = intent.getStringArrayExtra("file_paths");
         adapter.file_paths = file_paths;

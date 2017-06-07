@@ -24,12 +24,17 @@ import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
+import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.endsWith;
 import static org.junit.Assert.assertEquals;
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -76,14 +81,17 @@ public class FriendsInstrumentedTest {
         onView(withId(R.id.textToBeChanged))
                 .check(matches(withText(mStringToBetyped)));*/
     }
+
     @Test
     public void testButtons () {
         onView( withText( "Add" )). perform ( click());
     }
+
     @Test
     public void checkIfInputTextIsEmpty() {
-        onView(withId(R.id.editText)).check(ViewAssertions.matches(withText("Name")));
+        onView(withId(R.id.editText)).check(ViewAssertions.matches(withHint("Name")));
     }
+
     @Test
     public void shouldInsertName() {
         String test_text = "Some Name";
@@ -91,6 +99,7 @@ public class FriendsInstrumentedTest {
         Espresso.closeSoftKeyboard();
         onView(allOf(withId(R.id.editText), withText(test_text))).check(matches(isDisplayed()));
     }
+
     @Test
     public void shouldAddFriend() throws Exception {
         Friend friend = new Friend("Stefan", false);
@@ -102,6 +111,7 @@ public class FriendsInstrumentedTest {
         assertTrue(loaded_friend.isDeleted() == friend.isDeleted());
         //return friend;
     }
+
     @Test
     public void shouldGetAllFriends(){
         Friend friend = new Friend("Stefan", false);
@@ -110,6 +120,7 @@ public class FriendsInstrumentedTest {
         Friend friend_loaded = friends_loaded.get(0);
         assertTrue(friend.getName().equals(friend_loaded.getName()));
     }
+
     @Test
     public void shouldDeleteFriend() {
         Friend friend = new Friend("Stefan", false);
@@ -120,6 +131,7 @@ public class FriendsInstrumentedTest {
         List<Friend> friends = dbf.getAllNondeletedFriends();
         assertTrue(friends.size() == 0);
     }
+
     @Test
     public void shouldUpdateFriend() {
         Friend friend = new Friend("Stefan", false);
@@ -130,10 +142,41 @@ public class FriendsInstrumentedTest {
         List<Friend> friends = dbf.getAllFriends();
         assertTrue(friends.get(0).getName() != "Stefan");
     }
+
     @Test
     public void useAppContext () throws Exception {
 // Context of the app under test.
         Context appContext = InstrumentationRegistry . getTargetContext();
         assertEquals( "at.sw2017.pocketdiary" , appContext . getPackageName ());
     }
+
+    @Test
+    public void shouldShowAlert() {
+        String name = "Stefan";
+        onView(withId(R.id.editText)).perform(typeText(name));
+        onView(withId(R.id.button)).perform(click());
+        onView(allOf(withText(name))).perform(click());
+        onView(withText("Edit a friend."));
+    }
+
+    @Test
+    public void shouldShowAlertAndUpdate() {
+        String name = "Stefan";
+        onView(withId(R.id.editText)).perform(typeText(name));
+        onView(withId(R.id.button)).perform(click());
+        onView(allOf(withText(name))).perform(click());
+        onView(withText("Update friend")).perform(click());
+        onView(allOf(withText(name))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void shouldShowAlertAndCancel() {
+        String name = "Stefan";
+        onView(withId(R.id.editText)).perform(typeText(name));
+        onView(withId(R.id.button)).perform(click());
+        onView(allOf(withText(name))).perform(click());
+        onView(withText("Cancel")).perform(click());
+        onView(allOf(withText(name))).check(matches(isDisplayed()));
+    }
+    
 }

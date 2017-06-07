@@ -46,23 +46,6 @@ public class StatisticScreenActivity extends Activity {
         });
     }
 
-    private void insertTestData(){
-        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
-        Statistic statistic_1 = new Statistic();
-        statistic_1.setTitle("Statistic 2");
-        try {
-            statistic_1.setDateFrom(date_format.parse("2017-03-26"));
-            statistic_1.setDateUntil(date_format.parse("2017-06-26"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        statistic_1.setCategoryId(1);
-        statistic_1.setSubCategoryId(1);
-        statistic_1.setSearchTerm("This is a searchterm 2");
-        DBStatistic db_insert = new DBStatistic(this);
-        db_insert.insert(statistic_1);
-    }
-
     private void fillListView(){
         DBStatistic dbStatistic = new DBStatistic(this);
         strings_statistics = new ArrayList<>();

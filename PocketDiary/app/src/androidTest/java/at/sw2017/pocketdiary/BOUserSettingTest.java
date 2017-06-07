@@ -16,7 +16,8 @@ public class BOUserSettingTest {
     public void testUSInitWithoutParameters(){
         int id = 1;
         String name = "User";
-        byte[] pic = new byte[1];
+        String pic_name = "Picture";
+        String file_path = "./file";
         String pin = "0123";
         String pin_active = "1";
 
@@ -24,13 +25,15 @@ public class BOUserSettingTest {
 
         us.setId(id);
         us.setUserName(name);
-        us.setPicture(pic);
+        us.setPicturename(pic_name);
+        us.setFilePath(file_path);
         us.setPin(pin);
         us.setPinActive(pin_active);
 
         assertEquals(id, us.getId());
         assertEquals(name, us.getUserName());
-        assertEquals(pic, us.getPicture());
+        assertEquals(pic_name, us.getPicturename());
+        assertEquals(file_path, us.getFilePath());
         assertEquals(pin, us.getPin());
         assertEquals(pin_active, us.isPinActive());
     }
@@ -45,15 +48,19 @@ public class BOUserSettingTest {
     }
 
     @Test
-    public void testUSInitWithThreeParameters(){
+    public void testUSInitWithAllParameters(){
         int id = 1;
         String pin = "0123";
         String pin_active = "1";
+        String pic_name = "Picture";
+        String file_path = "./file";
 
-        UserSetting us = new UserSetting(id, pin, pin_active);
+        UserSetting us = new UserSetting(id, pin, pin_active, file_path, pic_name);
 
         assertEquals(id, us.getId());
         assertEquals(pin, us.getPin());
         assertEquals(pin_active, us.isPinActive());
+        assertEquals(file_path, us.getFilePath());
+        assertEquals(pic_name, us.getPicturename());
     }
 }

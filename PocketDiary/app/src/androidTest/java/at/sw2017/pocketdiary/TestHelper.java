@@ -12,6 +12,7 @@ import android.support.test.InstrumentationRegistry;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,8 @@ import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.business_objects.Statistic;
+import at.sw2017.pocketdiary.business_objects.UserSetting;
+import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBFriend;
@@ -326,7 +329,6 @@ public final class TestHelper {
 
     public static UserSetting createUserSettingEmpty(Context context) {
         DBUserSetting dbs = new DBUserSetting(context);
-        dbs = new DBUserSetting(context);
         UserSetting setting = new UserSetting();
         setting.setUserName("");
         setting.setFilePath("");
