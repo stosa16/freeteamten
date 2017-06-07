@@ -135,8 +135,8 @@
     <TextView
         android:id="@+id/out_description"
         style="@style/simple_text"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="369dp"
+        android:layout_height="212dp"
         android:layout_marginBottom="37dp"
         android:layout_marginTop="32dp"
         android:maxLines="5"
@@ -148,7 +148,8 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_editor_absoluteX="26dp" />
 
     <TextView
         android:id="@+id/out_friends"
@@ -168,7 +169,7 @@
     <TextView
         android:id="@+id/out_address"
         style="@style/simple_text"
-        android:layout_width="163dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView4"
@@ -232,5 +233,23 @@
         tools:layout_editor_absoluteY="0dp"
         app:layout_constraintGuide_begin="17dp" />
 
+
+    <Button
+        android:id="@+id/pdf_export"
+        style="@style/ButtonRed"
+        android:layout_width="396dp"
+        android:layout_height="46dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:text="@string/pdf_export"
+        android:textSize="45px"
+        app:layout_constraintLeft_toLeftOf="@+id/out_description"
+        app:layout_constraintRight_toRightOf="@+id/out_description"
+        app:layout_constraintTop_toBottomOf="@+id/out_description"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintHorizontal_bias="0.629" />
 
 </android.support.constraint.ConstraintLayout>
