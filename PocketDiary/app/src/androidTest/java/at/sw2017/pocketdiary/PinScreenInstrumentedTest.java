@@ -71,6 +71,7 @@ public class PinScreenInstrumentedTest {
 
     @After
     public void release() {
+        dbh.close();
         Intents.release();
     }
 
