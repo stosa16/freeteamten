@@ -1,6 +1,7 @@
 package at.sw2017.pocketdiary;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.assertion.ViewAssertions;
@@ -27,6 +28,7 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
@@ -36,6 +38,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -178,6 +182,15 @@ public class FriendsInstrumentedTest {
         onView(allOf(withText(name))).perform(click());
         onView(withText("Cancel")).perform(click());
         onView(allOf(withText(name))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void shouldShowWarning() {
+        SystemClock.sleep(3000);
+        onView(withId(R.id.button)).perform(click());
+        onView(withText("Please enter a name.")).
+                inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).
+                check(matches(isDisplayed()));
     }
 
 }
