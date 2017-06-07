@@ -486,10 +486,10 @@ public class CreateEntryScreenInstrumentedTest {
         dbf.insert(friend);
         dbf.insert(friend2);
 
-        onView(withId(R.id.out_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.out_category)).perform(click());
+        onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
-        onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.input_category)).check(matches(not(withText("Sport"))));
         onView(withId(R.id.input_subcategory)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
         onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));

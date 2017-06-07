@@ -26,6 +26,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="off">OFF</string>
+    <string name="categories">categories</string>
     <string name="title_activity_image_fullscreen">ImageFullscreen</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>

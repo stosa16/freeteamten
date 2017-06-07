@@ -41,10 +41,6 @@ public class DBFriend extends SQLiteOpenHelper{
         return id;
     }
 
-    public void delete(Friend id){
-
-    }
-
     public boolean updateFriend(Friend friend) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content_val = new ContentValues();
@@ -74,6 +70,7 @@ public class DBFriend extends SQLiteOpenHelper{
         db.close();
         return friend;
     }
+
 
     public List<Friend> getAllFriends(){
         List<Friend> friend_list = new ArrayList<>();
@@ -117,22 +114,5 @@ public class DBFriend extends SQLiteOpenHelper{
         db.close();
         return friend_list;
 
-    }
-    public List<Friend> loadStatisticsFromDb(String query) {
-        List<Friend> friends = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            do {
-                Friend friend = new Friend();
-                friend.setId(Integer.parseInt(cursor.getString(0)));
-                friend.setName(cursor.getString(1));
-                boolean is_deleted = Integer.parseInt(cursor.getString(2)) == 1 ? true : false;
-                friend.setDeleted(is_deleted);
-                friends.add(friend);
-            } while (cursor.moveToNext());
-        }
-        db.close();
-        return friends;
     }
 }

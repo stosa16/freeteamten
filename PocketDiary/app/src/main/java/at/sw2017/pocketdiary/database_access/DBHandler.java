@@ -13,6 +13,11 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
     }
 
+    public DBHandler(Context context, int version) {
+        super(context, DATABASE_NAME, null, version);
+        SQLiteDatabase db = this.getWritableDatabase();
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table USER_SETTINGS (ID INTEGER PRIMARY KEY AUTOINCREMENT, USERNAME TEXT, " +

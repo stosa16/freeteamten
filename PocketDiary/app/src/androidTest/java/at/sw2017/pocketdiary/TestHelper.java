@@ -10,11 +10,14 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.test.InstrumentationRegistry;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.CustomDate;
 import at.sw2017.pocketdiary.business_objects.Entry;
@@ -22,6 +25,7 @@ import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.business_objects.Statistic;
 import at.sw2017.pocketdiary.business_objects.UserSetting;
+import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBFriend;
@@ -60,15 +64,49 @@ public final class TestHelper {
     public static void initStatistics(Context context) {
         DBStatistic dbs = new DBStatistic(context);
         Statistic statistic_1 = new Statistic();
+
         statistic_1.setTitle("Statistic");
-        CustomDate cstm_date = new CustomDate();
-        Date date = new Date(cstm_date.getCurrentYear(), cstm_date.getCurrentMonth(), cstm_date.getCurrentDay());
-        statistic_1.setDateFrom(date);
-        statistic_1.setDateUntil(date);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2017, 4, 1, 0, 0, 0);
+        Date date_from = calendar.getTime();
+        statistic_1.setDateFrom(date_from);
+
+        calendar.set(2017, 5, 1, 0, 0, 0);
+        Date date_until = calendar.getTime();
+        statistic_1.setDateUntil(date_until);
         statistic_1.setCategoryId(1);
         statistic_1.setSubCategoryId(1);
         statistic_1.setSearchTerm("SearchTerm");
         dbs.insert(statistic_1);
+
+        dbs = new DBStatistic(context);
+
+        statistic_1.setTitle("Statistic_2");
+        statistic_1.setDateFrom(date_from);
+        statistic_1.setDateUntil(date_until);
+        statistic_1.setCategoryId(1);
+        statistic_1.setSubCategoryId(4);
+        statistic_1.setSearchTerm("test");
+        dbs.insert(statistic_1);
+
+        dbs = new DBStatistic(context);
+        Statistic statistic_2 = new Statistic();
+        statistic_2.setTitle("Statistic_3");
+        statistic_2.setDateFrom(date_from);
+        statistic_2.setCategoryId(1);
+        statistic_2.setSubCategoryId(4);
+        statistic_2.setSearchTerm("test");
+        dbs.insert(statistic_2);
+
+        dbs = new DBStatistic(context);
+        Statistic statistic_3 = new Statistic();
+        statistic_3.setTitle("Statistic_4");
+        statistic_3.setDateUntil(date_until);
+        statistic_3.setCategoryId(1);
+        statistic_3.setSubCategoryId(4);
+        statistic_3.setSearchTerm("test");
+        dbs.insert(statistic_3);
     }
 
     public static void initFriends(Context context) {
@@ -91,14 +129,74 @@ public final class TestHelper {
         entry.setDescription("This is a test!");
         entry.setMainCategoryId(1);
         entry.setSubCategoryId(4);
+        entry.setAddressId(1);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2017, 4, 1, 0, 0, 0);
+        calendar.set(2017, 4, 10, 0, 0, 0);
         Date entry_date = calendar.getTime();
         entry.setDate(entry_date);
+
+        Picture picture = new Picture();
+        picture.setFilePath("/storage/emulated/0/Pictures/1496724335881.jpg");
+        picture.setName("picture");
+        DBPicture dbp = new DBPicture(context);
+        long id_pic = dbp.insert(picture);
+        picture.setId((int) id_pic);
+        entry.addPicture(picture);
+
+
+        List<Picture> list = new ArrayList<>();
+        list.add(picture);
+        entry.setPictures(list);
+
         long id = dbe.insert(entry);
+
+        entry.setTitle("Test_Street");
+        entry.setDescription("This is a test!");
+        entry.setMainCategoryId(1);
+        entry.setSubCategoryId(4);
+        entry.setAddressId(2);
+        Friend friend = new Friend();
+        friend.setId(1);
+        friend.setName("Hermann");
+        friend.setDeleted(false);
+        List<Friend> friends_list = new ArrayList<>();
+        friends_list.add(friend);
+        entry.setFriends(friends_list);
+        calendar.set(2017, 4, 11, 0, 0, 0);
+        entry.setDate(calendar.getTime());
+
+        dbe.insert(entry);
+
         dbe.close();
+
         Entry loaded_entry = Helper.getEntryComplete(context, (int) id);
         return loaded_entry;
+    }
+
+    public static void initAddress(Context context) {
+        DBAddress dba = new DBAddress(context);
+        Address address = new Address();
+
+        double coordinates = 0.00;
+        address.setPoi("Poi");
+        address.setStreet("Street");
+        address.setCity("City");
+        address.setCountry("Country");
+        address.setZip("0000");
+        address.setLatitude(coordinates);
+        address.setLongitude(coordinates);
+        dba.insert(address);
+
+
+        dba = new DBAddress(context);
+        Address address2 = new Address();
+        address2.setStreet("Street");
+        address2.setCity("City");
+        address2.setCountry("Country");
+        address2.setZip("0000");
+        address2.setLatitude(coordinates);
+        address2.setLongitude(coordinates);
+        dba.insert(address2);
     }
 
     public static Entry createTestEntryBasic(Context context, String title, String description, int main_category_id, int sub_category_id, Date date) {
@@ -239,6 +337,19 @@ public final class TestHelper {
         setting.setUserName("TestUser");
         setting.setFilePath("");
         setting.setPin("123");
+        setting.setPinActive("0");
+        dbs.insert(setting);
+        List<UserSetting> temp = dbs.getUserSetting(1);
+        UserSetting user_setting = temp.get(0);
+        return user_setting;
+    }
+
+    public static UserSetting createUserSettingEmpty(Context context) {
+        DBUserSetting dbs = new DBUserSetting(context);
+        UserSetting setting = new UserSetting();
+        setting.setUserName("");
+        setting.setFilePath("");
+        setting.setPin("");
         setting.setPinActive("0");
         dbs.insert(setting);
         List<UserSetting> temp = dbs.getUserSetting(1);

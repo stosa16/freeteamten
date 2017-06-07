@@ -34,15 +34,23 @@ import at.sw2017.pocketdiary.database_access.DBEntry;
 
 public class ReviewActivity extends Activity{
 
-    List<Entry> entry_list;
+    List<Entry> entry_list = new ArrayList<>();
     ArrayList<Integer> db_ids = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
-        //insertTestData();
-        entry_list = getData();
+
+        if(getIntent().getExtras() != null){
+            List<String> entries_ids_stat = getIntent().getStringArrayListExtra("entries_ids");
+            for(String id : entries_ids_stat) {
+                DBEntry dbe = new DBEntry(this);
+                int id_int = Integer.parseInt(id);
+                entry_list.add(dbe.getEntry(id_int));
+            }
+        }
+        else entry_list = getData();
         CalendarDay[] dates_list = getAllDates(entry_list);
         String current_date = getCurrentDate();
         setCalendar(dates_list, getCurrentDay(current_date), getCurrentMonth(current_date), getCurrentYear(current_date));
@@ -69,49 +77,6 @@ public class ReviewActivity extends Activity{
             i++;
         }
         return list_dates;
-    }
-
-    private void insertTestData(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2017, 5, 14, 0, 0, 0);
-        Date entry_date = calendar.getTime();
-
-        Entry db_test_entry = new Entry();
-        db_test_entry.setTitle("Event 7");
-        db_test_entry.setDescription("This is a description");
-        db_test_entry.setMainCategoryId(1);
-        db_test_entry.setSubCategoryId(1);
-        db_test_entry.setDate(entry_date);
-        DBEntry db_insert = new DBEntry(this);
-        db_insert.insert(db_test_entry);
-
-        Entry db_test_entry_2 = new Entry();
-        db_test_entry_2.setTitle("Event 2");
-        db_test_entry_2.setDescription("This is a description 2");
-        db_test_entry_2.setMainCategoryId(1);
-        db_test_entry_2.setSubCategoryId(1);
-        db_test_entry_2.setDate(entry_date);
-        db_insert.insert(db_test_entry_2);
-
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.set(2017, 3, 17, 0, 0, 0);
-        Date entry_date2 = calendar2.getTime();
-
-        Entry db_test_entry_3 = new Entry();
-        db_test_entry_3.setTitle("Event 8");
-        db_test_entry_3.setDescription("This is a description 8");
-        db_test_entry_3.setMainCategoryId(1);
-        db_test_entry_3.setSubCategoryId(1);
-        db_test_entry_3.setDate(entry_date2);
-        db_insert.insert(db_test_entry_3);
-
-        Entry db_test_entry_4 = new Entry();
-        db_test_entry_4.setTitle("Event Today");
-        db_test_entry_4.setDescription("This is a description 8");
-        db_test_entry_4.setMainCategoryId(1);
-        db_test_entry_4.setSubCategoryId(1);
-        db_test_entry_4.setDate((Date) Calendar.getInstance().getTime());
-        db_insert.insert(db_test_entry_4);
     }
 
     public void setCalendar(CalendarDay[] dates_list, int day, int month, int year){
@@ -179,14 +144,5 @@ public class ReviewActivity extends Activity{
 
     private int getCurrentYear(String date){
         return Integer.parseInt(date.split("-")[0]);
-    }
-
-    public void printToast(String msg){
-        Context context = getApplicationContext();
-        CharSequence text = msg;
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 }
