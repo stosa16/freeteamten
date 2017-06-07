@@ -138,14 +138,18 @@ public class SettingScreenInstrumentedTest {
         boolean ret = true;
         ret = checkInput.check_old_pin(old_pin.getText().toString(), saved_pin, new_.getText().toString(), repeat_.getText().toString());
         assertEquals(ret, false);
+        onView(withId(R.id.save)).perform(click());
 
-        onView(withId(R.id.current_pin)).perform(typeText(""), closeSoftKeyboard());
         onView(withId(R.id.current_pin)).perform(clearText());
-        old_pin = (EditText) mActivityRule.getActivity().findViewById(R.id.current_pin);
+        onView(withId(R.id.current_pin)).perform(typeText("aaaaa"), closeSoftKeyboard());
+        onView(withId(R.id.new_pin1)).perform(typeText("def"), closeSoftKeyboard());
+        onView(withId(R.id.new_pin2)).perform(typeText("def"), closeSoftKeyboard());
+        onView(withId(R.id.save)).perform(click());
 
-        ret = checkInput.check_old_pin(old_pin.getText().toString(), saved_pin, new_.getText().toString(), repeat_.getText().toString());
-        assertEquals(ret, false);
-
+        onView(withId(R.id.new_pin1)).perform(clearText());
+        onView(withId(R.id.new_pin2)).perform(clearText());
+        onView(withId(R.id.new_pin1)).perform(typeText("defgh"), closeSoftKeyboard());
+        onView(withId(R.id.new_pin2)).perform(typeText("defgh"), closeSoftKeyboard());
         onView(withId(R.id.current_pin)).perform(typeText("aaaaa"), closeSoftKeyboard());
         old_pin = (EditText) mActivityRule.getActivity().findViewById(R.id.current_pin);
 
@@ -159,9 +163,11 @@ public class SettingScreenInstrumentedTest {
 
         ret = checkInput.check_new_pin(new_.getText().toString(), repeat_.getText().toString(), userSetting);
         assertEquals(ret, false);
+        onView(withId(R.id.save)).perform(click());
 
-        onView(withId(R.id.new_pin2)).perform(clearText());
+        onView(withId(R.id.new_pin1)).perform(typeText("defgh"), closeSoftKeyboard());
         onView(withId(R.id.new_pin2)).perform(typeText("defgh"), closeSoftKeyboard());
+        onView(withId(R.id.current_pin)).perform(typeText("aaaaa"), closeSoftKeyboard());
         new_ = (EditText) mActivityRule.getActivity().findViewById(R.id.new_pin1);
         repeat_ = (EditText) mActivityRule.getActivity().findViewById(R.id.new_pin2);
         ret = checkInput.check_new_pin(new_.getText().toString(), repeat_.getText().toString(), userSetting);
