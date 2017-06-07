@@ -6,11 +6,16 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.itextpdf.text.BaseColor;
@@ -28,10 +33,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Picture;
+
+import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
+import static android.widget.ImageView.ScaleType.FIT_END;
+import static android.widget.ImageView.ScaleType.FIT_XY;
 
 public class ShowEntryScreen extends AppCompatActivity {
 
     private int entry_id;
+    final int THUMBNAIL_SIZE = 140;
     private static final int WRITE_STORAGE_REQUEST = 2;
 
     @Override
@@ -63,6 +74,37 @@ public class ShowEntryScreen extends AppCompatActivity {
         if (entry.getDescription() != null) {
             description.setText(entry.getDescription());
         }
+
+        if (entry.getPictures().size() > 0) {
+            LinearLayout thumbnails = (LinearLayout)findViewById(R.id.thumbnails);
+            int id_count = 0;
+            for (final Picture picture : entry.getPictures()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(picture.getFilePath());
+                if (bitmap == null) {
+                    continue;
+                }
+                Float width = new Float(bitmap.getWidth());
+                Float height = new Float(bitmap.getHeight());
+                Float ratio = width/height;
+
+                Bitmap thumbnail = Bitmap.createScaledBitmap(bitmap, (int)(THUMBNAIL_SIZE * ratio), THUMBNAIL_SIZE, false);
+                ImageView image_view = new ImageView(this);
+                image_view.setId(id_count);
+                image_view.setPadding(5, 5, 5, 5);
+                image_view.setImageBitmap(thumbnail);
+                image_view.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                image_view.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), PictureFullscreen.class);
+                        intent.putExtra("picture_id", Integer.toString(picture.getId()));
+                        startActivity(intent);
+                    }
+                });
+                thumbnails.addView(image_view);
+                id_count++;
+            }
+        }
+
 
         final Button create_pdf =(Button)findViewById(R.id.pdf_export);
 

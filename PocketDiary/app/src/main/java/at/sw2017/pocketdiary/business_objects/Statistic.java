@@ -9,9 +9,9 @@ public class Statistic {
     private String title;
     private Date dateFrom;
     private Date dateUntil;
-    private int categoryId;
+    private Integer categoryId;
     private Category category;
-    private int subCategoryId;
+    private Integer subCategoryId;
     private Category subCategory;
     private String searchTerm;
     private List<Friend> friendList = new ArrayList<Friend>();
@@ -63,7 +63,7 @@ public class Statistic {
         this.dateUntil = dateUntil;
     }
 
-    public int getCategoryId() {
+    public Integer getCategoryId() {
         return categoryId;
     }
 
@@ -79,7 +79,7 @@ public class Statistic {
         this.category = category;
     }
 
-    public int getSubCategoryId() {
+    public Integer getSubCategoryId() {
         return subCategoryId;
     }
 

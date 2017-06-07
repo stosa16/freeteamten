@@ -2,14 +2,21 @@ package at.sw2017.pocketdiary;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,10 +27,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,16 +54,18 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     private EditText input_description;
 
     private String empty_spinner_text = "Select Category";
+    public Address entry_address = null;
     private Date entry_date = null;
-    private Address entry_address = null;
-    private Picture entry_picture = null;
+    public List<String> entry_picture_paths = new ArrayList<>();
 
+    private Entry entry = new Entry();
     private static final int CAMERA_REQUEST = 1;
     private static final int WRITE_STORAGE_REQUEST = 2;
     private static final int FINE_LOCATION_REQUEST = 3;
     private static final int COARSE_LOCATION_REQUEST = 4;
+    private static final int PICK_IMAGE_REQUEST = 5;
 
-    Bitmap photo = null;
+    private static final int DELETE_IMAGE_REQUEST = 6;
 
     TextView badge_camera;
     TextView badge_address;
@@ -160,7 +169,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             case CAMERA_REQUEST: {
                 if (grant_results.length > 0
                         && grant_results[0] == PackageManager.PERMISSION_GRANTED && grant_results[1] == PackageManager.PERMISSION_GRANTED) {
-                    initPictureButton();
+                    openCamera();
                 } else {
                     ImageButton picture_button = (ImageButton) this.findViewById(R.id.btn_pictures);
                     picture_button.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +207,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             strings_maincategories.add(temp_cat.getName());
         }
 
-        input_main_category = (Spinner) findViewById(R.id.out_category);
+        input_main_category = (Spinner) findViewById(R.id.input_category);
         ArrayAdapter<String> main_spinner = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, strings_maincategories);
 
@@ -238,46 +247,146 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         input_sub_category.setAdapter(sub_spinner);
     }
 
-    public void checkPicturePermissions(View view){
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+    public void checkPicturePermissions(CreateEntryScreen activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                     checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, WRITE_STORAGE_REQUEST);
             } else {
-                initPictureButton();
+                openCamera();
             }
         } else {
-            initPictureButton();
+            openCamera();
         }
     }
 
-    private void initPictureButton() {
-        ImageButton picture_button = (ImageButton) this.findViewById(R.id.btn_pictures);
-        picture_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent camera_intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(camera_intent, CAMERA_REQUEST);
+    public void checkGalleryPermissions(CreateEntryScreen activity) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA}, WRITE_STORAGE_REQUEST);
+                if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
+                        activity.checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    openGallery(activity);
+                }
+            } else {
+                openGallery(activity);
+            }
+        } else {
+            openGallery(activity);
+        }
+    }
+
+    public void openGallery(final CreateEntryScreen activity) {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    private void openCamera() {
+        Intent camera_intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(camera_intent, CAMERA_REQUEST);
+    }
+
+    public void loadingPopup(View v) {
+        View view = findViewById(R.id.btn_pictures);
+        PopupMenu menu = new PopupMenu(CreateEntryScreen.this, view);
+        menu.inflate(R.menu.popup_entry_pictures);
+
+        MenuPopupHelper menuHelper = new MenuPopupHelper(CreateEntryScreen.this, (MenuBuilder) menu.getMenu(), view);
+        menuHelper.setForceShowIcon(true);
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_camera:
+                        checkPicturePermissions(CreateEntryScreen.this);
+                        break;
+
+                    case R.id.action_gallery:
+                        checkGalleryPermissions(CreateEntryScreen.this);
+                        break;
+
+                    case R.id.action_remove:
+                        removePictures();
+                        break;
+
+                    default:
+
+                }
+                return true;
             }
         });
-        picture_button.performClick();
+        menuHelper.show();
+    }
+
+    public void removePictures() {
+        Intent intent = new Intent(this, DeletePictureScreen.class);
+        String[] file_paths = entry_picture_paths.toArray(new String[0]);
+        intent.putExtra("file_paths", file_paths);
+        startActivityForResult(intent, DELETE_IMAGE_REQUEST);
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_CANCELED || resultCode != RESULT_OK) {
-            Toast.makeText(CreateEntryScreen.this, "Picture capturing aborted!",
+        if (requestCode == CAMERA_REQUEST && data != null && data.getExtras() != null) {
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            //ByteArrayOutputStream out_stream = new ByteArrayOutputStream();
+            //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out_stream);
+            Calendar calendar = Calendar.getInstance();
+            String pictureName = new SimpleDateFormat("yyyy-MM-dd/HHmmssSSS").format(calendar.getTime()) + ".jpeg";
+            String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, pictureName, null);
+            Uri uri = Uri.parse(path);
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            String absolute_path = cursor.getString(idx);
+            entry_picture_paths.add(absolute_path);
+            badge_camera.setText(Integer.toString(entry_picture_paths.size()));
+        } else if (requestCode == PICK_IMAGE_REQUEST) {
+            List<Uri> uris = new ArrayList<>();
+            if (data.getData() != null) {
+                Uri uri = data.getData();
+                uris.add(uri);
+            } else {
+                if (data.getClipData() != null) {
+                    ClipData clip_data = data.getClipData();
+                    for (int i = 0; i < clip_data.getItemCount(); i++) {
+                        ClipData.Item item = clip_data.getItemAt(i);
+                        Uri uri = item.getUri();
+                        uris.add(uri);
+                    }
+                }
+            }
+            for (Uri uri : uris) {
+                String absolute_path = "";
+                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                cursor.moveToFirst();
+                String documentID = cursor.getString(0);
+                documentID = documentID.substring(documentID.lastIndexOf(":") + 1);
+                cursor.close();
+                cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        null, MediaStore.Images.Media._ID + " = ?", new String[]{documentID}, null);
+                cursor.moveToFirst();
+                absolute_path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                cursor.close();
+                entry_picture_paths.add(absolute_path);
+            }
+            badge_camera.setText(Integer.toString(entry_picture_paths.size()));
+        } else if (requestCode == DELETE_IMAGE_REQUEST && data != null) {
+            String[] file_paths = data.getStringArrayExtra("file_paths");
+            entry_picture_paths = new ArrayList<>(Arrays.asList(file_paths));
+            badge_camera.setText(Integer.toString(entry_picture_paths.size()));
+        } else {
+            Toast.makeText(CreateEntryScreen.this, "No action performed!",
                     Toast.LENGTH_LONG).show();
         }
-        else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK && data != null) {
-            photo = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream out_stream = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.JPEG, 100, out_stream);
-            Helper.updateBadgeVisibility(badge_camera, true);
-        }
+        Helper.updateBadgeVisibility(badge_camera, entry_picture_paths.size() > 0);
     }
 
     @Override
@@ -289,7 +398,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     }
 
     public void saveEvent(View view) {
-        input_event_title = (EditText) findViewById(R.id.out_title);
+        input_event_title = (EditText) findViewById(R.id.input_title);
         String title = input_event_title.getText().toString();
         if (title.equals("")) {
             Toast.makeText(CreateEntryScreen.this, "Please define a Title!",
@@ -298,7 +407,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         }
         input_description = (EditText) findViewById(R.id.input_description);
         String description = input_description.getText().toString();
-        input_main_category = (Spinner) findViewById(R.id.out_category);
+        input_main_category = (Spinner) findViewById(R.id.input_category);
         Category main_category = Helper.getCategoryByName(maincategories, input_main_category.getSelectedItem().toString());
         if (main_category == null) {
             Toast.makeText(CreateEntryScreen.this, "Please select a Main Category!",
@@ -312,7 +421,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                     Toast.LENGTH_LONG).show();
             return;
         }
-        Entry entry = new Entry();
         entry.setTitle(title);
         entry.setDescription(description);
         entry.setMainCategoryId(main_category.getId());
@@ -324,17 +432,20 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                     Toast.LENGTH_LONG).show();
             return;
         }
-        if (photo != null) {
-            Calendar calendar = Calendar.getInstance();
-            String pictureName = new SimpleDateFormat("yyyy-MM-dd/HHmmssSSS").format(calendar.getTime()) + ".jpeg";
-            String path = MediaStore.Images.Media.insertImage(getContentResolver(), photo, pictureName, null);
-            entry_picture = new Picture();
-            entry_picture.setName(pictureName);
-            entry_picture.setFilePath(path);
+        if (entry_picture_paths.size() > 0) {
             DBPicture dbp = new DBPicture(this);
-            long id = dbp.insert(entry_picture);
-            entry_picture.setId((int) id);
-            entry.addPicture(entry_picture);
+            for (String file_path : entry_picture_paths) {
+                Picture picture = dbp.getPictureByPath(file_path);
+                if (picture == null) {
+                    picture = new Picture();
+                    picture.setFilePath(file_path);
+                    String[] path_parts = file_path.split("/");
+                    picture.setName(path_parts[path_parts.length - 1]);
+                    long id = dbp.insert(picture);
+                    picture.setId((int) id);
+                }
+                entry.addPicture(picture);
+            }
         }
         if (entry_address != null) {
             DBAddress dba = new DBAddress(this);

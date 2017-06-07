@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.List;
+import android.view.View;
 
 import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBHandler;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
             DBHandler db = new DBHandler(this);
             dbUserSetting = new DBUserSetting(MainActivity.this);
             userSetting = new UserSetting("");
+            userSetting.setUserName("Markus");
             userSetting.setPinActive("0");
             userSetting.setPin("");
             userSetting.setId(1);

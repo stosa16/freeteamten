@@ -87,4 +87,20 @@ public class DBPicture extends SQLiteOpenHelper{
         db.close();
         return pictures;
     }
+
+    public Picture getPictureByPath(String file_path) {
+        Picture picture = null;
+        String condition = "WHERE FILE_PATH = '" + file_path + "'";
+        String query_pictures = "SELECT * FROM PICTURES " + condition;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor_pictures = db.rawQuery(query_pictures, null);
+        if (cursor_pictures.moveToFirst()) {
+            picture = new Picture();
+            picture.setId(cursor_pictures.getInt(0));
+            picture.setFilePath(cursor_pictures.getString(1));
+            picture.setName(cursor_pictures.getString(2));
+        }
+        db.close();
+        return picture;
+    }
 }

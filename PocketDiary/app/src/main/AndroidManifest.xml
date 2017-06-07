@@ -22,11 +22,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Header">
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppTheme2"
-            android:exported="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -41,21 +43,41 @@
         <activity
             android:name=".SettingScreen"
             android:exported="true"
-            android:label="Settings">
-        </activity>
-		<activity android:name=".CreateEntryScreen"
-            android:theme="@style/ActivityTheme"
-            android:label="Create Entry" >
-        </activity>
-        <activity android:name=".ReviewActivity"
+            android:label="Settings" />
+        <activity
+            android:name=".CreateEntryScreen"
+            android:label="Create Entry"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".ReviewActivity"
             android:label="Review" />
-        <activity android:name=".ShowEntryScreen"
-            android:theme="@style/ActivityTheme"
-            android:label="Details"/>
-        <activity android:name=".CategoriesActivity"
+        <activity
+            android:name=".ShowEntryScreen"
+            android:label="Details"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".CategoriesActivity"
             android:label="Categories"
-            android:theme="@style/ActivityTheme">
-        </activity>
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".StatisticScreenActivity"
+            android:label="Statistics"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".CreateStatisticActivity"
+            android:label="Create Statistic"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".Friends"
+            android:exported="true"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".DeletePictureScreen"
+            android:label="Delete Pictures"
+            android:theme="@style/ActivityTheme" />
+        <activity
+            android:name=".PictureFullscreen"
+            android:theme="@style/AppTheme2" />
     </application>
 
 </manifest>
