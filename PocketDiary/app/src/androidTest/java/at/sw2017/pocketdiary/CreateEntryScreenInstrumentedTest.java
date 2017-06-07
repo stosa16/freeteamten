@@ -231,5 +231,14 @@ public class CreateEntryScreenInstrumentedTest {
         onData(allOf(is(instanceOf(String.class)))).atPosition(0).perform(click());
         onView(withText("OK")).perform(click());
         onView(withId(R.id.btn_save)).perform(click());
+
+        Entry entry;
+        Context context = InstrumentationRegistry.getTargetContext();
+        entry = Helper.getEntryComplete(context, 1);
+        String friend_ = entry.getAllFriends();
+        Friend temp_friend;
+        DBFriend dbf2 = new DBFriend(mActivityRule.getActivity());
+        temp_friend = dbf2.getFriend(Integer.parseInt(friend_));
+        assertTrue("Stefan2".equals(temp_friend.getName()));
     }
 }
