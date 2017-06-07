@@ -91,7 +91,7 @@ public class CreateEntryScreenInstrumentedTest {
         context = getTargetContext();
         context.deleteDatabase(DBHandler.DATABASE_NAME);
         dbh = new DBHandler(context);
-        Helper.initCategories(context);
+        TestHelper.initCategories(context);
         dbe = new DBEntry(context);
         dba = new DBAddress(context);
         dbp = new DBPicture(context);
