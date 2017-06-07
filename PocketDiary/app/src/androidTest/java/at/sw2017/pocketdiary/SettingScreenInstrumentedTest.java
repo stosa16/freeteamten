@@ -175,8 +175,6 @@ public class SettingScreenInstrumentedTest {
         assertEquals("defgh", userSetting.getPin());
     }
 
-
-
     @Test
     public void pressSaveButton() {
         DBUserSetting dbUserSetting = new DBUserSetting(mActivityRule.getActivity());

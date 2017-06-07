@@ -79,6 +79,9 @@ public class Friends extends AppCompatActivity {
                 "Update friend",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        if(input.getText().toString().equals("") || input.getText() == null){
+                            return;
+                        }
                         dialog.cancel();
                         DBFriend db_friend = new DBFriend(Friends.this);
                         String old_name = friend.getName();
