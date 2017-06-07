@@ -117,35 +117,44 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             items.add(item.getName());
         }
 
-        friends_button.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                final List<Friend> all_friends = dbc.getAllFriends();
-
-                for (Friend item : all_friends) {
-                    items.add(item.getName());
+        if (entry_id != 0) {
+            friends_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), "Edit Friends not possible!", Toast.LENGTH_SHORT).show();
                 }
+            });
+        } else {
+            friends_button.setOnClickListener(new View.OnClickListener() {
 
-                String text = "Select Friends";
+                @Override
+                public void onClick(View v) {
+                    final List<Friend> all_friends = dbc.getAllFriends();
 
-                final MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
-                multiSpinner.setVisibility(v.VISIBLE);
-                multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
-
-                    @Override
-                    public void onItemsSelected(boolean[] selected) {
-
-                        for(int i = 0; i<items.size(); i++){
-                            if(selected[i] == true){
-                                friends.add(all_friends.get(i));
-                            }
-                        }
-                        Helper.updateBadgeVisibility(badge_friends, true);
+                    for (Friend item : all_friends) {
+                        items.add(item.getName());
                     }
-                });
-            }
-        });
+
+                    String text = "Select Friends";
+
+                    final MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
+                    multiSpinner.setVisibility(v.VISIBLE);
+                    multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
+
+                        @Override
+                        public void onItemsSelected(boolean[] selected) {
+
+                            for(int i = 0; i<items.size(); i++){
+                                if(selected[i] == true){
+                                    friends.add(all_friends.get(i));
+                                }
+                            }
+                            Helper.updateBadgeVisibility(badge_friends, true);
+                        }
+                    });
+                }
+            });
+        }
     }
 
     public void checkLocationPermissions(View view) {
@@ -250,7 +259,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                     picture_button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //ToDo: show feature disabled dialog
+                            showFeatureDisabledDialog();
                         }
                     });
                     picture_button.performClick();
@@ -555,7 +564,10 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
     public void updateEntry(Entry entry) {
         DBEntry db_entry = new DBEntry(this);
+        DBPicture db_picture = new DBPicture(this);
         db_entry.updateEntry(entry);
+        db_entry.insertEntryPictures(entry.getId(), entry.getPictures());
+        db_picture.deleteRedundantPicturesForEntry(entry);
     }
 
     public long insertEntryToDatabase(Entry entry) {
@@ -584,7 +596,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         int main_category_index = strings_maincategories.indexOf(entry.getMainCategory().getName());
         input_main_category.setSelection(main_category_index);
 
-
         input_sub_category = (Spinner) findViewById(R.id.input_subcategory);
         final int sub_category_index = strings_subcategories.indexOf(entry.getSubCategory().getName());
         new Handler().postDelayed(new Runnable() {
@@ -596,6 +607,16 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             entry_address = entry.getAddress();
             Helper.updateBadgeVisibility(badge_address, true);
         }
+
+        if (entry.getPictures().size() > 0){
+            for (Picture picture :
+                    entry.getPictures()) {
+                entry_picture_paths.add(picture.getFilePath());
+            }
+            badge_camera.setText(Integer.toString(entry_picture_paths.size()));
+            Helper.updateBadgeVisibility(badge_camera, true);
+        }
+
         entry_date = entry.getDate();
         Date date = entry_date;
         String[] date_array = entry_date.toString().split(" ");

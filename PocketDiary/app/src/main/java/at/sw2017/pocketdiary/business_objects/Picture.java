@@ -13,6 +13,16 @@ public class Picture {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Picture)) {
+            return false;
+        }
+        Picture picture= (Picture) o;
+        return picture.getId() == id;
+    }
+
     public int getId() {
         return id;
     }

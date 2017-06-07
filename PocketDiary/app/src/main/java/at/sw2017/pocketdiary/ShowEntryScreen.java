@@ -35,10 +35,7 @@ import java.util.Date;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
-
-import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
-import static android.widget.ImageView.ScaleType.FIT_END;
-import static android.widget.ImageView.ScaleType.FIT_XY;
+import at.sw2017.pocketdiary.database_access.DBFriend;
 
 public class ShowEntryScreen extends AppCompatActivity {
 
@@ -90,6 +87,8 @@ public class ShowEntryScreen extends AppCompatActivity {
         TextView address = (TextView) findViewById(R.id.out_address);
         if (entry.getAddress() != null) {
             address.setText(entry.getAddress().getStreet() + ", " + entry.getAddress().getCity());
+        } else {
+            findViewById(R.id.btn_show_location).setVisibility(View.INVISIBLE);
         }
         TextView description = (TextView) findViewById(R.id.out_description);
         if (entry.getDescription() != null) {

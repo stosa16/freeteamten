@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Picture;
 
 public class DBPicture extends SQLiteOpenHelper{
@@ -102,5 +103,17 @@ public class DBPicture extends SQLiteOpenHelper{
         }
         db.close();
         return picture;
+    }
+
+    public void deleteRedundantPicturesForEntry(Entry entry) {
+        List<Picture> loaded_pictures = getPicturesOfEntry(entry.getId());
+        for (Picture picture : loaded_pictures) {
+            if (!entry.getPictures().contains(picture)) {
+                SQLiteDatabase db = this.getWritableDatabase();
+                String query = "DELETE FROM ENTRIES_PICTURES WHERE PICTURE_ID = " + picture.getId() + " AND ENTRY_ID = " + entry.getId();
+                db.execSQL(query);
+                db.close();
+            }
+        }
     }
 }
