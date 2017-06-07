@@ -34,6 +34,7 @@ public class StartScreen extends AppCompatActivity {
             public void onClick(View v) {
                 create_entry_button.setBackgroundColor(Color.WHITE);
                 Intent intent = new Intent(StartScreen.this, CreateEntryScreen.class);
+                intent.putExtra("entry_id", Integer.toString(0));
                 startActivity(intent);
             }
         });

@@ -13,11 +13,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
-import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -91,7 +88,7 @@ public class ShowEntryScreenInstrumentedTest {
         onView(withId(R.id.out_category)).check(matches(withText(test_entry.getMainCategory().getName())));
         onView(withId(R.id.out_subcategory)).check(matches(withText(test_entry.getSubCategory().getName())));
     }
-
+/*
     @Test
     public void checkImages() {
         Intent init_intent = new Intent();
@@ -106,5 +103,5 @@ public class ShowEntryScreenInstrumentedTest {
         onView(withId(R.id.out_date)).check(matches(withText(date_format.format(test_entry.getDate()))));
         onView(withId(R.id.out_category)).check(matches(withText(test_entry.getMainCategory().getName())));
         onView(withId(R.id.out_subcategory)).check(matches(withText(test_entry.getSubCategory().getName())));
-    }
+    }*/
 }

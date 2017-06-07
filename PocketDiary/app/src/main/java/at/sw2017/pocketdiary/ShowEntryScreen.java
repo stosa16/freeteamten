@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,10 +14,6 @@ import java.text.SimpleDateFormat;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Picture;
-
-import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
-import static android.widget.ImageView.ScaleType.FIT_END;
-import static android.widget.ImageView.ScaleType.FIT_XY;
 
 public class ShowEntryScreen extends AppCompatActivity {
 
@@ -84,5 +79,10 @@ public class ShowEntryScreen extends AppCompatActivity {
                 id_count++;
             }
         }
+    }
+    public void onClickEditButton(View view) {
+        Intent intent = new Intent(ShowEntryScreen.this, CreateEntryScreen.class);
+        intent.putExtra("entry_id", Integer.toString(entry_id));
+        startActivity(intent);
     }
 }

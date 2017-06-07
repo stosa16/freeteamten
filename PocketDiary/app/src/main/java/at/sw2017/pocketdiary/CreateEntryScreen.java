@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +54,9 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     private Spinner input_main_category;
     private Spinner input_sub_category;
     private EditText input_description;
+    private DatePickerDialog datePickerDialog;
+
+    public int entry_id;
 
     private String empty_spinner_text = "Select Category";
     public Address entry_address = null;
@@ -79,12 +84,21 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        entry_id = Integer.parseInt(intent.getStringExtra("entry_id"));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_entry_screen);
         DBHandler db = new DBHandler(this);
         initCategories();
         initDateButton();
         initBadges();
+        if (entry_id != 0) {
+            try {
+                setValuesOfFields(entry_id);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void checkLocationPermissions(View view) {
@@ -129,8 +143,22 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
     public void initDateButton() {
         Calendar currentDate = Calendar.getInstance();
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(
+        datePickerDialog = new DatePickerDialog(
                 this, CreateEntryScreen.this, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE));
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        (findViewById(R.id.btn_calendar))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        datePickerDialog.show();
+                    }
+                });
+    }
+
+    public void initEditDateButton(int year, int month, int day) {
+        Calendar currentDate = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(
+                this, CreateEntryScreen.this, year, month, day);
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         (findViewById(R.id.btn_calendar))
                 .setOnClickListener(new View.OnClickListener() {
@@ -458,9 +486,28 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             entry_address.setId((int) id);
             entry.setAddress(entry_address);
         }
-        insertEntryToDatabase(entry);
+        if (entry_id != 0) {
+            DBEntry dbEntry = new DBEntry(this);
+            Address address = dbEntry.getEntry(entry_id).getAddress();
+            int addressId = dbEntry.getEntry(entry_id).getAddressId();
+            //if (entry_address != null && (entry.getAddress() == null || (entry.getAddress() != null && !(entry_address.getStreet().equals(entry.getAddress().getStreet()))))) {
+            if(entry_address != null && (!(entry_address.getStreet().equals(address)))) {
+                DBAddress dbAddress = new DBAddress(this);
+                addressId = (int) dbAddress.insert(entry_address);
+            }
+            entry.setId(entry_id);
+            entry.setAddressId(addressId);
+            updateEntry(entry);
+        } else {
+            insertEntryToDatabase(entry);
+        }
         Intent intent = new Intent(this, StartScreen.class);
         startActivity(intent);
+    }
+
+    public void updateEntry(Entry entry) {
+        DBEntry db_entry = new DBEntry(this);
+        db_entry.updateEntry(entry);
     }
 
     public long insertEntryToDatabase(Entry entry) {
@@ -472,5 +519,44 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     public void handleCancelButton(View view) {
         Intent intent = new Intent(this, StartScreen.class);
         startActivity(intent);
+    }
+
+    public void setValuesOfFields(int entry_id) throws ParseException {
+
+        Entry entry = Helper.getEntryComplete(this, entry_id);
+        fillSubCategories(entry.getMainCategoryId());
+
+        input_event_title = (EditText) findViewById(R.id.input_title);
+        input_event_title.setText(entry.getTitle());
+
+        input_description = (EditText) findViewById(R.id.input_description);
+        input_description.setText(entry.getDescription());
+
+        input_main_category = (Spinner) findViewById(R.id.input_category);
+        int main_category_index = strings_maincategories.indexOf(entry.getMainCategory().getName());
+        input_main_category.setSelection(main_category_index);
+
+
+        input_sub_category = (Spinner) findViewById(R.id.input_subcategory);
+        final int sub_category_index = strings_subcategories.indexOf(entry.getSubCategory().getName());
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                input_sub_category.setSelection(sub_category_index);
+            }
+        }, 100);
+        if (entry.getAddress() != null) {
+            entry_address = entry.getAddress();
+            Helper.updateBadgeVisibility(badge_address, true);
+        }
+        entry_date = entry.getDate();
+        Date date = entry_date;
+        String[] date_array = entry_date.toString().split(" ");
+        Helper.updateBadgeVisibility(badge_date, true);
+        Date moth = new SimpleDateFormat("MMM", Locale.ENGLISH).parse(date_array[1]);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int month = cal.get(Calendar.MONTH);
+        initEditDateButton(Integer.parseInt(date_array[5]), month, Integer.parseInt(date_array[2]));
+        //Todo: Set pitures by Sandy Nocker
     }
 }

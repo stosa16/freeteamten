@@ -5,18 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.text.ParseException;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Picture;
 
-public class DBEntry extends SQLiteOpenHelper{
+public class DBEntry extends SQLiteOpenHelper {
 
     private SimpleDateFormat date_fromat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -114,10 +112,10 @@ public class DBEntry extends SQLiteOpenHelper{
                         e.printStackTrace();
                     }
                 }
-                if(cursor.getString(5) != null){
+                if (cursor.getString(5) != null) {
                     entry.setDescription(cursor.getString(5));
                 }
-                if(cursor.getString(6) != null){
+                if (cursor.getString(6) != null) {
                     entry.setAddressId(Integer.parseInt(cursor.getString(6)));
                 }
                 entry_list.add(entry);
@@ -125,5 +123,22 @@ public class DBEntry extends SQLiteOpenHelper{
         }
         db.close();
         return entry_list;
+    }
+
+    public void updateEntry(Entry entry) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String id = String.valueOf(entry.getId());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd/HHmmssSSS");
+        String entry_date = simpleDateFormat.format(entry.getDate());
+        String arr[] = entry_date.split("/");
+        entry_date = arr[0];
+        String update_entry_query = "UPDATE ENTRIES SET TITLE='" + entry.getTitle() + "', MAINCATEGORY_ID=" + entry.getMainCategoryId() + ", SUBCATEGORY_ID=" + entry.getSubCategoryId() + ", DATE='" +
+                entry_date + "', DESCRIPTION='" + entry.getDescription() + "', ADDRESS_ID=" + entry.getAddressId() + "  WHERE id=" + id;
+        db.execSQL(update_entry_query);
+        db.close();
+
+
+        //db.execSQL("create table ENTRIES (ID INTEGER PRIMARY KEY AUTOINCREMENT, TITLE TEXT, " +
+        //      "MAINCATEGORY_ID NUMBER, SUBCATEGORY_ID NUMBER, DATE DATE, DESCRIPTION TEXT, ADDRESS_ID NUMBER)");
     }
 }
