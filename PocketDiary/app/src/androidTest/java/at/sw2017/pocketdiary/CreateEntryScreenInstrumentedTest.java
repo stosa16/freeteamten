@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.net.Uri;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
@@ -22,18 +21,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 import at.sw2017.pocketdiary.database_access.DBPicture;
+import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onData;
@@ -64,6 +61,7 @@ public class CreateEntryScreenInstrumentedTest {
     private DBEntry dbe;
     private DBAddress dba;
     private DBPicture dbp;
+    private DBUserSetting dbs;
     private Geocoder geocoder;
     private Context context;
     private String camera_package = "com.android.camera";
@@ -91,6 +89,8 @@ public class CreateEntryScreenInstrumentedTest {
         dbe = new DBEntry(context);
         dba = new DBAddress(context);
         dbp = new DBPicture(context);
+        dbs = new DBUserSetting(context);
+        TestHelper.createUserSetting(context);
         geocoder = new Geocoder(context);
         titleToBeTyped = "Running";
         Intents.init();
@@ -313,7 +313,7 @@ public class CreateEntryScreenInstrumentedTest {
         assertTrue(picture_paths.size() == entry.getPictures().size());
     }
 
-    @Test
+    /*@Test
     public void pressLocationButton() {
         Address address_test = new Address(23.4500, 45.4500);
         onView(withId(R.id.out_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
@@ -344,5 +344,5 @@ public class CreateEntryScreenInstrumentedTest {
         Address address1;
         address1 = reverseGeocoder.getAddress(address.getLongitude(), address.getLatitude(), geocoder);
         assertTrue(address1.getCountry().equals("Italy"));
-    }
+    }*/
 }

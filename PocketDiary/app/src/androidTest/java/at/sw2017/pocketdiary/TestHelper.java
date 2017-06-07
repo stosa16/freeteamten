@@ -1,7 +1,6 @@
 package at.sw2017.pocketdiary;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.support.test.InstrumentationRegistry;
 
 import java.util.ArrayList;
@@ -23,15 +21,16 @@ import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.business_objects.Statistic;
+import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.database_access.DBPicture;
 import at.sw2017.pocketdiary.database_access.DBStatistic;
+import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.InstrumentationRegistry.getTargetContext;
-import static junit.framework.Assert.assertTrue;
 
 public final class TestHelper {
 
@@ -214,5 +213,19 @@ public final class TestHelper {
                     "pm revoke " + InstrumentationRegistry.getTargetContext().getPackageName()
                             + " android.permission.READ_EXTERNAL_STORAGE");
         }
+    }
+
+    public static UserSetting createUserSetting(Context context) {
+        DBUserSetting dbs = new DBUserSetting(context);
+        dbs = new DBUserSetting(context);
+        UserSetting setting = new UserSetting();
+        setting.setUserName("TestUser");
+        setting.setFilePath("");
+        setting.setPin("123");
+        setting.setPinActive("0");
+        dbs.insert(setting);
+        List<UserSetting> temp = dbs.getUserSetting(1);
+        UserSetting user_setting = temp.get(0);
+        return user_setting;
     }
 }
