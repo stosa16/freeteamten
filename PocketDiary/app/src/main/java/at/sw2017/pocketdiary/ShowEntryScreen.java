@@ -47,6 +47,7 @@ public class ShowEntryScreen extends AppCompatActivity {
     private int entry_id;
     final int THUMBNAIL_SIZE = 140;
     private static final int WRITE_STORAGE_REQUEST = 2;
+    private int address_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +57,14 @@ public class ShowEntryScreen extends AppCompatActivity {
         entry_id = Integer.parseInt(intent.getStringExtra("entry_id"));
 
         Entry entry = Helper.getEntryComplete(this, entry_id);
-        TextView title = (TextView)findViewById(R.id.out_title);
+        address_id = entry.getAddressId();
+        TextView title = (TextView) findViewById(R.id.out_title);
         title.setText(entry.getTitle());
-        TextView main_category = (TextView)findViewById(R.id.out_category);
+        TextView main_category = (TextView) findViewById(R.id.out_category);
         main_category.setText(entry.getMainCategory().getName());
-        TextView sub_category = (TextView)findViewById(R.id.out_subcategory);
+        TextView sub_category = (TextView) findViewById(R.id.out_subcategory);
         sub_category.setText(entry.getSubCategory().getName());
+        TextView date = (TextView) findViewById(R.id.out_date);
         TextView date = (TextView)findViewById(R.id.out_date);
         TextView friends = (TextView)findViewById(R.id.out_friends);
         String friend_ = entry.getAllFriends();
@@ -87,11 +90,11 @@ public class ShowEntryScreen extends AppCompatActivity {
         } else {
             date.setText("");
         }
-        TextView address = (TextView)findViewById(R.id.out_address);
+        TextView address = (TextView) findViewById(R.id.out_address);
         if (entry.getAddress() != null) {
             address.setText(entry.getAddress().getStreet() + ", " + entry.getAddress().getCity());
         }
-        TextView description = (TextView)findViewById(R.id.out_description);
+        TextView description = (TextView) findViewById(R.id.out_description);
         if (entry.getDescription() != null) {
             description.setText(entry.getDescription());
         }
@@ -231,5 +234,11 @@ public class ShowEntryScreen extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void showLocation(View view) {
+        Intent intent = new Intent(this, LocationScreen.class);
+        intent.putExtra("address_id", Integer.toString(address_id));
+        startActivity(intent);
     }
 }

@@ -67,7 +67,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     private static final int FINE_LOCATION_REQUEST = 3;
     private static final int COARSE_LOCATION_REQUEST = 4;
     private static final int PICK_IMAGE_REQUEST = 5;
-
     private static final int DELETE_IMAGE_REQUEST = 6;
 
     TextView badge_camera;

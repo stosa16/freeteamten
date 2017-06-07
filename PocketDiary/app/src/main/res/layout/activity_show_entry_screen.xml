@@ -8,6 +8,19 @@
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
+    <ImageButton
+        android:id="@+id/btn_show_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="7dp"
+        android:onClick="showLocation"
+        app:layout_constraintRight_toRightOf="@+id/textView4"
+        app:srcCompat="@android:drawable/ic_menu_mylocation"
+        tools:layout_constraintTop_creator="1"
+        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/textView4"
+        android:layout_marginEnd="7dp" />
+
     <TextView
         android:id="@+id/title"
         style="@style/label"
@@ -135,9 +148,9 @@
     <TextView
         android:id="@+id/out_description"
         style="@style/simple_text"
-        android:layout_width="366dp"
-        android:layout_height="192dp"
-        android:layout_marginBottom="37dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="38dp"
         android:layout_marginTop="32dp"
         android:maxLines="5"
         android:scrollbars="vertical"
