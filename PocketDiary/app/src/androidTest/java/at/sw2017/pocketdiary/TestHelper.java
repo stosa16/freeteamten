@@ -323,4 +323,18 @@ public final class TestHelper {
         UserSetting user_setting = temp.get(0);
         return user_setting;
     }
+
+    public static UserSetting createUserSettingEmpty(Context context) {
+        DBUserSetting dbs = new DBUserSetting(context);
+        dbs = new DBUserSetting(context);
+        UserSetting setting = new UserSetting();
+        setting.setUserName("");
+        setting.setFilePath("");
+        setting.setPin("");
+        setting.setPinActive("0");
+        dbs.insert(setting);
+        List<UserSetting> temp = dbs.getUserSetting(1);
+        UserSetting user_setting = temp.get(0);
+        return user_setting;
+    }
 }

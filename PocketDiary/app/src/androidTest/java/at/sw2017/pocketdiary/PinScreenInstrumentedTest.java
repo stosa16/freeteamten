@@ -1,6 +1,8 @@
 package at.sw2017.pocketdiary;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -14,9 +16,11 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.UserSetting;
+import at.sw2017.pocketdiary.database_access.DBHandler;
 import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -38,6 +42,7 @@ public class PinScreenInstrumentedTest {
 
     private PinScreen activity;
     private String titleToBeTyped;
+    public DBHandler dbh;
 
     @Rule
     public ActivityTestRule<PinScreen> mActivityRule = new ActivityTestRule<PinScreen>(PinScreen.class);
@@ -58,11 +63,15 @@ public class PinScreenInstrumentedTest {
     public void setUp() {
         Intents.init();
         mActivityRule.launchActivity(new Intent());
-        titleToBeTyped = "Running";
+        Context context = InstrumentationRegistry.getTargetContext();
+        context.deleteDatabase(DBHandler.DATABASE_NAME);
+        dbh = new DBHandler(context);
+        TestHelper.createUserSettingEmpty(context);
     }
 
     @After
     public void release() {
+        dbh.close();
         Intents.release();
     }
 
@@ -71,9 +80,13 @@ public class PinScreenInstrumentedTest {
         DBUserSetting dbUserSetting = new DBUserSetting(mActivityRule.getActivity());
         List<UserSetting> temp = dbUserSetting.getUserSetting(1);
         UserSetting userSetting = temp.get(0);
-        userSetting.setPin("a");
+        userSetting.setPin("aaaaa");
         dbUserSetting.update(userSetting, 1);
-        onView(withId(R.id.editText)).perform(typeText("a"), closeSoftKeyboard());
+        onView(withId(R.id.editText)).perform(typeText("aaaa"), closeSoftKeyboard());
+        onView(withId(R.id.button)).perform(click());
+        intended(hasComponent(PinScreen.class.getName()));
+        onView(withId(R.id.editText)).perform(clearText());
+        onView(withId(R.id.editText)).perform(typeText("aaaaa"), closeSoftKeyboard());
         onView(withId(R.id.button)).perform(click());
         intended(hasComponent(StartScreen.class.getName()));
     }
