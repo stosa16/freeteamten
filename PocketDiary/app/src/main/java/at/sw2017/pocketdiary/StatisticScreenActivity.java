@@ -62,23 +62,11 @@ public class StatisticScreenActivity extends Activity {
         statistic_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //db_ids.get(position);
-                //createAlert(subcategories.get(position));
-                printToast(db_ids.get(position).toString());
 
                 Intent i = new Intent(StatisticScreenActivity.this, StatisticAnalysisActivity.class);
                 i.putExtra("statistic_id", db_ids.get(position).toString());
                 startActivity(i);
             }
         });
-    }
-
-    public void printToast(String msg){
-        Context context = getApplicationContext();
-        CharSequence text = msg;
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 }

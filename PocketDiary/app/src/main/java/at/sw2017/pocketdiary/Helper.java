@@ -19,24 +19,28 @@ public final class Helper {
 
     public static void initCategories(Context context) {
         DBCategory dbc = new DBCategory(context);
-        Category category1 = new Category("Sport");
-        Category category2 = new Category("Essen");
-        Category category3 = new Category("Party");
+        Category category1 = new Category("Sports");
+        Category category2 = new Category("Food");
+        Category category3 = new Category("Entertainment");
+        Category category4 = new Category("Others");
         Category subcategory11 = new Category("Walking", 1);
         Category subcategory12 = new Category("Running", 1);
         Category subcategory13 = new Category("Climbing", 1);
-        Category subcategory21 = new Category("Chinesisch", 2);
-        Category subcategory31 = new Category("Einweihungsfeier", 3);
-        Category subcategory32 = new Category("Abschlussfeier", 3);
+        Category subcategory21 = new Category("Chinese", 2);
+        Category subcategory31 = new Category("Party", 3);
+        Category subcategory32 = new Category("Cinema", 3);
+        Category subcategory41 = new Category("Work", 4);
         dbc.insert(category1);
         dbc.insert(category2);
         dbc.insert(category3);
+        dbc.insert(category4);
         dbc.insert(subcategory11);
         dbc.insert(subcategory12);
         dbc.insert(subcategory13);
         dbc.insert(subcategory21);
         dbc.insert(subcategory31);
         dbc.insert(subcategory32);
+        dbc.insert(subcategory41);
     }
 
     public static Entry getEntryComplete(Context context, int entry_id) {
