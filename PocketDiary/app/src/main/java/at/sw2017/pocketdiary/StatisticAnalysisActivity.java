@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -34,6 +35,7 @@ import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Statistic;
+import at.sw2017.pocketdiary.business_objects.Toast;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
@@ -79,9 +81,9 @@ public class StatisticAnalysisActivity extends Activity {
         if(statistic.getDateUntil() != null && statistic.getDateFrom() == null) {
             Calendar calendar = Calendar.getInstance();
             CustomDate cs_date = new CustomDate();
-            calendar.set(cs_date.getCurrentYear(), cs_date.getCurrentMonth(), cs_date.getCurrentDay(), 0, 0, 0);
+            calendar.set(1970, 1, 1, 0, 0, 0);
             Date from_date = calendar.getTime();
-            entries_dates = getByDates(statistic.getDateFrom(), from_date);
+            entries_dates = getByDates(from_date, statistic.getDateUntil());
         }
         if(statistic.getDateUntil() == null && statistic.getDateFrom() != null) {
             Calendar calendar = Calendar.getInstance();
@@ -121,10 +123,8 @@ public class StatisticAnalysisActivity extends Activity {
         btn_del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DBStatistic dbs = new DBStatistic(StatisticAnalysisActivity.this);
-                dbs.delete(statistic_id);
-                Intent intent = new Intent(StatisticAnalysisActivity.this, StatisticScreenActivity.class);
-                startActivity(intent);
+                createAlertDialogueDeleteStatistic();
+
             }
         });
         btn_categories.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +147,12 @@ public class StatisticAnalysisActivity extends Activity {
                 fillListViewFriends();
             }
         });
+        img_btn_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fillGridViewPictures();
+            }
+        });
     }
 
     private void fillListViewFriends(){
@@ -155,6 +161,7 @@ public class StatisticAnalysisActivity extends Activity {
         db_ids = new ArrayList<>();
         for(Entry entry : set_entry){
             String friends_ids = entry.getAllFriends();
+            if(friends_ids == null) continue;
             String[] friends_ids_list = friends_ids.split(",");
             for(String id : friends_ids_list){
                 DBFriend dbf = new DBFriend(this);
@@ -177,7 +184,8 @@ public class StatisticAnalysisActivity extends Activity {
             Integer value = map_friends.get(key);
             final_friends.add(String.valueOf(value) + " x " + key);
         }
-
+        GridView gridview = (GridView) findViewById(R.id.stat_analysis_pictures);
+        gridview.setVisibility(View.INVISIBLE);
         adapter = new ArrayAdapter<>(this, R.layout.layout_listview_item, final_friends);
         review_listview.setAdapter(adapter);
         review_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -187,6 +195,7 @@ public class StatisticAnalysisActivity extends Activity {
                 List<Entry> entries_list = new ArrayList<Entry>();
                 for(Entry entry : set_entry){
                     String friends_ids = entry.getAllFriends();
+                    if(friends_ids == null) continue;
                     String[] friends_ids_list = friends_ids.split(",");
                     for(String id_friend : friends_ids_list){
                         DBFriend dbf = new DBFriend(StatisticAnalysisActivity.this);
@@ -200,12 +209,7 @@ public class StatisticAnalysisActivity extends Activity {
             }
         });
 
-        img_btn_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fillGridViewPictures();
-            }
-        });
+
     }
 
     private void fillGridViewPictures() {
@@ -330,6 +334,35 @@ public class StatisticAnalysisActivity extends Activity {
                 });
         builder.create();
         builder.show();
+    }
+
+    private void createAlertDialogueDeleteStatistic(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(StatisticAnalysisActivity.this);
+        builder1.setMessage("Do you want to delete this statistic?");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        DBStatistic dbs = new DBStatistic(StatisticAnalysisActivity.this);
+                        dbs.delete(statistic_id);
+                        Intent intent = new Intent(StatisticAnalysisActivity.this, StatisticScreenActivity.class);
+                        startActivity(intent);
+                        Toast toast = new Toast("Statistic deleted successfully.", StatisticAnalysisActivity.this);
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 
     private void createAlertDialogueWithEntries(final List<Entry> entries){
@@ -493,6 +526,8 @@ public class StatisticAnalysisActivity extends Activity {
             db_ids.add(entry.getId());
         }
 
+        GridView gridview = (GridView) findViewById(R.id.stat_analysis_pictures);
+        gridview.setVisibility(View.INVISIBLE);
         adapter = new ArrayAdapter<>(this, R.layout.layout_listview_item, entries_names);
         review_listview.setAdapter(adapter);
         review_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {

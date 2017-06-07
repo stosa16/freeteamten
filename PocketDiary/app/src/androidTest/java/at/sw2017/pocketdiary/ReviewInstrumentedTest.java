@@ -3,6 +3,7 @@ package at.sw2017.pocketdiary;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -13,8 +14,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.database_access.DBEntry;
@@ -22,15 +25,18 @@ import at.sw2017.pocketdiary.database_access.DBHandler;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.endsWith;
 
 /**
  * Created by marku on 09.05.2017.
@@ -54,7 +60,7 @@ public class ReviewInstrumentedTest {
         TestHelper.initCategories(context);
         createTestData();
         Intents.init();
-        mActivityRule.launchActivity(new Intent());
+
     }
 
     @After
@@ -66,26 +72,35 @@ public class ReviewInstrumentedTest {
 
     @Test
     public void checkIfComponentsAreDisplayed() {
+        mActivityRule.launchActivity(new Intent());
         onView(withId(R.id.review_cal_view)).check(matches(isDisplayed()));
         onView(withId(R.id.review_list_view)).check(matches(isDisplayed()));
     }
 
     @Test
     public void shouldListEntryOfCurrentDay() {
+        mActivityRule.launchActivity(new Intent());
         onView(allOf(withText("Test title"), withParent(withId(R.id.review_list_view)))).check(matches(isDisplayed()));
     }
 
     @Test
-    public void shouldListEntryOfDayAfterClick() {
-        onView(withId(R.id.review_cal_view)).perform(click());
-        onView(allOf(withText("Another Day"), withParent(withId(R.id.review_list_view)))).check(matches(isDisplayed()));
-        onView(allOf(withText("Test title"), withParent(withId(R.id.review_list_view)))).check(doesNotExist());
+    public void pressListItem() {
+        mActivityRule.launchActivity(new Intent());
+        onView(allOf(withText("Test title"), withParent(withId(R.id.review_list_view)))).perform(click());
+        intended(hasComponent(ShowEntryScreen.class.getName()));
     }
 
     @Test
-    public void pressListItem() {
-        onView(allOf(withText("Test title"), withParent(withId(R.id.review_list_view)))).perform(click());
-        intended(hasComponent(ShowEntryScreen.class.getName()));
+    public void callReviewActivityWithParameters() {
+        Context targetContext = InstrumentationRegistry.getInstrumentation()
+                .getTargetContext();
+        Intent intent = new Intent(targetContext, StatisticAnalysisActivity.class);
+        ArrayList<String> entries_ids = new ArrayList<>();
+        entries_ids.add("1");
+        intent.putStringArrayListExtra("entries_ids", entries_ids);
+        mActivityRule.launchActivity(intent);
+
+        onView(allOf(withText("Test title"), withParent(withId(R.id.review_list_view)))).check(matches(isDisplayed()));
     }
 
     public void createTestData(){

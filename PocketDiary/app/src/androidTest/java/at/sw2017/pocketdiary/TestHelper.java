@@ -73,9 +73,27 @@ public final class TestHelper {
         statistic_1.setDateFrom(date_from);
         statistic_1.setDateUntil(date_until);
         statistic_1.setCategoryId(1);
-        statistic_1.setSubCategoryId(1);
+        statistic_1.setSubCategoryId(4);
         statistic_1.setSearchTerm("test");
         dbs.insert(statistic_1);
+
+        dbs = new DBStatistic(context);
+        Statistic statistic_2 = new Statistic();
+        statistic_2.setTitle("Statistic_3");
+        statistic_2.setDateFrom(date_from);
+        statistic_2.setCategoryId(1);
+        statistic_2.setSubCategoryId(4);
+        statistic_2.setSearchTerm("test");
+        dbs.insert(statistic_2);
+
+        dbs = new DBStatistic(context);
+        Statistic statistic_3 = new Statistic();
+        statistic_3.setTitle("Statistic_4");
+        statistic_3.setDateUntil(date_until);
+        statistic_3.setCategoryId(1);
+        statistic_3.setSubCategoryId(4);
+        statistic_3.setSearchTerm("test");
+        dbs.insert(statistic_3);
     }
 
     public static void initFriends(Context context) {
@@ -97,7 +115,7 @@ public final class TestHelper {
         entry.setTitle("Test");
         entry.setDescription("This is a test!");
         entry.setMainCategoryId(1);
-        entry.setSubCategoryId(1);
+        entry.setSubCategoryId(4);
         entry.setAddressId(1);
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, 4, 10, 0, 0, 0);
@@ -122,9 +140,15 @@ public final class TestHelper {
         entry.setTitle("Test_Street");
         entry.setDescription("This is a test!");
         entry.setMainCategoryId(1);
-        entry.setSubCategoryId(1);
+        entry.setSubCategoryId(4);
         entry.setAddressId(2);
-
+        Friend friend = new Friend();
+        friend.setId(1);
+        friend.setName("Hermann");
+        friend.setDeleted(false);
+        List<Friend> friends_list = new ArrayList<>();
+        friends_list.add(friend);
+        entry.setFriends(friends_list);
         calendar.set(2017, 4, 11, 0, 0, 0);
         entry.setDate(calendar.getTime());
 

@@ -56,20 +56,13 @@ public class DBStatisticAnalysis extends SQLiteOpenHelper {
                 "OR DESCRIPTION LIKE '%"+search_term+"%'" +
                 "OR DATE LIKE '%"+search_term+"%'");
 
-        List<EntryFriend> event_friend_list = getEntryFriendByQuery("SELECT * FROM ENTRIES_FRIENDS");
-        for(EntryFriend ef : event_friend_list) {
-            int friend_id = ef.getFriendId();
-            if(getFriendById(friend_id).getName().contains(search_term)){
-                event_list.add(getEntryById(ef.getEventId()));
-            }
-        }
-
         List<Category> categories_list = getAllCategoriesBySearchTerm(search_term);
         for(Category category : categories_list){
-            String query = "SELECT * FROM ENTRIES WHERE MAINCATEGORY_ID="+category.getId()+
-                    "OR WHERE SUBCATEGORY_ID="+category.getId();
-            List<Entry> list_entry = getEntryByQuery(query);
-            event_list.addAll(list_entry);
+            List<Entry> list_entry_main = getEntriesByMainCategoryId(category.getId());
+            List<Entry> list_entry_sub = getEntriesBySubCategoryId(category.getId());
+
+            event_list.addAll(list_entry_main);
+            event_list.addAll(list_entry_sub);
         }
 
         List<Address> addresses_list = getAllAddressesBySearchTerm(search_term);
@@ -78,8 +71,14 @@ public class DBStatisticAnalysis extends SQLiteOpenHelper {
             List<Entry> list_entry = getEntryByQuery(query);
             event_list.addAll(list_entry);
         }
+
+        List<Entry> friends_list = getAllFriendsBySearchTerm(search_term);
+        event_list.addAll(friends_list);
+
         return  event_list;
     }
+
+
 
     public List<Entry> getEntriesBetweenDates(Date date_start, Date date_end){
 
@@ -95,6 +94,43 @@ public class DBStatisticAnalysis extends SQLiteOpenHelper {
         return  entries_correct_date;
     }
 
+    public List<Entry> getAllFriendsBySearchTerm(String search_term){
+        List<Friend> all_friends = new ArrayList<>();
+
+        List<Entry> all_entries = getEntryByQuery("SELECT * FROM ENTRIES");
+        List<Entry> valid_entries = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM FRIENDS WHERE NAME LIKE '%"+search_term+"%'";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            do {
+                Friend friend = new Friend();
+                friend.setId(Integer.parseInt(cursor.getString(0)));
+                friend.setName(cursor.getString(1));
+                friend.setDeleted(Boolean.parseBoolean(cursor.getString(2)));
+                all_friends.add(friend);
+            }
+            while(cursor.moveToNext());
+        }
+
+        for(Entry entry : all_entries) {
+            String ids = entry.getAllFriends();
+            if (ids != null) {
+                String[] id_list = ids.split(",");
+                for (String id : id_list) {
+                    for (Friend friend : all_friends) {
+                        if (id.equals(String.valueOf(friend.getId()))) {
+                            valid_entries.add(entry);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return valid_entries;
+    }
+
     private List<Address> getAllAddressesBySearchTerm(String search_term) {
         List<Address> list_address = new ArrayList<>();
 
@@ -102,6 +138,7 @@ public class DBStatisticAnalysis extends SQLiteOpenHelper {
         String query = "SELECT * FROM ADDRESSES " +
                 "WHERE POI LIKE '%"+search_term+"%'" +
                 "OR STREET LIKE '%"+search_term+"%'" +
+                "OR COUNTRY LIKE '%"+search_term+"%'" +
                 "OR ZIP LIKE '%"+search_term+"%'" +
                 "OR CITY LIKE '%"+search_term+"%'";
 
@@ -166,7 +203,7 @@ public class DBStatisticAnalysis extends SQLiteOpenHelper {
         return categories_list;
     }
 
-    private Entry getEntryById(int id) {
+   /* private Entry getEntryById(int id) {
         Entry entry = new Entry();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM ENRIES WHERE ID="+id, null);
@@ -193,9 +230,9 @@ public class DBStatisticAnalysis extends SQLiteOpenHelper {
         }
         db.close();
         return entry;
-    }
+    }*/
 
-    private Friend getFriendById(int id) {
+    /*private Friend getFriendById(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM FRIENDS WHERE ID="+id, null);
         Friend friend = new Friend();
@@ -212,9 +249,9 @@ public class DBStatisticAnalysis extends SQLiteOpenHelper {
         }
         db.close();
         return friend;
-    }
+    }*/
 
-    private List<EntryFriend> getEntryFriendByQuery(String query) {
+/*    private List<EntryFriend> getEntryFriendByQuery(String query) {
         List<EntryFriend> entry_friend_list = new ArrayList<EntryFriend>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -228,7 +265,7 @@ public class DBStatisticAnalysis extends SQLiteOpenHelper {
         }
         db.close();
         return entry_friend_list;
-    }
+    }*/
 
     private List<Entry> getEntryByQuery(String query) {
         List<Entry> entry_list = new ArrayList<Entry>();
@@ -253,6 +290,9 @@ public class DBStatisticAnalysis extends SQLiteOpenHelper {
                 }
                 if(cursor.getString(6) != null){
                     entry.setAddressId(Integer.parseInt(cursor.getString(6)));
+                }
+                if(cursor.getString(7) != null){
+                    entry.setAllFriends(cursor.getString(7));
                 }
                 entry_list.add(entry);
             } while (cursor.moveToNext());

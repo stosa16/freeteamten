@@ -64,10 +64,8 @@ public class CreateStatisticActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_statistic);
-        //insertTestData();
         setDatePicker();
         setMainCategorySpinner();
-        setFriendsSpinner();
         setButtons();
     }
 
@@ -157,7 +155,8 @@ public class CreateStatisticActivity extends Activity{
         DBCategory dbc = new DBCategory(this);
         subcategories = dbc.getSubCategories(parent_id);
         if (subcategories.size() == 0) {
-            Toast toast = new Toast("Kane subs", this);
+            Toast toast = new Toast("No subcategories", this);
+            return;
         }
         strings_subcategories.add(empty_spinner_text);
         for (Category temp_cat : subcategories) {
@@ -180,43 +179,6 @@ public class CreateStatisticActivity extends Activity{
                             crt_parent_id = selected_category.getId();
                             sub_cat_obj = selected_category;
                         }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> arg0) {
-                        // TODO Auto-generated method stub
-                    }
-                }
-        );
-
-    }
-
-    private void setFriendsSpinner(){
-        DBFriend dbf = new DBFriend(this);
-        friends_list = dbf.getAllFriends();
-        if(friends_list.size() == 0){
-            Toast toast = new Toast("Kane friends", this);
-        }
-        strings_friends_list.add(empty_spinner_txt_friends);
-        for(Friend friend : friends_list){
-            strings_friends_list.add(friend.getName());
-        }
-        spinner_friends = (Spinner) findViewById(R.id.create_stats_spin_friends);
-        final ArrayAdapter<String> friend_spinner = new ArrayAdapter<String>(
-                this, R.layout.layout_spinner_item, strings_friends_list);
-
-        spinner_friends.setAdapter(friend_spinner);
-        spinner_friends.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                               int arg2, long arg3) {
-
-                        /*Category selected_category = Helper.getCategoryByName(subcategories, spinner_sub_cat.getSelectedItem().toString());
-                        if (selected_category != null) {
-                            crt_parent_id = selected_category.getId();
-                        }*/
-                        friends_txt = spinner_friends.getSelectedItem().toString();
                     }
 
                     @Override
@@ -259,7 +221,6 @@ public class CreateStatisticActivity extends Activity{
         EditText term = (EditText) findViewById(R.id.create_stats_inp_term);
         Spinner main_cat = (Spinner) findViewById(R.id.create_stats_spin_main_cat);
         Spinner sub_cat = (Spinner) findViewById(R.id.create_stats_spin_sub_cat);
-        Spinner friends = (Spinner) findViewById(R.id.create_stats_spin_friends);
 
         if(title.getText().toString().trim().length() == 0){
             data_is_valid = false;
@@ -277,9 +238,6 @@ public class CreateStatisticActivity extends Activity{
         }
         if(sub_cat.getSelectedItem() != null &&
                 !sub_cat.getSelectedItem().toString().equals(empty_spinner_text)){
-            value_counter++;
-        }
-        if(!friends.getSelectedItem().toString().equals(empty_spinner_txt_friends)){
             value_counter++;
         }
         if(term.getText().toString().trim().length() != 0){
@@ -302,7 +260,6 @@ public class CreateStatisticActivity extends Activity{
         EditText term = (EditText) findViewById(R.id.create_stats_inp_term);
         Spinner main_cat = (Spinner) findViewById(R.id.create_stats_spin_main_cat);
         Spinner sub_cat = (Spinner) findViewById(R.id.create_stats_spin_sub_cat);
-        Spinner friends = (Spinner) findViewById(R.id.create_stats_spin_friends);
 
         statistic.setTitle(title.getText().toString());
 
@@ -319,9 +276,6 @@ public class CreateStatisticActivity extends Activity{
                 !sub_cat.getSelectedItem().toString().equals(empty_spinner_text)){
             statistic.setSubCategoryId(Helper.getCategoryByName(subcategories, sub_cat.getSelectedItem().toString()).getId());
         }
-        if(!friends.getSelectedItem().toString().equals(empty_spinner_txt_friends)){
-
-        }
         if(term.getText().toString().trim().length() != 0){
             statistic.setSearchTerm(term.getText().toString());
         }
@@ -331,18 +285,5 @@ public class CreateStatisticActivity extends Activity{
         Intent intent = new Intent(CreateStatisticActivity.this, StatisticScreenActivity.class);
         startActivity(intent);
         Toast toast = new Toast("Statistic created successfully.", this);
-    }
-
-    private void insertTestData(){
-        DBFriend db_insert = new DBFriend(this);
-
-        Friend friend_1 = new Friend("Hofer Junior");
-        db_insert.insert(friend_1);
-
-        Friend friend_2 = new Friend("Hermann");
-        db_insert.insert(friend_2);
-
-        Friend friend_3 = new Friend("Minze");
-        db_insert.insert(friend_3);
     }
 }

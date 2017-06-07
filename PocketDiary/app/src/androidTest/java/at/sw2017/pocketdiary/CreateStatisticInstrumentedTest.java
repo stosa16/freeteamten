@@ -43,10 +43,6 @@ import static org.hamcrest.Matchers.is;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static org.hamcrest.Matchers.not;
 
-/**
- * Created by marku on 29.05.2017.
- */
-
 @RunWith(AndroidJUnit4.class)
 public class CreateStatisticInstrumentedTest {
 
@@ -91,9 +87,6 @@ public class CreateStatisticInstrumentedTest {
 
         onView(withId(R.id.create_stats_lbl_sub_cat)).check(matches(isDisplayed()));
         onView(withId(R.id.create_stats_spin_sub_cat)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.create_stats_lbl_friends)).check(matches(isDisplayed()));
-        onView(withId(R.id.create_stats_spin_friends)).check(matches(isDisplayed()));
 
         onView(withId(R.id.create_stats_lbl_term)).check(matches(isDisplayed()));
         onView(withId(R.id.create_stats_inp_term)).check(matches(isDisplayed()));
@@ -169,15 +162,6 @@ public class CreateStatisticInstrumentedTest {
     }
 
     @Test
-    public void shouldChooseAFriend() {
-        String friend_name = "Egon";
-
-        onView(withId(R.id.create_stats_spin_friends)).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is(friend_name))).perform(click());
-        onView(withId(R.id.create_stats_spin_friends)).check(matches(withSpinnerText(containsString(friend_name))));
-    }
-
-    @Test
     public void shouldWarnUserIfNoTitle() {
         SystemClock.sleep(3000);
         onView(withId(R.id.create_stats_btn_save)).perform(click());
@@ -217,7 +201,6 @@ public class CreateStatisticInstrumentedTest {
     public void shouldCreateStatisticWithAllArgs() {
         String title = "Some Title";
         String term = "Some Term";
-        String friend_name = "Egon";
         String main_cat = "Sport";
         String sub_cat = "Walking";
 
@@ -238,8 +221,6 @@ public class CreateStatisticInstrumentedTest {
         onView(withId(R.id.create_stats_spin_sub_cat)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is(sub_cat))).perform(click());
 
-        onView(withId(R.id.create_stats_spin_friends)).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is(friend_name))).perform(click());
 
         onView(withId(R.id.create_stats_inp_term)).perform(clearText(), typeText(term));
         Espresso.closeSoftKeyboard();
