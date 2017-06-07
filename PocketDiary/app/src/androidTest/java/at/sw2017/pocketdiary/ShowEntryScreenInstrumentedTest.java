@@ -114,6 +114,14 @@ public class ShowEntryScreenInstrumentedTest {
 
     @Test
     public void checkIfPdfWasCreated() {
+        TestHelper.grantPicturePermissions();
+        Intent init_intent = new Intent();
+        mActivityInitRule.launchActivity(init_intent);
+        test_entry = TestHelper.createTestEntryWithPictures(context, mActivityInitRule.getActivity());
+        test_entry.addPicture(new Picture("/test/123.jpg", "123.jpg"));
+        Intent intent = new Intent();
+        intent.putExtra("entry_id", Integer.toString(test_entry.getId()));
+        mActivityRule.launchActivity(intent);
         onView(withId(R.id.pdf_export)).perform(click());
         onView(withText("Pdf was created")).
                 inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).
