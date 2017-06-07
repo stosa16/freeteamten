@@ -21,16 +21,21 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.ArrayList;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
-import at.sw2017.pocketdiary.business_objects.Picture;
+import at.sw2017.pocketdiary.business_objects.Friend;
+import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBEntry;
+import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.database_access.DBHandler;
-import at.sw2017.pocketdiary.database_access.DBPicture;
 import at.sw2017.pocketdiary.database_access.DBUserSetting;
+import at.sw2017.pocketdiary.business_objects.Picture;
+import at.sw2017.pocketdiary.database_access.DBPicture;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onData;
@@ -345,4 +350,40 @@ public class CreateEntryScreenInstrumentedTest {
         address1 = reverseGeocoder.getAddress(address.getLongitude(), address.getLatitude(), geocoder);
         assertTrue(address1.getCountry().equals("Italy"));
     }*/
+
+    @Test
+    public void addFriends() {
+        Friend friend = new Friend("Stefan", false);
+        Friend friend2 = new Friend("Stefan2", false);
+        DBFriend dbf = new DBFriend(mActivityRule.getActivity());
+        dbf.insert(friend);
+        dbf.insert(friend2);
+
+        onView(withId(R.id.out_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.out_category)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
+        onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.input_subcategory)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.btn_calendar)).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
+        onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
+        onView(withId(R.id.multi_spinner)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.btn_friends)).perform(click());
+        onView(withId(R.id.multi_spinner)).check(matches(isDisplayed()));
+        onView(withId(R.id.multi_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(0).perform(click());
+        onView(withText("OK")).perform(click());
+        onView(withId(R.id.btn_save)).perform(click());
+
+        Entry entry;
+        Context context = InstrumentationRegistry.getTargetContext();
+        entry = Helper.getEntryComplete(context, 1);
+        String friend_ = entry.getAllFriends();
+        Friend temp_friend;
+        DBFriend dbf2 = new DBFriend(mActivityRule.getActivity());
+        temp_friend = dbf2.getFriend(Integer.parseInt(friend_));
+        assertTrue("Stefan2".equals(temp_friend.getName()));
+    }
 }

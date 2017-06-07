@@ -17,6 +17,7 @@ import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,10 +40,12 @@ import java.util.Locale;
 import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Category;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Friend;
 import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBCategory;
 import at.sw2017.pocketdiary.database_access.DBEntry;
+import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 import at.sw2017.pocketdiary.database_access.DBPicture;
 
@@ -76,6 +79,8 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     List<Category> maincategories = new ArrayList<>();
     List<Category> subcategories = new ArrayList<>();
     List<String> strings_subcategories = new ArrayList<>();
+    List<String> items = new ArrayList<String>();
+    List<Friend> friends = new ArrayList<Friend>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +90,46 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         initCategories();
         initDateButton();
         initBadges();
+        initFriends();
+    }
+
+    public void initFriends() {
+        ImageButton friends_button = (ImageButton) this.findViewById(R.id.btn_friends);
+        final DBFriend dbc = new DBFriend(this);
+        if (dbc.getAllFriends().size() == 0) {
+            Helper.initCategories(this);
+        }
+
+
+        friends_button.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                final List<Friend> all_friends = dbc.getAllFriends();
+
+                for (Friend item : all_friends) {
+                    items.add(item.getName());
+                }
+
+                String text = "Select Friends";
+
+                final MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
+                multiSpinner.setVisibility(v.VISIBLE);
+                multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
+
+                    @Override
+                    public void onItemsSelected(boolean[] selected) {
+
+                        for(int i = 0; i<items.size(); i++){
+                            if(selected[i] == true){
+                                friends.add(all_friends.get(i));
+                            }
+                        }
+                        Helper.updateBadgeVisibility(badge_friends, true);
+                    }
+                });
+            }
+        });
     }
 
     public void checkLocationPermissions(View view) {
@@ -457,6 +502,9 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             }
             entry_address.setId((int) id);
             entry.setAddress(entry_address);
+        }
+        if (friends.size() != 0) {
+            entry.setFriends(friends);
         }
         insertEntryToDatabase(entry);
         Intent intent = new Intent(this, StartScreen.class);
