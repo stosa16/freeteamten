@@ -102,6 +102,9 @@
         <activity android:name=".ShowPictureScreen"
             android:theme="@style/AppTheme2"
         />
+        <activity android:name=".StatisticAnalysisActivity"
+            android:theme="@style/AppTheme2"
+            />
     </application>
 
 </manifest>

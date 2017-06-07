@@ -77,17 +77,4 @@ public class StatisticScreenInstrumentedTest {
         onView(withId(R.id.statistic_create_btn)).perform(click());
         intended(hasComponent(CreateStatisticActivity.class.getName()));
     }
-
-    @Test
-    public void testCameraButton(){
-        onView(allOf(withText("Statistic"), withParent(withId(R.id.statistic_listview)))).perform(click());
-        onView(withId(R.id.stat_analysis_btn_camera)).perform(click());
-    }
-
-    @Test
-    public void testGridView() {
-        onView(allOf(withText("Statistic"), withParent(withId(R.id.statistic_listview)))).perform(click());
-        onView(withId(R.id.stat_analysis_btn_camera)).perform(click());
-        onView(withText("picture")).perform(click());
-    }
 }
