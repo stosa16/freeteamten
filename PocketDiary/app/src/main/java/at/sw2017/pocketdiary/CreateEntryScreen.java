@@ -17,7 +17,6 @@ import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.view.MenuItem;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,7 +27,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -247,9 +245,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
     private void initCategories() {
         DBCategory dbc = new DBCategory(this);
-        if (dbc.getAllCategories().size() == 0) {
-            Helper.initCategories(this);
-        }
         maincategories = dbc.getMainCategories();
         strings_maincategories.add(empty_spinner_text);
         for (Category temp_cat : maincategories) {

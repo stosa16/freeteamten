@@ -2,15 +2,11 @@ package at.sw2017.pocketdiary;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 
-import java.io.File;
 import java.util.List;
-import android.view.View;
 
 import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBHandler;
@@ -38,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             userSetting.setPicturename("");
             userSetting.setFilePath("");
             dbUserSetting.insert(userSetting);
-
+            Helper.initCategories(this);
             prefs.edit().putBoolean("firstrun", false).commit();
         }
 
