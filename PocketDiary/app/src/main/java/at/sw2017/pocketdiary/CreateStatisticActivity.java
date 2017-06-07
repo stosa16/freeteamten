@@ -66,6 +66,7 @@ public class CreateStatisticActivity extends Activity{
         setContentView(R.layout.activity_create_statistic);
         setDatePicker();
         setMainCategorySpinner();
+        setSubCategorySpinner(-1);
         setButtons();
     }
 
@@ -154,10 +155,6 @@ public class CreateStatisticActivity extends Activity{
     private void setSubCategorySpinner(int parent_id){
         DBCategory dbc = new DBCategory(this);
         subcategories = dbc.getSubCategories(parent_id);
-        if (subcategories.size() == 0) {
-            Toast toast = new Toast("No subcategories", this);
-            return;
-        }
         strings_subcategories.add(empty_spinner_text);
         for (Category temp_cat : subcategories) {
             strings_subcategories.add(temp_cat.getName());
