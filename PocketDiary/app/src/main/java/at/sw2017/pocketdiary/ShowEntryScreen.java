@@ -87,6 +87,8 @@ public class ShowEntryScreen extends AppCompatActivity {
         TextView address = (TextView) findViewById(R.id.out_address);
         if (entry.getAddress() != null) {
             address.setText(entry.getAddress().getStreet() + ", " + entry.getAddress().getCity());
+        } else {
+            findViewById(R.id.btn_show_location).setVisibility(View.INVISIBLE);
         }
         TextView description = (TextView) findViewById(R.id.out_description);
         if (entry.getDescription() != null) {
@@ -123,7 +125,6 @@ public class ShowEntryScreen extends AppCompatActivity {
             }
         }
 
-
         final Button create_pdf =(Button)findViewById(R.id.pdf_export);
 
         final TextView title_pdf = (TextView) findViewById(R.id.out_title);
@@ -133,7 +134,6 @@ public class ShowEntryScreen extends AppCompatActivity {
         final TextView location_pdf = (TextView) findViewById(R.id.out_address);
         final TextView friends_pdf = (TextView) findViewById(R.id.out_friends);
         final TextView text_pdf = (TextView) findViewById(R.id.out_description);
-
 
         create_pdf.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,6 +233,12 @@ public class ShowEntryScreen extends AppCompatActivity {
     public void showLocation(View view) {
         Intent intent = new Intent(this, LocationScreen.class);
         intent.putExtra("address_id", Integer.toString(address_id));
+        startActivity(intent);
+    }
+
+    public void onClickEditButton(View view) {
+        Intent intent = new Intent(ShowEntryScreen.this, CreateEntryScreen.class);
+        intent.putExtra("entry_id", Integer.toString(entry_id));
         startActivity(intent);
     }
 }

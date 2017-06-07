@@ -113,8 +113,15 @@ public class CreateEntryScreenInstrumentedTest {
         Intents.release();
     }
 
+    public void initActivity(String entry_id) {
+        Intent intent = new Intent();
+        intent.putExtra("entry_id", entry_id);
+        mActivityRule.launchActivity(intent);
+    }
+
     @Test
     public void checkIfAllFieldsAreDisplayed() {
+        initActivity("0");
         onView(withId(R.id.input_title)).check(matches(isDisplayed()));
         onView(withId(R.id.input_description)).check(matches(isDisplayed()));
         onView(withId(R.id.input_category)).check(matches(isDisplayed()));
@@ -129,6 +136,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void createInvalidEntryTitleOnly() {
+        initActivity("0");
         onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
         onView(withId(R.id.btn_save)).perform(click());
         intended(hasComponent(CreateEntryScreen.class.getName()));
@@ -136,6 +144,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void createInvalidEntryCategoriesOnly() {
+        initActivity("0");
         onView(withId(R.id.input_title)).perform(closeSoftKeyboard());
         onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
@@ -149,6 +158,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void createInvalidEntryMainCategoryOnly() {
+        initActivity("0");
         onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
         onView(withId(R.id.input_title)).perform(closeSoftKeyboard());
         onView(withId(R.id.input_category)).perform(click());
@@ -160,6 +170,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void testIfNothingSelectedForDropdowns() {
+        initActivity("0");
         onView(withId(R.id.input_title)).perform(closeSoftKeyboard());
         onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(0).perform(click());
@@ -173,6 +184,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void createInvalidEntryNoDate() {
+        initActivity("0");
         onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
         onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
@@ -186,6 +198,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void createValidEntry() {
+        initActivity("0");
         onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
         onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
@@ -200,8 +213,10 @@ public class CreateEntryScreenInstrumentedTest {
         intended(hasComponent(StartScreen.class.getName()));
     }
 
+
     @Test
     public void checkCamera() {
+        initActivity("0");
         TestHelper.grantPicturePermissions();
         String test_image_path = TestHelper.insertTestImageToCameraGetPath(mActivityRule.getActivity());
         Bitmap icon = BitmapFactory.decodeFile(test_image_path);
@@ -216,6 +231,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void checkGalleryNoSelect() {
+        initActivity("0");
         TestHelper.grantPicturePermissions();
         Intent resultData = new Intent();
         resultData.setData(null);
@@ -228,6 +244,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void checkGallerySingleSelect() {
+        initActivity("0");
         TestHelper.grantPicturePermissions();
         Uri uri = TestHelper.insertTestImageToCameraGetPathGetUri(mActivityRule.getActivity());
         Intent resultData = new Intent();
@@ -241,6 +258,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void checkGalleryMultiSelect() {
+        initActivity("0");
         Uri uri = TestHelper.insertTestImageToCameraGetPathGetUri(mActivityRule.getActivity());
         Intent resultData = new Intent();
         ClipData.Item item_one = new ClipData.Item(uri);
@@ -260,6 +278,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void checkPictureDelete() {
+        initActivity("0");
         TestHelper.grantPicturePermissions();
         String test_image_path = TestHelper.insertTestImageToCameraGetPath(mActivityRule.getActivity());
         Intent resultData = new Intent();
@@ -274,6 +293,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void checkRequestAborted() {
+        initActivity("0");
         TestHelper.grantPicturePermissions();
         Intent resultData = new Intent();
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(REQUEST_NOT_OK, resultData);
@@ -285,12 +305,14 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void pressCancelButton() {
+        initActivity("0");
         onView(withId(R.id.btn_cancel)).perform(click());
         intended(hasComponent(StartScreen.class.getName()));
     }
 
     @Test
     public void createEntryWithPictures() {
+        initActivity("0");
         TestHelper.grantPicturePermissions();
         String path_one = "/test/1.jpg";
         String path_two = "/test/2.jpg";
@@ -342,6 +364,52 @@ public class CreateEntryScreenInstrumentedTest {
         DecimalFormat df2 = new DecimalFormat("###.##");
         double latitude = Double.valueOf(df2.format(entry.getAddress().getLatitude()));
         assertTrue(address_test.getLatitude() == latitude);
+    }
+
+    @Test
+    public void updateEntryWithoutAddress() {
+        Entry test_entry = TestHelper.createTestEntryBasic(context);
+        String entry_id = String.valueOf(test_entry.getId());
+        initActivity(entry_id);
+        onView(withId(R.id.input_subcategory)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.input_title)).check(matches(withText(test_entry.getTitle())));
+        onView(withId(R.id.btn_save)).perform(click());
+        intended(hasComponent(StartScreen.class.getName()));
+    }
+
+    @Test
+    public void updateEntryWithAddress() {
+        Entry test_entry = TestHelper.createTestEntryBasic(context);
+        Address address = new Address("Teststreet", 12, 15);
+        int address_id = (int) dba.insert(address);
+        test_entry.setAddress(address);
+        test_entry.setAddressId(address_id);
+        dbe.updateEntry(test_entry);
+        String entry_id = String.valueOf(test_entry.getId());
+        initActivity(entry_id);
+        onView(withId(R.id.input_subcategory)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.input_title)).check(matches(withText(test_entry.getTitle())));
+        onView(withId(R.id.btn_save)).perform(click());
+        intended(hasComponent(StartScreen.class.getName()));
+    }
+    @Test
+    public void updateEntryWithNewAddress() {
+        Entry test_entry = TestHelper.createTestEntryBasic(context);
+        Address edit_address = new Address("Teststreet_Edit", 13, 16);
+        dbe.updateEntry(test_entry);
+        String entry_id = String.valueOf(test_entry.getId());
+        initActivity(entry_id);
+        onView(withId(R.id.input_subcategory)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.input_title)).check(matches(withText(test_entry.getTitle())));
+        mActivityRule.getActivity().entry_address = edit_address;
+        onView(withId(R.id.btn_save)).perform(click());
+        intended(hasComponent(StartScreen.class.getName()));
     }
 
     @Test

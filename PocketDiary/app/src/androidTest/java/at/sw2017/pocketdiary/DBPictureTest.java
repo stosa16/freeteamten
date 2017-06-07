@@ -18,6 +18,7 @@ import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 import at.sw2017.pocketdiary.database_access.DBPicture;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -25,10 +26,11 @@ public class DBPictureTest {
     private DBHandler dbh;
     private DBPicture dbp;
     private DBEntry dbe;
+    private Context context;
 
     @Before
     public void setUp() throws Exception {
-        Context context = InstrumentationRegistry.getTargetContext();
+        context = InstrumentationRegistry.getTargetContext();
         context.deleteDatabase(DBHandler.DATABASE_NAME);
         dbh = new DBHandler(context);
         dbp = new DBPicture(context);
@@ -95,5 +97,40 @@ public class DBPictureTest {
         long id = dbe.insert(entry);
         List<Picture> loaded_pictures = dbp.getPicturesOfEntry((int) id);
         assertTrue(loaded_pictures.size() == 4);
+    }
+
+    @Test
+    public void shouldDeleteRedundantPictures() {
+        Entry entry = new Entry();
+        entry.setTitle("Test");
+        entry.setMainCategoryId(1);
+        entry.setSubCategoryId(2);
+        List<Picture> pictures = new ArrayList<>();
+        Picture picture1 = new Picture("/Test/Test1/", "picture1.jpeg");
+        picture1.setId(1);
+        long picture1_id = dbp.insert(picture1);
+        Picture picture2 = new Picture("/Test/Test2/", "picture2.jpeg");
+        picture2.setId(2);
+        long picture2_id = dbp.insert(picture2);
+        pictures.add(picture1);
+        pictures.add(picture2);
+        entry.setPictures(pictures);
+        long entry_id = dbe.insert(entry);
+        Entry db_entry = Helper.getEntryComplete(context, (int) entry_id);
+        assertEquals(entry_id, db_entry.getId());
+        assertEquals("Test", db_entry.getTitle());
+        assertEquals(picture1_id, db_entry.getPictures().get(0).getId());
+        assertEquals(picture2_id, db_entry.getPictures().get(1).getId());
+
+        db_entry.getPictures().remove(picture2);
+        dbp.deleteRedundantPicturesForEntry(db_entry);
+
+        db_entry = Helper.getEntryComplete(context, (int) entry_id);
+
+        assertEquals(entry_id, db_entry.getId());
+        assertEquals("Test", db_entry.getTitle());
+        assertEquals(picture1_id, db_entry.getPictures().get(0).getId());
+        assertEquals(pictures.size()-1, db_entry.getPictures().size());
+
     }
 }
