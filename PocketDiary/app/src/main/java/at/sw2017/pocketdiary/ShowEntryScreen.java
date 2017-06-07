@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-mport android.text.method.ScrollingMovementMethod;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.Button;
 import android.view.ViewGroup;
 import android.widget.ImageView;
