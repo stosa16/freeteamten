@@ -53,13 +53,8 @@ public class MultiSpinner extends Spinner implements
             }
         }
         String spinnerText;
-        if (someUnselected) {
-            spinnerText = spinnerBuffer.toString();
-            if (spinnerText.length() > 2)
-                spinnerText = spinnerText.substring(0, spinnerText.length() - 2);
-        } else {
-            spinnerText = defaultText;
-        }
+        spinnerText = defaultText;
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item,
                 new String[] { spinnerText });

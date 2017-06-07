@@ -94,21 +94,13 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     public void initFriends() {
         ImageButton friends_button = (ImageButton) this.findViewById(R.id.btn_friends);
         final DBFriend dbc = new DBFriend(this);
-        if (dbc.getAllFriends().size() == 0) {
-            Helper.initCategories(this);
-        }
-        final List<Friend> all_friends = dbc.getAllFriends();
-
-        for (Friend item : all_friends) {
-            items.add(item.getName());
-        }
 
         friends_button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 final List<Friend> all_friends = dbc.getAllFriends();
-
+                items = new ArrayList<String>();
                 for (Friend item : all_friends) {
                     items.add(item.getName());
                 }
@@ -121,13 +113,16 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
                     @Override
                     public void onItemsSelected(boolean[] selected) {
-
+                        friends = new ArrayList<Friend>();
+                        int ctr = 0;
                         for(int i = 0; i<items.size(); i++){
                             if(selected[i] == true){
                                 friends.add(all_friends.get(i));
+                                ctr++;
                             }
                         }
-                        Helper.updateBadgeVisibility(badge_friends, true);
+                        if(ctr > 0) Helper.updateBadgeVisibility(badge_friends, true);
+                        else Helper.updateBadgeVisibility(badge_friends, false);
                     }
                 });
             }
@@ -378,7 +373,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CAMERA_REQUEST && data != null && data.getExtras() != null) {
+        if (requestCode == CAMERA_REQUEST && data != null && data.getExtras() != null && resultCode == RESULT_OK) {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             //ByteArrayOutputStream out_stream = new ByteArrayOutputStream();
             //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out_stream);
@@ -392,7 +387,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             String absolute_path = cursor.getString(idx);
             entry_picture_paths.add(absolute_path);
             badge_camera.setText(Integer.toString(entry_picture_paths.size()));
-        } else if (requestCode == PICK_IMAGE_REQUEST) {
+        } else if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
             List<Uri> uris = new ArrayList<>();
             if (data.getData() != null) {
                 Uri uri = data.getData();
