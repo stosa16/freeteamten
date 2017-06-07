@@ -213,7 +213,6 @@ public class CreateEntryScreenInstrumentedTest {
         intended(hasComponent(StartScreen.class.getName()));
     }
 
-
     @Test
     public void checkCamera() {
         initActivity("0");

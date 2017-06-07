@@ -163,7 +163,7 @@ public class SettingScreen extends AppCompatActivity {
             public void onClick(View v) {
                 edit_friends.setBackgroundColor(Color.RED);
 
-                //todo link to Edit friends screen
+                //todo link to Edit activity_friends screen
                 Intent intent = new Intent(SettingScreen.this, Friends.class);
                 startActivity(intent);
             }

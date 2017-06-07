@@ -4,28 +4,20 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.MenuBuilder;
-import android.support.v7.view.menu.MenuPopupHelper;
-import android.support.v7.widget.PopupMenu;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.Friend;
+import at.sw2017.pocketdiary.business_objects.Toast;
 import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.database_access.DBHandler;
 
-import static android.R.id.list;
 import static at.sw2017.pocketdiary.R.id.listView1;
-import static at.sw2017.pocketdiary.R.id.parent;
 
 public class Friends extends AppCompatActivity {
 
@@ -36,7 +28,7 @@ public class Friends extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.friends);
+        setContentView(R.layout.activity_friends);
         DBHandler db = new DBHandler(this);
 
         lv = (ListView) findViewById(listView1);
@@ -44,7 +36,7 @@ public class Friends extends AppCompatActivity {
         List<String> friendNames = new ArrayList<>();
 
         DBFriend dbf = new DBFriend(this);
-        //get all undeleted friends in database (even including isDeleted = 1)
+        //get all undeleted activity_friends in database (even including isDeleted = 1)
         final List<Friend> allFriends = dbf.getAllNondeletedFriends();
 
 
@@ -87,6 +79,9 @@ public class Friends extends AppCompatActivity {
                 "Update friend",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        if(input.getText().toString().equals("") || input.getText() == null){
+                            return;
+                        }
                         dialog.cancel();
                         DBFriend db_friend = new DBFriend(Friends.this);
                         String old_name = friend.getName();
@@ -131,6 +126,10 @@ public class Friends extends AppCompatActivity {
     public void addFriend(View view){
         EditText editText = (EditText) findViewById(R.id.editText);
         String value = editText.getText().toString();
+        if(value == null || value.equals("")){
+            Toast toast = new Toast("Please enter a name.", this);
+            return;
+        }
         Friend friend = new Friend(value, false);
         DBFriend dbf = new DBFriend(this);
         dbf.insert(friend);

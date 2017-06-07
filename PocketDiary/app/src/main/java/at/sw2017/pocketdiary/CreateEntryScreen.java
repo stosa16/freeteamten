@@ -130,31 +130,33 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                 @Override
                 public void onClick(View v) {
                     final List<Friend> all_friends = dbc.getAllFriends();
-
+                    items = new ArrayList<String>();
                     for (Friend item : all_friends) {
                         items.add(item.getName());
                     }
 
-                    String text = "Select Friends";
+                String text = "Select Friends";
 
-                    final MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
-                    multiSpinner.setVisibility(v.VISIBLE);
-                    multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
+                final MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
+                multiSpinner.setVisibility(v.VISIBLE);
+                multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
 
-                        @Override
-                        public void onItemsSelected(boolean[] selected) {
-
-                            for(int i = 0; i<items.size(); i++){
-                                if(selected[i] == true){
-                                    friends.add(all_friends.get(i));
-                                }
+                    @Override
+                    public void onItemsSelected(boolean[] selected) {
+                        friends = new ArrayList<Friend>();
+                        int ctr = 0;
+                        for(int i = 0; i<items.size(); i++){
+                            if(selected[i] == true){
+                                friends.add(all_friends.get(i));
+                                ctr++;
                             }
-                            Helper.updateBadgeVisibility(badge_friends, true);
                         }
-                    });
-                }
-            });
-        }
+                        if(ctr > 0) Helper.updateBadgeVisibility(badge_friends, true);
+                        else Helper.updateBadgeVisibility(badge_friends, false);
+                    }
+                });
+            }
+        });
     }
 
     public void checkLocationPermissions(View view) {
@@ -421,7 +423,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CAMERA_REQUEST && data != null && data.getExtras() != null) {
+        if (requestCode == CAMERA_REQUEST && data != null && data.getExtras() != null && resultCode == RESULT_OK) {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             //ByteArrayOutputStream out_stream = new ByteArrayOutputStream();
             //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out_stream);
@@ -435,7 +437,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             String absolute_path = cursor.getString(idx);
             entry_picture_paths.add(absolute_path);
             badge_camera.setText(Integer.toString(entry_picture_paths.size()));
-        } else if (requestCode == PICK_IMAGE_REQUEST) {
+        } else if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
             List<Uri> uris = new ArrayList<>();
             if (data.getData() != null) {
                 Uri uri = data.getData();
@@ -632,6 +634,5 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
         cal.setTime(date);
         int month = cal.get(Calendar.MONTH);
         initEditDateButton(Integer.parseInt(date_array[5]), month, Integer.parseInt(date_array[2]));
-        //Todo: Set pitures by Sandy Nocker
     }
 }
