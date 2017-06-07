@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.business_objects.UserSetting;
 
 public class DBUserSetting extends SQLiteOpenHelper{
@@ -33,9 +34,11 @@ public class DBUserSetting extends SQLiteOpenHelper{
         if(!userSetting.getUserName().equals("")) {
             content_val.put("USERNAME", userSetting.getUserName());
         }
-        if(userSetting.getPicture() != null){
-            //todo
-            content_val.put("PICTURE", userSetting.getPicture());
+        if(userSetting.getFilePath() != null){
+            content_val.put("FILE_PATH", userSetting.getFilePath());
+        }
+        if(userSetting.getPicturename() != null){
+            content_val.put("NAME", userSetting.getPicturename());
         }
         if(userSetting.getPin() != null) {
             content_val.put("PIN", userSetting.getPin());
@@ -50,11 +53,22 @@ public class DBUserSetting extends SQLiteOpenHelper{
         //SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content_val = new ContentValues();
         content_val.put("USERNAME", userSetting.getUserName());
-        content_val.put("PICTURE", userSetting.getPicture());
+        content_val.put("FILE_PATH", userSetting.getFilePath());
+        content_val.put("NAME", userSetting.getPicturename());
         content_val.put("PIN", userSetting.getPin());
         content_val.put("IS_PIN_ACTIVE", userSetting.isPinActive());
         db.insert("USER_SETTINGS", null, content_val);
        // db.close();
+    }
+
+    public long insertPic (Picture picture) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues content_val = new ContentValues();
+        content_val.put("FILE_PATH", picture.getFilePath());
+        content_val.put("NAME", picture.getName());
+        long id = db.insert("PICTURES", null, content_val);
+        db.close();
+        return id;
     }
 
     public void insertPin(UserSetting userSetting){
@@ -74,17 +88,28 @@ public class DBUserSetting extends SQLiteOpenHelper{
             do {
                 UserSetting userSetting = new UserSetting();
                 userSetting.setId(Integer.parseInt(cursor.getString(0)));
+                //todo maybe index wrong
                 if(cursor.getString(1) != null){
+                    Log.d("username: ", cursor.getString(1));
                     userSetting.setUserName(cursor.getString(1));
                 }
                 if(cursor.getString(2) != null){
-                    //userSetting.setPicture(cursor.getString(2));
+                    Log.d("path: ", cursor.getString(2));
+                    userSetting.setFilePath(cursor.getString(2));
                 }
+
                 if(cursor.getString(3) != null){
-                    userSetting.setPin(cursor.getString(3));
+                    Log.d("picname: ", cursor.getString(3));
+                    userSetting.setPicturename(cursor.getString(3));
                 }
+
                 if(cursor.getString(4) != null){
-                    userSetting.setPinActive(cursor.getString(4));
+                    Log.d("pin: ", cursor.getString(4));
+                    userSetting.setPin(cursor.getString(4));
+                }
+                if(cursor.getString(5) != null){
+                    Log.d("pin active: ", cursor.getString(5));
+                    userSetting.setPinActive(cursor.getString(5));
                 }
 
                 settings_list.add(userSetting);

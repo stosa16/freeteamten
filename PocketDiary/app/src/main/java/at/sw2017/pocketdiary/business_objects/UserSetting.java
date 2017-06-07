@@ -3,7 +3,8 @@ package at.sw2017.pocketdiary.business_objects;
 public class UserSetting {
     private int id;
     private String userName;
-    private byte[] picture;
+    private String filePath;
+    private String Picturename;
     private String pin;
     private String isPinActive; //0 -> not active, 1 -> active
 
@@ -14,10 +15,12 @@ public class UserSetting {
         this.userName = userName;
     }
 
-    public UserSetting(int id, String pin, String isPinActive) {
+    public UserSetting(int id, String pin, String isPinActive, String filePath, String name) {
         this.id = id;
         this.pin = pin;
         this.isPinActive = isPinActive;
+        this.filePath = filePath;
+        this.Picturename = name;
     }
 
     public int getId() {
@@ -36,12 +39,20 @@ public class UserSetting {
         this.userName = userName;
     }
 
-    public byte[] getPicture() {
-        return picture;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getPicturename() {
+        return Picturename;
+    }
+
+    public void setPicturename(String Picturename) {
+        this.Picturename = Picturename;
     }
 
     public String getPin() {
