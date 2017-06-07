@@ -9,38 +9,27 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.UserSetting;
-import at.sw2017.pocketdiary.database_access.DBPicture;
-import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
-import static android.app.PendingIntent.getActivity;
 import static android.support.v4.app.ActivityCompat.requestPermissions;
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
@@ -64,13 +53,13 @@ public class StartScreen extends AppCompatActivity {
             mImageView.setImageBitmap(BitmapFactory.decodeFile(userSetting.getFilePath()));
         }
 
-        final ImageButton setting_button =(ImageButton) findViewById(R.id.settings);
-        final Button create_entry_button =(Button) findViewById(R.id.create_entry);
-        final Button review_button =(Button) findViewById(R.id.review);
-        final Button statistic_button =(Button) findViewById(R.id.statistic);
+        final ImageButton setting_button = (ImageButton) findViewById(R.id.settings);
+        final Button create_entry_button = (Button) findViewById(R.id.create_entry);
+        final Button review_button = (Button) findViewById(R.id.review);
+        final Button statistic_button = (Button) findViewById(R.id.statistic);
         final ImageButton picture_button = (ImageButton) findViewById(R.id.picture);
 
-        setting_button.setOnClickListener(new View.OnClickListener(){
+        setting_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setting_button.setBackgroundColor(Color.WHITE);
@@ -79,7 +68,7 @@ public class StartScreen extends AppCompatActivity {
             }
         });
 
-        create_entry_button.setOnClickListener(new View.OnClickListener(){
+        create_entry_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 create_entry_button.setBackgroundColor(Color.WHITE);
@@ -88,7 +77,7 @@ public class StartScreen extends AppCompatActivity {
             }
         });
 
-        review_button.setOnClickListener(new View.OnClickListener(){
+        review_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 review_button.setBackgroundColor(Color.WHITE);
@@ -99,7 +88,7 @@ public class StartScreen extends AppCompatActivity {
             }
         });
 
-        statistic_button.setOnClickListener(new View.OnClickListener(){
+        statistic_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 statistic_button.setBackgroundColor(Color.WHITE);
@@ -110,7 +99,7 @@ public class StartScreen extends AppCompatActivity {
             }
         });
 
-        picture_button.setOnClickListener(new View.OnClickListener(){
+        picture_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -123,7 +112,7 @@ public class StartScreen extends AppCompatActivity {
         View view = findViewById(R.id.picture);
         PopupMenu menu = new PopupMenu(StartScreen.this, view);
         menu.inflate(R.menu.popup);
-       // menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() { });
+        // menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() { });
 
         MenuPopupHelper menuHelper = new MenuPopupHelper(StartScreen.this, (MenuBuilder) menu.getMenu(), view);
         menuHelper.setForceShowIcon(true);
@@ -149,16 +138,10 @@ public class StartScreen extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_CANCELED || resultCode != RESULT_OK) {
-            Toast.makeText(StartScreen.this, "Picture capturing aborted!",
-                    Toast.LENGTH_LONG).show();
-        }
-
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK && data != null) {
+        if (requestCode == CAMERA_REQUEST && data != null && data.getExtras() != null) {
             photo = (Bitmap) data.getExtras().get("data");
             ByteArrayOutputStream out_stream = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.JPEG, 100, out_stream);
@@ -185,14 +168,9 @@ public class StartScreen extends AppCompatActivity {
                 ImageView mImageView = (ImageView) findViewById(R.id.pictureField);
                 mImageView.setImageBitmap(BitmapFactory.decodeFile(userSetting.getFilePath()));
             }
-        }
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && null != data) {
-
+        } else if (requestCode == PICK_IMAGE_REQUEST && null != data && data.getData() != null) {
             Uri imageURI = data.getData();
             ImageView imageView = (ImageView) findViewById(R.id.pictureField);
-
-            String imageForDatabase = imageURI.toString();
 
             DBUserSetting dbUserSetting = new DBUserSetting(StartScreen.this);
             List<UserSetting> temp = dbUserSetting.getUserSetting(1);
@@ -218,11 +196,14 @@ public class StartScreen extends AppCompatActivity {
             dbUserSetting.update(userSetting, 1);
 
             imageView.setImageURI(imageURI);
+        } else if (resultCode == RESULT_CANCELED || resultCode != RESULT_OK) {
+            Toast.makeText(StartScreen.this, "Picture capturing aborted!",
+                    Toast.LENGTH_LONG).show();
         }
     }
 }
 
-class handle_picture{
+class handle_picture {
 
     private static int PICK_IMAGE_REQUEST = 2;
     private static final int CAMERA_REQUEST = 1;
@@ -239,9 +220,9 @@ class handle_picture{
 
     }
 
-    static void checkGalleryPermissions(StartScreen activity){
+    static void checkGalleryPermissions(StartScreen activity) {
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                     activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(activity, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA}, WRITE_STORAGE_REQUEST);
@@ -257,14 +238,14 @@ class handle_picture{
         }
     }
 
-    static void checkCameraPermissions(StartScreen activity){
+    static void checkCameraPermissions(StartScreen activity) {
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                     activity.checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(activity, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA}, WRITE_STORAGE_REQUEST);
                 if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
-                        activity.checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+                        activity.checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                     initPictureButton(activity);
                 }
             } else {
@@ -280,7 +261,7 @@ class handle_picture{
         startActivityForResult(activity, camera_intent, CAMERA_REQUEST, Bundle.EMPTY);
     }
 
-    static void openGallery(final StartScreen  activity){
+    static void openGallery(final StartScreen activity) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
