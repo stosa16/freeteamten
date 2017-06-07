@@ -43,7 +43,19 @@ public class DBPictureTest {
     }
 
     @Test
-    public void shouldAddPicture() throws Exception {
+    public void callEmptyOverrides() throws Exception {
+        dbp.onCreate(null);
+        dbp.onUpgrade(null, 0, 0);
+    }
+
+    @Test
+    public void shouldGetNoPicture() {
+        Picture loaded_picture = dbp.getPicture(0);
+        assertTrue(loaded_picture == null);
+    }
+
+    @Test
+    public void shouldAddPicture() {
         String test_path = "/Testpath/";
         String test_name = "picture.jpeg";
         Picture picture = new Picture();
@@ -51,13 +63,13 @@ public class DBPictureTest {
         picture.setName(test_name);
         long id = dbp.insert(picture);
         assertTrue(id > 0);
-        Picture loaded_picture = dbp.getPicture((int)id);
+        Picture loaded_picture = dbp.getPicture((int) id);
         assertTrue(loaded_picture.getFilePath().equals(picture.getFilePath()));
         assertTrue(loaded_picture.getName().equals(picture.getName()));
     }
 
     @Test
-    public void shouldGetAllImagesOfEntry() throws Exception {
+    public void shouldGetAllImagesOfEntry() {
         Entry entry = new Entry();
         entry.setTitle("Test");
         entry.setMainCategoryId(1);

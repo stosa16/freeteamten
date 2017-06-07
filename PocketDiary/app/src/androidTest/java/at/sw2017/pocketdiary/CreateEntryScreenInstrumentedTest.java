@@ -1,12 +1,13 @@
 package at.sw2017.pocketdiary;
 
-import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.intent.Intents;
@@ -23,13 +24,18 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Entry;
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBHandler;
+import at.sw2017.pocketdiary.database_access.DBPicture;
 
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -39,6 +45,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -56,7 +63,19 @@ public class CreateEntryScreenInstrumentedTest {
     private DBHandler dbh;
     private DBEntry dbe;
     private DBAddress dba;
+    private DBPicture dbp;
     private Geocoder geocoder;
+    private Context context;
+    private String camera_package = "com.android.camera";
+    private String gallery_package = "content://media/internal/images/media";
+
+    private static final int CAMERA_REQUEST = 1;
+    private static final int WRITE_STORAGE_REQUEST = 2;
+    private static final int FINE_LOCATION_REQUEST = 3;
+    private static final int COARSE_LOCATION_REQUEST = 4;
+    private static final int PICK_IMAGE_REQUEST = 5;
+    private static final int DELETE_IMAGE_REQUEST = 6;
+    private static final int REQUEST_NOT_OK = -1;
 
     private String titleToBeTyped;
 
@@ -65,12 +84,13 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Before
     public void setUp() {
-        Context context = InstrumentationRegistry.getTargetContext();
+        context = getTargetContext();
         context.deleteDatabase(DBHandler.DATABASE_NAME);
         dbh = new DBHandler(context);
         Helper.initCategories(context);
         dbe = new DBEntry(context);
         dba = new DBAddress(context);
+        dbp = new DBPicture(context);
         geocoder = new Geocoder(context);
         titleToBeTyped = "Running";
         Intents.init();
@@ -82,62 +102,90 @@ public class CreateEntryScreenInstrumentedTest {
         dbh.close();
         dbe.close();
         dba.close();
+        dbp.close();
         Intents.release();
     }
 
     @Test
     public void checkIfAllFieldsAreDisplayed() {
-        onView(withId(R.id.out_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.input_title)).check(matches(isDisplayed()));
         onView(withId(R.id.input_description)).check(matches(isDisplayed()));
-        onView(withId(R.id.out_category)).check(matches(isDisplayed()));
-        onView(withId(R.id.out_description)).check(matches(isDisplayed()));
+        onView(withId(R.id.input_category)).check(matches(isDisplayed()));
+        onView(withId(R.id.input_description)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_calendar)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_friends)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_location)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_pictures)).check(matches(isDisplayed()));
+        onView(withId(R.id.btn_save)).check(matches(isDisplayed()));
+        onView(withId(R.id.btn_cancel)).check(matches(isDisplayed()));
     }
 
     @Test
     public void createInvalidEntryTitleOnly() {
-        onView(withId(R.id.out_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
         onView(withId(R.id.btn_save)).perform(click());
         intended(hasComponent(CreateEntryScreen.class.getName()));
     }
 
     @Test
     public void createInvalidEntryCategoriesOnly() {
-        onView(withId(R.id.out_category)).perform(click());
+        onView(withId(R.id.input_title)).perform(closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
-        onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
-        onView(withId(R.id.out_description)).perform(click());
+        onView(withId(R.id.input_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.input_subcategory)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
-        onView(withId(R.id.out_description)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.btn_save)).perform(click());
+        intended(hasComponent(CreateEntryScreen.class.getName()));
+    }
+
+    @Test
+    public void createInvalidEntryMainCategoryOnly() {
+        onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.input_title)).perform(closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
+        onView(withId(R.id.input_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.btn_save)).perform(click());
+        intended(hasComponent(CreateEntryScreen.class.getName()));
+    }
+
+    @Test
+    public void testIfNothingSelectedForDropdowns() {
+        onView(withId(R.id.input_title)).perform(closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(0).perform(click());
+        onView(withId(R.id.input_category)).check(matches(not(withText(""))));
+        onView(withId(R.id.input_subcategory)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(0).perform(click());
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText(""))));
         onView(withId(R.id.btn_save)).perform(click());
         intended(hasComponent(CreateEntryScreen.class.getName()));
     }
 
     @Test
     public void createInvalidEntryNoDate() {
-        onView(withId(R.id.out_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.out_category)).perform(click());
+        onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
-        onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
-        onView(withId(R.id.out_description)).perform(click());
+        onView(withId(R.id.input_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.input_subcategory)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
-        onView(withId(R.id.out_description)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
         onView(withId(R.id.btn_save)).perform(click());
         intended(hasComponent(CreateEntryScreen.class.getName()));
     }
 
     @Test
     public void createValidEntry() {
-        onView(withId(R.id.out_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.out_category)).perform(click());
+        onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
-        onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
-        onView(withId(R.id.out_description)).perform(click());
+        onView(withId(R.id.input_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.input_subcategory)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
-        onView(withId(R.id.out_description)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
         onView(withId(R.id.btn_calendar)).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
         onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
@@ -146,26 +194,124 @@ public class CreateEntryScreenInstrumentedTest {
     }
 
     @Test
-    public void displayCamera() {
+    public void checkCamera() {
+        TestHelper.grantPicturePermissions();
+        String test_image_path = TestHelper.insertTestImageToCameraGetPath(mActivityRule.getActivity());
+        Bitmap icon = BitmapFactory.decodeFile(test_image_path);
+        Intent resultData = new Intent();
+        resultData.putExtra("data", icon);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(CAMERA_REQUEST, resultData);
+        intending(toPackage(camera_package)).respondWith(result);
         onView(withId(R.id.btn_pictures)).perform(click());
-        intended(toPackage("com.android.camera2"));
+        onView(withText("Camera")).perform(click());
+        onView(withId(R.id.badge_camera)).check(matches(withText("1")));
     }
 
     @Test
-    public void handleCamerButtonClick() {
-        Bitmap icon = BitmapFactory.decodeResource(InstrumentationRegistry.getTargetContext().getResources(),
-            R.mipmap.ic_launcher);
+    public void checkGalleryNoSelect() {
+        TestHelper.grantPicturePermissions();
         Intent resultData = new Intent();
-        resultData.putExtra("data", icon);
-        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-        intending(toPackage("com.android.camera2")).respondWith(result);
+        resultData.setData(null);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(PICK_IMAGE_REQUEST, resultData);
+        intending(not(isInternal())).respondWith(result);
         onView(withId(R.id.btn_pictures)).perform(click());
+        onView(withText("Gallery")).perform(click());
+        onView(withId(R.id.badge_camera)).check(matches(withText("0")));
+    }
+
+    @Test
+    public void checkGallerySingleSelect() {
+        TestHelper.grantPicturePermissions();
+        Uri uri = TestHelper.insertTestImageToCameraGetPathGetUri(mActivityRule.getActivity());
+        Intent resultData = new Intent();
+        resultData.setData(uri);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(PICK_IMAGE_REQUEST, resultData);
+        intending(not(isInternal())).respondWith(result);
+        onView(withId(R.id.btn_pictures)).perform(click());
+        onView(withText("Gallery")).perform(click());
+        onView(withId(R.id.badge_camera)).check(matches(withText("1")));
+    }
+
+    @Test
+    public void checkGalleryMultiSelect() {
+        Uri uri = TestHelper.insertTestImageToCameraGetPathGetUri(mActivityRule.getActivity());
+        Intent resultData = new Intent();
+        ClipData.Item item_one = new ClipData.Item(uri);
+        ClipData.Item item_two = new ClipData.Item(uri);
+        ClipData.Item item_three = new ClipData.Item(uri);
+        String[] mime_types = new String[] {"image/jpeg", "image/bmp", "image/gif", "image/jpg", "image/png"};
+        ClipData clip_data = new ClipData("test", mime_types, item_one);
+        clip_data.addItem(item_two);
+        clip_data.addItem(item_three);
+        resultData.setClipData(clip_data);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(PICK_IMAGE_REQUEST, resultData);
+        intending(not(isInternal())).respondWith(result);
+        onView(withId(R.id.btn_pictures)).perform(click());
+        onView(withText("Gallery")).perform(click());
+        onView(withId(R.id.badge_camera)).check(matches(withText("3")));
+    }
+
+    @Test
+    public void checkPictureDelete() {
+        TestHelper.grantPicturePermissions();
+        String test_image_path = TestHelper.insertTestImageToCameraGetPath(mActivityRule.getActivity());
+        Intent resultData = new Intent();
+        String[] file_paths = new String[] { test_image_path };
+        resultData.putExtra("file_paths", file_paths);
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(DELETE_IMAGE_REQUEST, resultData);
+        intending(toPackage(mActivityRule.getActivity().getPackageName())).respondWith(result);
+        onView(withId(R.id.btn_pictures)).perform(click());
+        onView(withText("Remove")).perform(click());
+        onView(withId(R.id.badge_camera)).check(matches(withText("1")));
+    }
+
+    @Test
+    public void checkRequestAborted() {
+        TestHelper.grantPicturePermissions();
+        Intent resultData = new Intent();
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(REQUEST_NOT_OK, resultData);
+        intending(toPackage(camera_package)).respondWith(result);
+        onView(withId(R.id.btn_pictures)).perform(click());
+        onView(withText("Camera")).perform(click());
+        onView(withId(R.id.badge_camera)).check(matches(withText("0")));
     }
 
     @Test
     public void pressCancelButton() {
         onView(withId(R.id.btn_cancel)).perform(click());
         intended(hasComponent(StartScreen.class.getName()));
+    }
+
+    @Test
+    @Test
+    public void createEntryWithPictures() {
+        TestHelper.grantPicturePermissions();
+        String path_one = "/test/1.jpg";
+        String path_two = "/test/2.jpg";
+        String path_three = "/test/3.jpg";
+        List<String> picture_paths = new ArrayList<>();
+        picture_paths.add(path_one);
+        picture_paths.add(path_two);
+        picture_paths.add(path_three);
+        Picture picture = new Picture(path_one, "1.jpg");
+        long id = dbp.insert(picture);
+        assertTrue((int) id > 0);
+        onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
+        onView(withId(R.id.input_category)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
+        onView(withId(R.id.input_category)).check(matches(not(withText("Sport"))));
+        onView(withId(R.id.input_subcategory)).perform(click());
+        onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
+        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
+        onView(withId(R.id.btn_calendar)).perform(click());
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
+        onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
+        mActivityRule.getActivity().entry_picture_paths = picture_paths;
+        onView(withId(R.id.btn_save)).perform(click());
+        Entry entry;
+        Context context = getTargetContext();
+        entry = Helper.getEntryComplete(context, 1);
+        assertTrue(picture_paths.size() == entry.getPictures().size());
     }
 
     @Test

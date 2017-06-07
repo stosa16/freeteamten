@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:text="@string/entry_title"
         app:layout_constraintLeft_toLeftOf="@+id/category"
-        app:layout_constraintTop_toTopOf="@+id/out_title"
-        app:layout_constraintBottom_toBottomOf="@+id/out_title"
+        app:layout_constraintTop_toTopOf="@+id/input_title"
+        app:layout_constraintBottom_toBottomOf="@+id/input_title"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintBottom_creator="1" />
 
@@ -29,8 +29,8 @@
         android:text="@string/entry_category"
         app:layout_constraintLeft_toLeftOf="@+id/guideline2"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/out_category"
-        app:layout_constraintTop_toTopOf="@+id/out_category" />
+        app:layout_constraintBottom_toBottomOf="@+id/input_category"
+        app:layout_constraintTop_toTopOf="@+id/input_category" />
 
     <TextView
         android:id="@+id/subcategory"
@@ -47,7 +47,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <EditText
-        android:id="@+id/out_title"
+        android:id="@+id/input_title"
         android:layout_width="173dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -58,19 +58,19 @@
         android:hint="@string/entry_title"
         android:inputType="textPersonName"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/out_category"
+        app:layout_constraintBottom_toTopOf="@+id/input_category"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/out_category"
+        android:id="@+id/input_category"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="27dp"
         app:layout_constraintBottom_toTopOf="@+id/input_subcategory"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/out_title"
-        app:layout_constraintRight_toRightOf="@+id/out_title"
+        app:layout_constraintLeft_toLeftOf="@+id/input_title"
+        app:layout_constraintRight_toRightOf="@+id/input_title"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintLeft_creator="1" />
 
@@ -78,8 +78,8 @@
         android:id="@+id/input_subcategory"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="@+id/out_category"
-        app:layout_constraintLeft_toLeftOf="@+id/out_category"
+        app:layout_constraintRight_toRightOf="@+id/input_category"
+        app:layout_constraintLeft_toLeftOf="@+id/input_category"
         app:layout_constraintHorizontal_bias="0.0"
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
@@ -111,7 +111,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="checkPicturePermissions"
+        android:onClick="loadingPopup"
         app:layout_constraintBottom_toTopOf="@+id/input_description"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btn_location"
@@ -218,7 +218,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/badge"
-        android:text="@string/checked"
+        android:text="0"
         android:textColor="@android:color/background_light"
         android:textStyle="bold"
         android:layout_marginLeft="28dp"

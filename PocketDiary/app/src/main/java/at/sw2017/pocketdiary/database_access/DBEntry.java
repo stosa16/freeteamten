@@ -61,7 +61,6 @@ public class DBEntry extends SQLiteOpenHelper{
             values.put("PICTURE_ID", picture.getId());
             values.put("ENTRY_ID", entry_id);
             long id = db.insert("ENTRIES_PICTURES", null, values);
-            Log.d("Id", Integer.toString((int) id));
         }
         db.close();
     }

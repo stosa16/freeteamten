@@ -75,12 +75,6 @@ public class DBFriend extends SQLiteOpenHelper{
         return friend;
     }
 
-
-    public List<Friend> getAllFriends(){
-        List<Friend> results = loadStatisticsFromDb("SELECT * FROM FRIENDS");
-        return results;
-    }
-
     public List<Friend> getAllFriends(){
         List<Friend> friend_list = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + "FRIENDS";
