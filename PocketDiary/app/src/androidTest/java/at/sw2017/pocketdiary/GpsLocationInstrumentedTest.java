@@ -20,7 +20,7 @@ public class GpsLocationInstrumentedTest {
     private Context context;
 
     @Rule
-    public ActivityTestRule<CreateEntryScreen> mActivityRule = new ActivityTestRule<>(CreateEntryScreen.class);
+    public ActivityTestRule<CreateEntryScreen> mActivityRule = new ActivityTestRule<>(CreateEntryScreen.class, false, false);
 
 
     @Before
@@ -34,8 +34,15 @@ public class GpsLocationInstrumentedTest {
         Intents.release();
     }
 
+    public void initActivity(String entry_id) {
+        Intent intent = new Intent();
+        intent.putExtra("entry_id", entry_id);
+        mActivityRule.launchActivity(intent);
+    }
+
     @Test
     public void checkGetLongitudeAndLatitude() {
+        initActivity("0");
         GpsLocation gps_location = new GpsLocation(context);
         Location current_location = new Location("A1");
         current_location.setLongitude(15);
@@ -49,6 +56,7 @@ public class GpsLocationInstrumentedTest {
 
     @Test
     public void checkCanGetLocation() {
+        initActivity("0");
         GpsLocation gps_location = new GpsLocation(context);
         gps_location.canGetLocation = false;
         assertTrue(gps_location.canGetLocation() == gps_location.canGetLocation);
@@ -58,6 +66,7 @@ public class GpsLocationInstrumentedTest {
 
     @Test
     public void checkOverrideMethods() {
+        initActivity("0");
         GpsLocation gps_location = new GpsLocation(context);
         assertTrue(gps_location.onBind(new Intent("intent")) == null);
         gps_location.onStatusChanged("test", 1, Bundle.EMPTY);
@@ -67,6 +76,7 @@ public class GpsLocationInstrumentedTest {
 
     @Test
     public void checkOnLocationChanged(){
+        initActivity("0");
         GpsLocation gps_location = new GpsLocation(context);
         Location current_location = new Location("A1");
         current_location.setLongitude(15);

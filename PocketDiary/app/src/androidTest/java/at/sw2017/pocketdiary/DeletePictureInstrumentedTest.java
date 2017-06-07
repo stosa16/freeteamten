@@ -37,7 +37,7 @@ public class DeletePictureInstrumentedTest {
     public ActivityTestRule<DeletePictureScreen> mActivityRule = new ActivityTestRule<>(DeletePictureScreen.class, false, false);;
 
     @Rule
-    public ActivityTestRule<CreateEntryScreen> mActivityInitRule = new ActivityTestRule<>(CreateEntryScreen.class, false, false);;
+    public ActivityTestRule<CategoriesActivity> mActivityInitRule = new ActivityTestRule<>(CategoriesActivity.class, false, false);;
 
     @Before
     public void setUp() {

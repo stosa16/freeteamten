@@ -42,7 +42,7 @@ public class ShowEntryScreenInstrumentedTest {
     public ActivityTestRule<ShowEntryScreen> mActivityRule = new ActivityTestRule<>(ShowEntryScreen.class, false, false);;
 
     @Rule
-    public ActivityTestRule<CreateEntryScreen> mActivityInitRule = new ActivityTestRule<>(CreateEntryScreen.class, false, false);;
+    public ActivityTestRule<CategoriesActivity> mActivityInitRule = new ActivityTestRule<>(CategoriesActivity.class, false, false);;
 
     @Before
     public void setUp() {

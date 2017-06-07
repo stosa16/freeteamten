@@ -66,7 +66,6 @@ public class CreateEntryLocationInstrumentedTest {
         dbp = new DBPicture(context);
         geocoder = new Geocoder(context);
         Intents.init();
-        mActivityRule.launchActivity(new Intent());
     }
 
     @After
@@ -78,8 +77,15 @@ public class CreateEntryLocationInstrumentedTest {
         Intents.release();
     }
 
+    public void initActivity(String entry_id) {
+        Intent intent = new Intent();
+        intent.putExtra("entry_id", entry_id);
+        mActivityRule.launchActivity(intent);
+    }
+
     @Test
     public void pressLocationButton() {
+        initActivity("0");
         TestHelper.grantLocationPermissions();
         onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
         onView(withId(R.id.input_category)).perform(click());
@@ -92,11 +98,11 @@ public class CreateEntryLocationInstrumentedTest {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
         onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
         onView(withId(R.id.btn_location)).perform(click());
-        onView(withId(R.id.badge_address)).check(matches(isDisplayed()));
     }
 
     @Test
     public void checkGetLocationWithPermission() {
+        initActivity("0");
         TestHelper.grantLocationPermissions();
         GpsLocation gps_location = new GpsLocation(context);
         Location current_location = new Location("A1");
@@ -111,12 +117,14 @@ public class CreateEntryLocationInstrumentedTest {
     /* ======================== Files with disabled GPS on Phone ============================== */
     /*@Test
     public void shouldOpenAlertDialog(){
+        initActivity("0");
         onView(withId(R.id.btn_location)).perform(click());
         onView(withText("GPS Not Enabled")).check(matches(isDisplayed()));
     }
 
     @Test
     public void shouldCancelAlertDialog(){
+        initActivity("0");
         onView(withId(R.id.btn_location)).perform(click());
         onView(withText("GPS Not Enabled")).check(matches(isDisplayed()));
         onView(withText("No")).perform(click());
@@ -126,6 +134,7 @@ public class CreateEntryLocationInstrumentedTest {
 
     @Test
     public void shouldAcceptAlertDialog() throws Throwable {
+        initActivity("0");
         onView(withId(R.id.btn_location)).perform(click());
         onView(withText("GPS Not Enabled")).check(matches(isDisplayed()));
         onView(withText("Yes")).perform(click());
@@ -140,6 +149,7 @@ public class CreateEntryLocationInstrumentedTest {
 
     @Test
     public void checkGetLocation() {
+        initActivity("0");
         TestHelper.grantLocationPermissions();
         GpsLocation gps_location = new GpsLocation(context);
         //enable GPS to test this
@@ -156,6 +166,7 @@ public class CreateEntryLocationInstrumentedTest {
     /* Set Lat/Long of Emulator to 13.0/43.0*/
     /*@Test
     public void reverseGeocoding() throws IOException {
+        initActivity("0");
         Address address = new Address(13.0, 43.0);
         ReverseGeocoder reverseGeocoder = new ReverseGeocoder();
         Address address1;

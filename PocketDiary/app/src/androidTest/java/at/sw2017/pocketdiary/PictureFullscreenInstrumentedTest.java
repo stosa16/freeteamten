@@ -28,7 +28,7 @@ public class PictureFullscreenInstrumentedTest {
     public ActivityTestRule<PictureFullscreen> mActivityRule = new ActivityTestRule<>(PictureFullscreen.class, false, false);;
 
     @Rule
-    public ActivityTestRule<CreateEntryScreen> mActivityInitRule = new ActivityTestRule<>(CreateEntryScreen.class, false, false);;
+    public ActivityTestRule<CategoriesActivity> mActivityInitRule = new ActivityTestRule<>(CategoriesActivity.class, false, false);;
 
     @Before
     public void setUp() {

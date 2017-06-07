@@ -108,9 +108,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
     public void initFriends() {
         ImageButton friends_button = (ImageButton) this.findViewById(R.id.btn_friends);
         final DBFriend dbc = new DBFriend(this);
-        if (dbc.getAllFriends().size() == 0) {
-            Helper.initCategories(this);
-        }
         final List<Friend> all_friends = dbc.getAllFriends();
 
         for (Friend item : all_friends) {
@@ -135,28 +132,29 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                         items.add(item.getName());
                     }
 
-                String text = "Select Friends";
+                    String text = "Select Friends";
 
-                final MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
-                multiSpinner.setVisibility(v.VISIBLE);
-                multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
+                    final MultiSpinner multiSpinner = (MultiSpinner) findViewById(R.id.multi_spinner);
+                    multiSpinner.setVisibility(v.VISIBLE);
+                    multiSpinner.setItems(items, text, new MultiSpinner.MultiSpinnerListener() {
 
-                    @Override
-                    public void onItemsSelected(boolean[] selected) {
-                        friends = new ArrayList<Friend>();
-                        int ctr = 0;
-                        for(int i = 0; i<items.size(); i++){
-                            if(selected[i] == true){
-                                friends.add(all_friends.get(i));
-                                ctr++;
+                        @Override
+                        public void onItemsSelected(boolean[] selected) {
+                            friends = new ArrayList<Friend>();
+                            int ctr = 0;
+                            for (int i = 0; i < items.size(); i++) {
+                                if (selected[i] == true) {
+                                    friends.add(all_friends.get(i));
+                                    ctr++;
+                                }
                             }
+                            if (ctr > 0) Helper.updateBadgeVisibility(badge_friends, true);
+                            else Helper.updateBadgeVisibility(badge_friends, false);
                         }
-                        if(ctr > 0) Helper.updateBadgeVisibility(badge_friends, true);
-                        else Helper.updateBadgeVisibility(badge_friends, false);
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        }
     }
 
     public void checkLocationPermissions(View view) {
@@ -315,7 +313,6 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
 
                     @Override
                     public void onNothingSelected(AdapterView<?> arg0) {
-                        // TODO Auto-generated method stub
                     }
                 }
         );
@@ -556,7 +553,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             Address address = dbEntry.getEntry(entry_id).getAddress();
             int addressId = dbEntry.getEntry(entry_id).getAddressId();
             //if (entry_address != null && (entry.getAddress() == null || (entry.getAddress() != null && !(entry_address.getStreet().equals(entry.getAddress().getStreet()))))) {
-            if(entry_address != null && (!(entry_address.getStreet().equals(address)))) {
+            if (entry_address != null && (!(entry_address.getStreet().equals(address)))) {
                 DBAddress dbAddress = new DBAddress(this);
                 addressId = (int) dbAddress.insert(entry_address);
             }
@@ -616,7 +613,7 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
             Helper.updateBadgeVisibility(badge_address, true);
         }
 
-        if (entry.getPictures().size() > 0){
+        if (entry.getPictures().size() > 0) {
             for (Picture picture :
                     entry.getPictures()) {
                 entry_picture_paths.add(picture.getFilePath());
