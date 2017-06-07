@@ -44,6 +44,7 @@
     <style name="ActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorRed</item>
         <item name="android:textColor">@android:color/black</item>
+        <item name="colorAccent">@color/colorRed</item>
     </style>
 
     <style name="CustomTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
