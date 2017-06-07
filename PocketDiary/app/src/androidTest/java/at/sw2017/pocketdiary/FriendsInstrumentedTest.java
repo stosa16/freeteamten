@@ -178,5 +178,5 @@ public class FriendsInstrumentedTest {
         onView(withText("Cancel")).perform(click());
         onView(allOf(withText(name))).check(matches(isDisplayed()));
     }
-    
+
 }
