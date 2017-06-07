@@ -31,4 +31,5 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_delete_picture_screen">DeletePictureScreen</string>
+    <string name="pdf_export">pdf export</string>
 </resources>

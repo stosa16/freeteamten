@@ -1,17 +1,36 @@
 package at.sw2017.pocketdiary;
 
+import android.*;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import android.widget.Toast;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Picture;
@@ -24,6 +43,7 @@ public class ShowEntryScreen extends AppCompatActivity {
 
     private int entry_id;
     final int THUMBNAIL_SIZE = 140;
+    private static final int WRITE_STORAGE_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,5 +104,111 @@ public class ShowEntryScreen extends AppCompatActivity {
                 id_count++;
             }
         }
+
+
+        final Button create_pdf =(Button)findViewById(R.id.pdf_export);
+
+        final TextView title_pdf = (TextView) findViewById(R.id.out_title);
+        final TextView category_pdf = (TextView) findViewById(R.id.out_category);
+        final TextView subcategory_pdf = (TextView) findViewById(R.id.out_subcategory);
+        final TextView date_pdf = (TextView) findViewById(R.id.out_date);
+        final TextView location_pdf = (TextView) findViewById(R.id.out_address);
+        final TextView friends_pdf = (TextView) findViewById(R.id.out_friends);
+        final TextView text_pdf = (TextView) findViewById(R.id.out_description);
+
+
+        create_pdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                create_pdf.setBackgroundColor(Color.RED);
+
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_STORAGE_REQUEST);
+                    }
+                }
+
+                File pdfFolder = new File(Environment.getExternalStorageDirectory().getPath() + "/.POCKETDIARY");
+                // boolean success = false;
+                if (!pdfFolder.exists()) {
+                    pdfFolder.mkdir();
+                }
+
+                //Create time stamp
+                Date date = new Date() ;
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(date);
+
+                File myFile = new File(pdfFolder + timeStamp + ".pdf");
+
+                try {
+                    OutputStream output = new FileOutputStream(myFile);
+                    Document document = new Document();
+                    PdfWriter.getInstance(document, output);
+                    document.open();
+
+                    try {
+                        Font font = new Font(Font.FontFamily.TIMES_ROMAN, 24, Font.NORMAL, BaseColor.BLACK);
+                        Font red = new Font(Font.FontFamily.TIMES_ROMAN, 30, Font.NORMAL, BaseColor.RED);
+                        Chunk title_start = new Chunk("Title: ", red);
+                        Paragraph para1 = new Paragraph(title_start);
+                        Chunk title_end = new Chunk(title_pdf.getText().toString(), font);
+                        para1.add(title_end);
+                        document.add(para1);
+
+                        Chunk category_start = new Chunk("Category: ", red);
+                        Paragraph para2 = new Paragraph(category_start);
+                        Chunk category_end = new Chunk(category_pdf.getText().toString(), font);
+                        para2.add(category_end);
+                        document.add(para2);
+
+                        Chunk subcategory_start = new Chunk("Subcategory: ", red);
+                        Paragraph para3 = new Paragraph(subcategory_start);
+                        Chunk subcategory_end = new Chunk(subcategory_pdf.getText().toString(), font);
+                        para3.add(subcategory_end);
+                        document.add(para3);
+
+                        Chunk date_start = new Chunk("Date: ", red);
+                        Paragraph para4 = new Paragraph(date_start);
+                        Chunk date_end = new Chunk(date_pdf.getText().toString(), font);
+                        para4.add(date_end);
+                        document.add(para4);
+
+                        Chunk location_start = new Chunk("Location: ", red);
+                        Paragraph para5 = new Paragraph(location_start);
+                        Chunk location_end = new Chunk(location_pdf.getText().toString(), font);
+                        para5.add(location_end);
+                        document.add(para5);
+
+                        Chunk friends_start = new Chunk("Friends: ", red);
+                        Paragraph para6 = new Paragraph(friends_start);
+                        Chunk friends_end = new Chunk(friends_pdf.getText().toString(), font);
+                        para6.add(friends_end);
+                        document.add(para6);
+
+                        Chunk text_start = new Chunk("Text: ", red);
+                        Paragraph para7 = new Paragraph(text_start);
+                        Chunk text_end = new Chunk(text_pdf.getText().toString(), font);
+                        para7.add(text_end);
+                        document.add(para7);
+
+                        Toast.makeText(getApplicationContext(), "Pdf was created", Toast.LENGTH_SHORT).show();
+                    } catch (DocumentException e) {
+                        e.printStackTrace();
+                    }
+
+                    document.close();
+
+                    /*Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(myFile), "application/pdf");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(intent);*/
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
