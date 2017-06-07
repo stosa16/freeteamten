@@ -181,14 +181,20 @@ public class CreateEntryScreen extends AppCompatActivity implements DatePickerDi
                     double latitude = gps.getLatitude();
                     Geocoder geocoder = new Geocoder(CreateEntryScreen.this, Locale.ENGLISH);
                     ReverseGeocoder reverseGeocoder = new ReverseGeocoder();
+
+                    Boolean is_geocoded = false;
                     try {
                         entry_address = reverseGeocoder.getAddress(longitude, latitude, geocoder);
+                        is_geocoded = true;
                     } catch (IOException e) {
                         entry_address = new Address(longitude, latitude);
-                        e.printStackTrace();
                     }
-                    Helper.updateBadgeVisibility(badge_address, true);
-                    Toast.makeText(getApplicationContext(), "Address: " + entry_address.getStreet() + "\nCountry: " + entry_address.getCountry(), Toast.LENGTH_SHORT).show();
+                    if (is_geocoded) {
+                        Toast.makeText(getApplicationContext(), "Address: " + entry_address.getStreet() + "\nCountry: " + entry_address.getCountry(), Toast.LENGTH_SHORT).show();
+                        Helper.updateBadgeVisibility(badge_address, true);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Reverse Geocoding not possible.\nLatitude: " + latitude + "\nLongitude: " + longitude, Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     gps.showSettingsAlert();
                 }
