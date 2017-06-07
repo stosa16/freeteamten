@@ -17,6 +17,7 @@ import at.sw2017.pocketdiary.business_objects.UserSetting;
 import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -71,9 +72,13 @@ public class PinScreenInstrumentedTest {
         DBUserSetting dbUserSetting = new DBUserSetting(mActivityRule.getActivity());
         List<UserSetting> temp = dbUserSetting.getUserSetting(1);
         UserSetting userSetting = temp.get(0);
-        userSetting.setPin("a");
+        userSetting.setPin("aaaaa");
         dbUserSetting.update(userSetting, 1);
-        onView(withId(R.id.editText)).perform(typeText("a"), closeSoftKeyboard());
+        onView(withId(R.id.editText)).perform(typeText("aaaa"), closeSoftKeyboard());
+        onView(withId(R.id.button)).perform(click());
+        intended(hasComponent(PinScreen.class.getName()));
+        onView(withId(R.id.editText)).perform(clearText());
+        onView(withId(R.id.editText)).perform(typeText("aaaaa"), closeSoftKeyboard());
         onView(withId(R.id.button)).perform(click());
         intended(hasComponent(StartScreen.class.getName()));
     }

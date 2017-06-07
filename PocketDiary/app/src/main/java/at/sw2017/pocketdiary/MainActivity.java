@@ -31,14 +31,13 @@ public class MainActivity extends AppCompatActivity {
             DBHandler db = new DBHandler(this);
             dbUserSetting = new DBUserSetting(MainActivity.this);
             userSetting = new UserSetting("");
-            userSetting.setUserName("Markus");
+            userSetting.setUserName("");
             userSetting.setPinActive("0");
             userSetting.setPin("");
             userSetting.setId(1);
             userSetting.setPicturename("");
             userSetting.setFilePath("");
             dbUserSetting.insert(userSetting);
-            //todo: add here categories... first time
 
             prefs.edit().putBoolean("firstrun", false).commit();
         }
