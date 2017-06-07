@@ -86,7 +86,7 @@ public class DBEntryTest {
         friend.setDeleted(false);
         List<Friend> friends = new ArrayList<>();
         friends.add(friend);
-        Entry entry = new Entry("Test", 1, null, 2, null, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!", (int) address_id, address, friends, pictures);
+        Entry entry = new Entry("Test", 1, null, 2, null, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!", (int) address_id, address, friends, pictures, "");
         long id = dbe.insert(entry);
         assertTrue(id > 0);
         Entry entry_loaded = dbe.getEntry((int) id);
@@ -103,7 +103,7 @@ public class DBEntryTest {
         Address address = new Address(123.45, 67.89);
         long address_id = dba.insert(address);
         assertTrue(address_id > 0);
-        Entry entry = new Entry("Test", 1, null, 2, null, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!", (int) address_id, address, null, null);
+        Entry entry = new Entry("Test", 1, null, 2, null, (Date) Calendar.getInstance().getTime(), "Das ist ein Test!", (int) address_id, address, null, null, "");
         long id = dbe.insert(entry);
         assertTrue(id > 0);
         Entry entry_loaded = dbe.getEntry((int) id);

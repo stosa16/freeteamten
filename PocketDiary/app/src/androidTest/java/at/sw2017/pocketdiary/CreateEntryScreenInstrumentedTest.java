@@ -4,14 +4,17 @@ import android.app.Instrumentation;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
-import android.location.Location;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.UiDevice;
 import android.widget.DatePicker;
 
 import org.hamcrest.Matchers;
@@ -22,19 +25,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import at.sw2017.pocketdiary.business_objects.Address;
 import at.sw2017.pocketdiary.business_objects.Entry;
 import at.sw2017.pocketdiary.business_objects.Friend;
-import at.sw2017.pocketdiary.business_objects.UserSetting;
+import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBAddress;
 import at.sw2017.pocketdiary.database_access.DBEntry;
 import at.sw2017.pocketdiary.database_access.DBFriend;
 import at.sw2017.pocketdiary.database_access.DBHandler;
-import at.sw2017.pocketdiary.database_access.DBUserSetting;
-import at.sw2017.pocketdiary.business_objects.Picture;
 import at.sw2017.pocketdiary.database_access.DBPicture;
+import at.sw2017.pocketdiary.database_access.DBUserSetting;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onData;
@@ -44,6 +47,7 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.isInternal;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
@@ -67,9 +71,8 @@ public class CreateEntryScreenInstrumentedTest {
     private DBUserSetting dbs;
     private Geocoder geocoder;
     private Context context;
-    private Context context;
     private String camera_package = "com.android.camera";
-    private String gallery_package = "content://media/internal/images/media";
+    private UiDevice mDevice;
 
     private static final int CAMERA_REQUEST = 1;
     private static final int WRITE_STORAGE_REQUEST = 2;
@@ -98,6 +101,7 @@ public class CreateEntryScreenInstrumentedTest {
         geocoder = new Geocoder(context);
         titleToBeTyped = "Running";
         Intents.init();
+        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         mActivityRule.launchActivity(new Intent());
     }
 
@@ -341,32 +345,9 @@ public class CreateEntryScreenInstrumentedTest {
         assertTrue(picture_paths.size() == entry.getPictures().size());
     }
 
-    /*@Test
-    public void pressLocationButton() {
-        Address address_test = new Address(23.4500, 45.4500);
-        onView(withId(R.id.out_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
-        onView(withId(R.id.out_category)).perform(click());
-        onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
-        onView(withId(R.id.out_category)).check(matches(not(withText("Sport"))));
-        onView(withId(R.id.input_subcategory)).perform(click());
-        onData(allOf(is(instanceOf(String.class)))).atPosition(2).perform(click());
-        onView(withId(R.id.input_subcategory)).check(matches(not(withText("Running"))));
-        onView(withId(R.id.btn_calendar)).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
-        onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
-        onView(withId(R.id.btn_location)).perform(click());
-        onView(withId(R.id.badge_address)).check(matches((isDisplayed())));
-        onView(withId(R.id.btn_save)).perform(click());
-        Entry entry;
-        Context context = InstrumentationRegistry.getTargetContext();
-        entry = Helper.getEntryComplete(context, 1);
-        DecimalFormat df2 = new DecimalFormat("###.##");
-        double latitude = Double.valueOf(df2.format(entry.getAddress().getLatitude()));
-        assertTrue(address_test.getLatitude() == latitude);
-    }
-
     @Test
     public void createEntryWithAddressLatitudeLongitude() {
+        TestHelper.grantLocationPermissions();
         Address address_test = new Address(23, 45);
         onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
         onView(withId(R.id.input_category)).perform(click());
@@ -390,7 +371,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void pressLocationButton() {
-        Address address_test = new Address(23.4500, 45.4500);
+        TestHelper.grantLocationPermissions();
         onView(withId(R.id.input_title)).perform(typeText(titleToBeTyped), closeSoftKeyboard());
         onView(withId(R.id.input_category)).perform(click());
         onData(allOf(is(instanceOf(String.class)))).atPosition(1).perform(click());
@@ -402,18 +383,11 @@ public class CreateEntryScreenInstrumentedTest {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2017, 4, 3));
         onView(withId(android.R.id.button1)).perform(click()); //click on dialog positive button
         onView(withId(R.id.btn_location)).perform(click());
-        //onView(withId(R.id.badge_address)).check(matches((isDisplayed())));
-        //Todo: test toast remove other code below
-        //onView(withId(R.id.btn_save)).perform(click());
-        //Entry entry;
-        //Context context = InstrumentationRegistry.getTargetContext();
-        //entry = Helper.getEntryComplete(context, 1);
-        //DecimalFormat df2 = new DecimalFormat("###.##");
-        //double latitude = Double.valueOf(df2.format(entry.getAddress().getLatitude()));
-        //assertTrue(address_test.getLatitude() == latitude);
+        onView(withId(R.id.badge_address)).check(matches(isDisplayed()));
     }
 
-    /*@Test
+/*
+    @Test
     public void shouldOpenAlertDialog(){
         Address address_test = new Address(23.4500, 45.4500);
         onView(withId(R.id.btn_location)).perform(click());
@@ -432,6 +406,7 @@ public class CreateEntryScreenInstrumentedTest {
 
     @Test
     public void checkGetLocation() {
+        TestHelper.grantLocationPermissions();
         GpsLocation gps_location = new GpsLocation(context);
         //enable GPS to test this
         Location current_location = new Location("A1");
@@ -447,16 +422,14 @@ public class CreateEntryScreenInstrumentedTest {
     }
 
     /*@Test
-    public void checkGetLocationNoPermission() {
-        if (Build.VERSION.SDK_INT >= 21) {
-            String test = "pm revoke " + getTargetContext().getPackageName()
-                    + " android.permission.ACCESS_FINE_LOCATION";
-            getInstrumentation().getUiAutomation().executeShellCommand(
-                    "pm revoke " + getTargetContext().getPackageName()
-                            + " android.permission.ACCESS_FINE_LOCATION");
-            getInstrumentation().getUiAutomation().executeShellCommand(
-                    "pm revoke " + getTargetContext().getPackageName()
-                            + " android.permission.ACCESS_COARSE_LOCATION");
+    public void checkGetLocationNoPermission() throws UiObjectNotFoundException {
+        TestHelper.revokePicturePermissions();
+        onView(withId(R.id.btn_location)).perform(click());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            UiObject allowPermissions = mDevice.findObject(new UiSelector().text("Verweigern"));
+            if (allowPermissions.exists()) {
+                allowPermissions.click();
+            }
         }
         GpsLocation gps_location = new GpsLocation(context);
         Location current_location = new Location("A1");
@@ -465,18 +438,11 @@ public class CreateEntryScreenInstrumentedTest {
         gps_location.current_location = current_location;
         Location location = gps_location.getLocation();
         assertTrue(location == null);
-    }
+    }*/
 
     @Test
     public void checkGetLocationWithPermission() {
-        if (Build.VERSION.SDK_INT >= 21) {
-            getInstrumentation().getUiAutomation().executeShellCommand(
-                    "pm grant " + getTargetContext().getPackageName()
-                            + " android.permission.ACCESS_FINE_LOCATION");
-            getInstrumentation().getUiAutomation().executeShellCommand(
-                    "pm grant " + getTargetContext().getPackageName()
-                            + " android.permission.ACCESS_COARSE_LOCATION");
-        }
+        TestHelper.grantLocationPermissions();
         GpsLocation gps_location = new GpsLocation(context);
         Location current_location = new Location("A1");
         current_location.setLongitude(15);
@@ -485,7 +451,7 @@ public class CreateEntryScreenInstrumentedTest {
 
         Location location = gps_location.getLocation();
         assertTrue(location.getLatitude() != 0);
-    }*/
+    }
 
 
     /*@Test

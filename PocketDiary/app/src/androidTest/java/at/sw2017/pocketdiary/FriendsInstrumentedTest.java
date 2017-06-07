@@ -1,4 +1,5 @@
 package at.sw2017.pocketdiary;
+
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
@@ -22,7 +23,6 @@ import at.sw2017.pocketdiary.database_access.DBHandler;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -82,7 +82,7 @@ public class FriendsInstrumentedTest {
     }
     @Test
     public void checkIfInputTextIsEmpty() {
-        onView(withId(R.id.editText)).check(ViewAssertions.matches(withText("Name")));
+        onView(withId(R.id.editText)).check(ViewAssertions.matches(withText("")));
     }
     @Test
     public void shouldInsertName() {

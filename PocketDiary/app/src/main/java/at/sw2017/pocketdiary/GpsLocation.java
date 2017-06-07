@@ -27,7 +27,7 @@ public class GpsLocation extends Service implements LocationListener {
     double longitude;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
-    public LocationManager locationManager;
+    protected LocationManager locationManager;
 
     public GpsLocation(Context mContext) {
         this.mContext = mContext;
@@ -37,9 +37,9 @@ public class GpsLocation extends Service implements LocationListener {
     public Location getLocation() {
 
         try {
-            if (Build.VERSION.SDK_INT >= 21 &&
-                    (ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED ||
-                            ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return null;
             }
             locationManager = (LocationManager) mContext
@@ -68,7 +68,7 @@ public class GpsLocation extends Service implements LocationListener {
                             longitude = current_location.getLongitude();
                         }
                     } catch (SecurityException e) {
-                        Toast.makeText(mContext, "Getting GPS Location failed", Toast.LENGTH_SHORT).show();
+
                     }
                 }
             }
@@ -88,13 +88,15 @@ public class GpsLocation extends Service implements LocationListener {
                             }
                         }
                     } catch (SecurityException e) {
-                        Toast.makeText(mContext, "Getting GPS Location failed", Toast.LENGTH_SHORT).show();
+
                     }
                 }
             }
+
         } catch (Exception e) {
-            Toast.makeText(mContext, "Getting GPS Location failed", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
+
         return current_location;
     }
 
@@ -131,6 +133,8 @@ public class GpsLocation extends Service implements LocationListener {
                 dialog.cancel();
             }
         });
+
+
         alertDialog.show();
     }
 
